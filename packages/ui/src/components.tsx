@@ -39,9 +39,9 @@ type BotonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   cargando?: boolean;
 };
 
-export function Boton({ variante = "primario", grande, cargando, className, children, disabled, ...rest }: BotonProps) {
+export function Boton({ variante = "primario", grande, cargando, type = "button", className, children, disabled, ...rest }: BotonProps) {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-cyan/50";
+    "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan/60 focus-visible:ring-offset-2 focus-visible:ring-offset-nocturno";
   const tam = grande ? "px-6 py-4 text-lg" : "px-4 py-2.5 text-sm";
   const variantes: Record<string, string> = {
     primario: "bg-cyan text-nocturno hover:bg-cyan-400 shadow-glow",
@@ -51,7 +51,7 @@ export function Boton({ variante = "primario", grande, cargando, className, chil
     peligro: "bg-red-500/90 text-white hover:bg-red-500",
   };
   return (
-    <button className={cn(base, tam, variantes[variante], className)} disabled={disabled || cargando} {...rest}>
+    <button type={type} className={cn(base, tam, variantes[variante], className)} disabled={disabled || cargando} aria-busy={cargando} {...rest}>
       {cargando && <Spinner size={16} />}
       {children}
     </button>
@@ -167,7 +167,7 @@ export function Selector({ label, className, children, ...rest }: SelectHTMLAttr
 // ── Spinner ─────────────────────────────────────────────────────────────────
 export function Spinner({ size = 20 }: { size?: number }) {
   return (
-    <svg className="animate-spin" width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden>
+    <svg className="animate-spin" width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity="0.25" strokeWidth="3" />
       <path d="M22 12a10 10 0 0 0-10-10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
     </svg>
@@ -176,7 +176,7 @@ export function Spinner({ size = 20 }: { size?: number }) {
 
 export function Cargando({ texto = "Cargando…" }: { texto?: string }) {
   return (
-    <div className="flex items-center justify-center gap-3 py-16 text-texto-tenue">
+    <div className="flex items-center justify-center gap-3 py-16 text-texto-tenue" role="status" aria-live="polite">
       <Spinner /> {texto}
     </div>
   );

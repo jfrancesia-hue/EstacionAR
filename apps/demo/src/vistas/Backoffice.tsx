@@ -3,7 +3,6 @@ import { Badge, Boton, Kpi, Tarjeta, Cargando, EstadoPill, formatARS, formatFech
 import type { Dashboard, PermisionarioConSector } from "@estacionar/ui";
 import type { AuditoriaEntry, Tarifa } from "@estacionar/core";
 import { clientLocal as client } from "../store.js";
-import type { Tab } from "../App.js";
 
 function CityMap({ sectores }: { sectores: Dashboard["porSector"] }) {
   const top = sectores.slice(0, 6);
@@ -36,7 +35,7 @@ function CityMap({ sectores }: { sectores: Dashboard["porSector"] }) {
   );
 }
 
-export function VistaBackoffice({ onIrA }: { onIrA: (t: Tab) => void }) {
+export function VistaBackoffice() {
   const [dashboard, setDashboard] = useState<Dashboard | null>(null);
   const [tarifas, setTarifas] = useState<Tarifa[]>([]);
   const [permisionarios, setPermisionarios] = useState<PermisionarioConSector[]>([]);
@@ -80,11 +79,7 @@ export function VistaBackoffice({ onIrA }: { onIrA: (t: Tab) => void }) {
           <p className="mt-6 max-w-2xl text-lg text-texto-tenue">
             El Municipio ve cada peso antes de liquidar, el permisionario conserva su rol y el conductor no paga dos veces si se mueve.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Boton grande onClick={() => onIrA("conductor")}>Probar flujo conductor</Boton>
-            <Boton grande variante="secundario" onClick={() => onIrA("permisionario")}>Ver app permisionario</Boton>
-          </div>
-          {ultima && <p className="mt-4 text-xs text-texto-tenue">Datos de la demo · actualizado {formatFechaHora(ultima)}</p>}
+          {ultima && <p className="mt-6 text-xs text-texto-tenue">Datos de la demo · actualizado {formatFechaHora(ultima)}</p>}
         </div>
         <CityMap sectores={dashboard.porSector} />
       </section>

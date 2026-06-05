@@ -11,5 +11,32 @@
   }
   body {
     @apply bg-nocturno font-sans text-texto antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Foco visible por teclado en todo elemento interactivo (accesibilidad). */
+  :focus-visible {
+    outline: 2px solid #0fb6ce;
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
+
+@layer components {
+  /* Enlace "saltar al contenido" — visible solo al navegar con teclado. */
+  .skip-link {
+    @apply absolute left-4 top-2 z-50 -translate-y-20 rounded-xl bg-cyan px-4 py-2 text-sm font-bold text-nocturno transition focus:translate-y-0;
+  }
+}
+
+/* Respeta a quien prefiere menos movimiento. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }
