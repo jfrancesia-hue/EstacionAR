@@ -27,3 +27,6 @@ Thumbs.db
 
 # tests
 coverage/
+
+# paquete de desarrollo (doc duplicada, no es codigo)
+EstacionAR_Dev_Package/

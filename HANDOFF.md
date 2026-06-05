@@ -103,7 +103,8 @@ pnpm dev:api             # API demo
 
 1. QA visual en navegador real y ajustes de responsive.
 2. Agregar navegación interna más profunda en cada app.
-3. Conectar API demo a las apps en vez de consumir seed directo.
+3. ✅ HECHO — las 3 apps consumen la API real (Conductor paga de verdad, Permisionario carga
+   efectivo, Backoffice refleja todo en vivo con "Actualizar"). Verificado end-to-end.
 4. Deploy preview para compartir link.
 5. Preparar guion comercial de 7 minutos.
 6. Si avanza venta/licitación: migrar API demo a NestJS completo + Supabase real + Mercado Pago sandbox.

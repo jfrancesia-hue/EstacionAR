@@ -10,6 +10,8 @@
   "scripts": {
     "build:core": "pnpm --filter @estacionar/core build",
     "build": "pnpm build:core && pnpm --filter @estacionar/api build && pnpm -r --filter \"./apps/*\" build",
+    "build:demo": "pnpm build:core && pnpm --filter @estacionar/ui build && pnpm --filter @estacionar/demo build",
+    "dev:demo": "pnpm build:core && pnpm --filter @estacionar/ui build && pnpm --filter @estacionar/demo dev",
     "dev": "pnpm build:core && pnpm -r --parallel --filter=!@estacionar/core dev",
     "dev:api": "pnpm build:core && pnpm --filter @estacionar/api dev",
     "dev:backoffice": "pnpm build:core && pnpm --filter @estacionar/backoffice dev",
