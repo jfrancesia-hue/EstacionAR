@@ -258,6 +258,40 @@ export const clientLocal = {
     return store.auditoria;
   },
 
+  async getSectores(): Promise<Sector[]> {
+    return store.sectores;
+  },
+
+  async getConfig(): Promise<ConfigSistema> {
+    return store.config;
+  },
+
+  async setConfig(patch: Partial<ConfigSistema>): Promise<ConfigSistema> {
+    store.config = { ...store.config, ...patch };
+    audit("config_update", "config", null, patch as Record<string, unknown>);
+    return store.config;
+  },
+
+  async editarTarifa(id: string, patch: Partial<Tarifa>): Promise<Tarifa> {
+    const t = store.tarifas.find((x) => x.id === id);
+    if (!t) throw new Error("Tarifa inexistente.");
+    Object.assign(t, patch);
+    audit("tarifa_update", "tarifa", id, patch as Record<string, unknown>);
+    return t;
+  },
+
+  async editarPermisionario(id: string, patch: Partial<Permisionario>): Promise<Permisionario> {
+    const p = store.permisionarios.find((x) => x.id === id);
+    if (!p) throw new Error("Permisionario inexistente.");
+    Object.assign(p, patch);
+    audit("permisionario_update", "permisionario", id, patch as Record<string, unknown>);
+    return p;
+  },
+
+  async getValoraciones(id: string): Promise<Valoracion[]> {
+    return store.valoraciones.filter((v) => v.permisionarioId === id);
+  },
+
   async getDashboard(): Promise<Dashboard> {
     const pagos = aprobados();
     const hoy = hoyKey();
