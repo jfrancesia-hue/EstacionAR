@@ -262,6 +262,13 @@ export const clientLocal = {
     return store.sectores;
   },
 
+  async getPagosPorPatente(plate: string): Promise<Pago[]> {
+    const p = normalizarPatente(plate);
+    return store.pagos
+      .filter((x) => x.plate === p)
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  },
+
   async getConfig(): Promise<ConfigSistema> {
     return store.config;
   },
