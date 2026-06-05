@@ -13,6 +13,8 @@ import {
   type AuditoriaEntry,
   type CalcularTarifaResult,
   type ConfigSistema,
+  type Incidencia,
+  type IncidenciaStatus,
   type Pago,
   type Permisionario,
   type Sector,
@@ -31,6 +33,7 @@ interface Store {
   sesiones: Sesion[];
   pagos: Pago[];
   valoraciones: Valoracion[];
+  incidencias: Incidencia[];
   auditoria: AuditoriaEntry[];
   idempotencyKeys: Set<string>;
 }
@@ -38,6 +41,25 @@ interface Store {
 function init(): Store {
   const now = new Date().toISOString();
   const seed = buildSeed(now);
+  // Incidencias demo (como las del backend) para poblar la pestaña del permisionario.
+  const incidencias: Incidencia[] = [
+    {
+      id: newId("inc"),
+      permisionarioId: seed.permisionarios[0]!.id,
+      type: "vehiculo_mal_estacionado",
+      description: "Auto bloqueando rampa de discapacitados (DEMO).",
+      status: "open",
+      createdAt: now,
+    },
+    {
+      id: newId("inc"),
+      permisionarioId: seed.permisionarios[1]!.id,
+      type: "falla_dispositivo",
+      description: "No me anda el lector del celular (DEMO).",
+      status: "in_progress",
+      createdAt: now,
+    },
+  ];
   return {
     config: seed.config,
     tarifas: seed.tarifas,
@@ -47,6 +69,7 @@ function init(): Store {
     sesiones: seed.sesiones.map((s) => ({ ...s })),
     pagos: seed.pagos.map((p) => ({ ...p })),
     valoraciones: seed.valoraciones,
+    incidencias,
     auditoria: [],
     idempotencyKeys: new Set(),
   };
@@ -297,6 +320,33 @@ export const clientLocal = {
 
   async getValoraciones(id: string): Promise<Valoracion[]> {
     return store.valoraciones.filter((v) => v.permisionarioId === id);
+  },
+
+  async getIncidencias(permisionarioId?: string): Promise<Incidencia[]> {
+    const xs = permisionarioId ? store.incidencias.filter((i) => i.permisionarioId === permisionarioId) : store.incidencias;
+    return [...xs].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  },
+
+  async crearIncidencia(data: { permisionarioId: string; type: string; description: string }): Promise<Incidencia> {
+    const inc: Incidencia = {
+      id: newId("inc"),
+      permisionarioId: data.permisionarioId,
+      type: data.type,
+      description: data.description,
+      status: "open",
+      createdAt: new Date().toISOString(),
+    };
+    store.incidencias.unshift(inc);
+    audit("incidencia_create", "incidencia", inc.id, { type: inc.type });
+    return inc;
+  },
+
+  async editarIncidencia(id: string, status: IncidenciaStatus): Promise<Incidencia> {
+    const inc = store.incidencias.find((i) => i.id === id);
+    if (!inc) throw new Error("Incidencia inexistente.");
+    inc.status = status;
+    audit("incidencia_update", "incidencia", id, { status });
+    return inc;
   },
 
   async getDashboard(): Promise<Dashboard> {
