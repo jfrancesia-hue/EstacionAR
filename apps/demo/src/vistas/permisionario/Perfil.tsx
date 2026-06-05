@@ -1,17 +1,7 @@
+import { QRCodeSVG } from "qrcode.react";
 import { Badge, Tarjeta, EstadoPill } from "@estacionar/ui";
+import { payloadQR } from "../../qr.js";
 import type { DatosPermisionario } from "./tipos.js";
-
-function QrCredencial() {
-  return (
-    <div className="grid h-44 w-44 grid-cols-7 gap-1 rounded-2xl bg-white p-3 shadow-inner">
-      {Array.from({ length: 49 }).map((_, i) => {
-        const finder = (i < 14 && i % 7 < 2) || (i % 7 > 4 && i < 14) || (i > 34 && i % 7 < 2);
-        const active = finder || i % 4 === 0 || i % 7 === 3 || [10, 19, 25, 31, 38].includes(i);
-        return <span key={i} className={active ? "rounded-[2px] bg-[#0067B1]" : "rounded-[2px] bg-[#0A1A2F]/10"} />;
-      })}
-    </div>
-  );
-}
 
 export function SeccionPerfil({ datos }: { datos: DatosPermisionario }) {
   const p = datos.perm;
@@ -22,8 +12,10 @@ export function SeccionPerfil({ datos }: { datos: DatosPermisionario }) {
       <Tarjeta className="bg-gradient-to-br from-superficie to-profundo/60">
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
           <div className="text-center">
-            <QrCredencial />
-            <p className="mt-2 text-xs text-texto-tenue">Credencial QR firmada</p>
+            <div className="inline-block rounded-2xl bg-white p-3 shadow-inner">
+              <QRCodeSVG value={payloadQR(p)} size={160} bgColor="#ffffff" fgColor="#0A1A2F" level="M" />
+            </div>
+            <p className="mt-2 text-xs text-texto-tenue">Credencial QR · escaneable</p>
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">

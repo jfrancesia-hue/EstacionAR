@@ -1,9 +1,13 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Badge, Boton, Campo, Selector, Kpi, Tarjeta, formatARS, formatHora, formatMinutos } from "@estacionar/ui";
-import type { ResultadoPago } from "@estacionar/ui";
+import type { PermisionarioConSector, ResultadoPago } from "@estacionar/ui";
 import type { CalcularTarifaResult, VehicleType } from "@estacionar/core";
 import { clientLocal as client } from "../../store.js";
 import { imprimirComprobante, compartirComprobante } from "./comprobante.js";
+import { parseQR } from "../../qr.js";
+
+// El lector de QR (@zxing) se carga sólo al abrir el escáner: mantiene liviano el bundle inicial.
+const EscanerQR = lazy(() => import("./EscanerQR.js").then((m) => ({ default: m.EscanerQR })));
 
 const OPCIONES_MINUTOS = [30, 60, 90, 120, 180];
 
@@ -15,20 +19,12 @@ function SaltaMark() {
   );
 }
 
-function QrDemo() {
-  return (
-    <div className="relative grid h-36 w-36 grid-cols-7 gap-1 rounded-2xl bg-white p-3 shadow-inner sm:h-44 sm:w-44">
-      {Array.from({ length: 49 }).map((_, i) => {
-        const finder = (i < 14 && i % 7 < 2) || (i % 7 > 4 && i < 14) || (i > 34 && i % 7 < 2);
-        const active = finder || i % 5 === 0 || i % 8 === 0 || [17, 22, 30, 37, 41].includes(i);
-        return <span key={i} className={active ? "rounded-[3px] bg-[#0067B1]" : "rounded-[3px] bg-[#0A1A2F]/10"} />;
-      })}
-      <div className="absolute inset-1/2 grid h-12 w-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-xl border border-[#0067B1]/20 bg-white text-xs font-black text-[#0067B1] shadow">AR</div>
-    </div>
-  );
-}
-
 export function SeccionPagar() {
+  const [permisionarios, setPermisionarios] = useState<PermisionarioConSector[]>([]);
+  const [perm, setPerm] = useState<PermisionarioConSector | null>(null);
+  const [mostrarEscaner, setMostrarEscaner] = useState(false);
+  const [avisoQr, setAvisoQr] = useState<string | null>(null);
+
   const [plate, setPlate] = useState("AB123CD");
   const [vehicleType, setVehicleType] = useState<VehicleType>("auto");
   const [minutes, setMinutes] = useState(60);
@@ -37,6 +33,10 @@ export function SeccionPagar() {
   const [pagando, setPagando] = useState(false);
   const [resultado, setResultado] = useState<ResultadoPago | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    client.getPermisionarios().then(setPermisionarios);
+  }, []);
 
   useEffect(() => {
     let vigente = true;
@@ -50,11 +50,40 @@ export function SeccionPagar() {
     };
   }, [vehicleType, minutes]);
 
+  function resolverQr(texto: string) {
+    setMostrarEscaner(false);
+    const parsed = parseQR(texto);
+    const encontrado = parsed && permisionarios.find((p) => p.id === parsed.permisionarioId);
+    if (!encontrado) {
+      setAvisoQr("Ese QR no corresponde a un permisionario de EstacionAR.");
+      return;
+    }
+    setAvisoQr(null);
+    setPerm(encontrado);
+  }
+
+  function simularEscaneo() {
+    const activos = permisionarios.filter((p) => p.status === "active");
+    if (activos.length === 0) return;
+    setPerm(activos[Math.floor(Math.random() * activos.length)]!);
+    setAvisoQr(null);
+  }
+
   async function pagar() {
+    if (!perm) return;
     setError(null);
     setPagando(true);
     try {
-      setResultado(await client.pagarDigital({ plate, vehicleType, minutes, method: "mercadopago" }));
+      setResultado(
+        await client.pagarDigital({
+          plate,
+          vehicleType,
+          minutes,
+          method: "mercadopago",
+          permisionarioId: perm.id,
+          sectorId: perm.sectorId,
+        }),
+      );
     } catch (e) {
       setError(e instanceof Error ? e.message : "No se pudo procesar el pago.");
     } finally {
@@ -66,6 +95,12 @@ export function SeccionPagar() {
 
   return (
     <div className="grid gap-8 lg:grid-cols-[.92fr_1.08fr] lg:items-center">
+      {mostrarEscaner && (
+        <Suspense fallback={null}>
+          <EscanerQR onDetectar={resolverQr} onCerrar={() => setMostrarEscaner(false)} />
+        </Suspense>
+      )}
+
       <section className="min-w-0">
         <Badge tono="cyan">Pagá por patente · Municipalidad de Salta</Badge>
         <h1 className="mt-5 max-w-2xl text-4xl font-extrabold leading-[0.98] tracking-tight sm:text-5xl lg:text-6xl">
@@ -92,7 +127,9 @@ export function SeccionPagar() {
         <div className="relative overflow-hidden rounded-[1.7rem] bg-white p-4 text-[#0A1A2F] sm:p-5">
           <div className="flex min-w-0 items-center justify-between gap-3">
             <SaltaMark />
-            <span className="shrink-0 rounded-full bg-emerald-500/10 px-3 py-1 text-[11px] font-black uppercase tracking-wide text-emerald-700">QR válido</span>
+            <span className={`shrink-0 rounded-full px-3 py-1 text-[11px] font-black uppercase tracking-wide ${perm ? "bg-emerald-500/10 text-emerald-700" : "bg-slate-100 text-slate-400"}`}>
+              {perm ? "Permisionario OK" : "Escaneá QR"}
+            </span>
           </div>
 
           {resultado ? (
@@ -116,9 +153,31 @@ export function SeccionPagar() {
               </div>
               <Boton variante="secundario" className="mt-2 w-full" onClick={() => setResultado(null)}>Nuevo pago</Boton>
             </div>
+          ) : !perm ? (
+            // Paso 1: escanear el QR del permisionario
+            <div className="my-4 text-center">
+              <div className="mx-auto grid h-24 w-24 place-items-center rounded-3xl bg-[#F5F7FA]">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" className="text-[#0067B1]"><path d="M4 4h6v6H4V4Zm0 10h6v6H4v-6ZM14 4h6v6h-6V4Zm2 12h4v4h-4v-4Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
+              </div>
+              <h3 className="mt-4 text-lg font-black text-slate-800">Escaneá el QR del permisionario</h3>
+              <p className="mt-1 text-sm text-slate-500">Lo encontrás en su credencial. Así el cobro queda asociado a su sector.</p>
+              <div className="mt-5 grid gap-2">
+                <Boton grande onClick={() => setMostrarEscaner(true)}>Escanear QR</Boton>
+                <Boton variante="secundario" onClick={simularEscaneo}>Simular escaneo</Boton>
+              </div>
+              {avisoQr && <p className="mt-3 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">{avisoQr}</p>}
+            </div>
           ) : (
+            // Paso 2: cargar patente y pagar
             <>
-              <div className="my-5 grid place-items-center rounded-3xl bg-[#F5F7FA] p-5 sm:p-7"><QrDemo /></div>
+              <div className="my-4 flex items-center justify-between gap-2 rounded-2xl bg-emerald-50 p-3">
+                <div className="min-w-0">
+                  <p className="text-xs text-emerald-700/70">Permisionario</p>
+                  <p className="truncate font-bold text-emerald-800">{perm.fullName.replace(" (DEMO)", "")}</p>
+                  <p className="text-xs text-emerald-700/70">{perm.sector?.name ?? "Sector asignado"}</p>
+                </div>
+                <button onClick={() => setPerm(null)} className="shrink-0 text-xs font-bold text-emerald-700 underline">Cambiar</button>
+              </div>
               <Tarjeta className="border-slate-200 bg-slate-50 p-4 text-slate-900 shadow-none" titulo={<span className="text-slate-500">Pago de estacionamiento</span>}>
                 <div className="space-y-3">
                   <Campo label="Patente" value={plate} onChange={(e) => setPlate(e.target.value.toUpperCase())} placeholder="AB123CD" className="bg-white text-slate-900" />

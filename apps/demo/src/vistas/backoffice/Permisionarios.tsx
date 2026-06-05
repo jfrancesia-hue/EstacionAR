@@ -1,17 +1,9 @@
 import { useState } from "react";
+import { QRCodeSVG } from "qrcode.react";
 import { Badge, Boton, Tarjeta, EstadoPill, formatARS } from "@estacionar/ui";
 import { clientLocal as client } from "../../store.js";
+import { payloadQR } from "../../qr.js";
 import type { DatosBackoffice } from "./tipos.js";
-
-function QrMini() {
-  return (
-    <div className="grid h-28 w-28 grid-cols-6 gap-0.5 rounded-xl bg-white p-2 shadow-inner">
-      {Array.from({ length: 36 }).map((_, i) => (
-        <span key={i} className={i % 3 === 0 || i % 5 === 0 || i === 7 ? "bg-[#0067B1]" : "bg-[#0A1A2F]/10"} />
-      ))}
-    </div>
-  );
-}
 
 export function SeccionPermisionarios({ datos, onCambio }: { datos: DatosBackoffice; onCambio: () => void }) {
   const [selId, setSelId] = useState<string>(datos.permisionarios[0]?.id ?? "");
@@ -67,7 +59,9 @@ export function SeccionPermisionarios({ datos, onCambio }: { datos: DatosBackoff
                   <Badge tono="neutro">★ {sel.rating || "s/d"}</Badge>
                 </div>
               </div>
-              <QrMini />
+              <div className="shrink-0 rounded-xl bg-white p-2 shadow-inner">
+                <QRCodeSVG value={payloadQR(sel)} size={96} bgColor="#ffffff" fgColor="#0A1A2F" level="M" />
+              </div>
             </div>
 
             <div className="mt-5 grid grid-cols-2 gap-3 text-sm sm:grid-cols-3">
