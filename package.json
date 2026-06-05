@@ -1,0 +1,28 @@
+{
+  "name": "estacionar",
+  "version": "0.1.0",
+  "private": true,
+  "description": "EstacionAR — Plataforma de gestion de estacionamiento medido (Municipalidad de Salta)",
+  "packageManager": "pnpm@11.1.1",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build:core": "pnpm --filter @estacionar/core build",
+    "build": "pnpm build:core && pnpm --filter @estacionar/api build && pnpm -r --filter \"./apps/*\" build",
+    "dev": "pnpm build:core && pnpm -r --parallel --filter=!@estacionar/core dev",
+    "dev:api": "pnpm build:core && pnpm --filter @estacionar/api dev",
+    "dev:backoffice": "pnpm build:core && pnpm --filter @estacionar/backoffice dev",
+    "dev:conductor": "pnpm build:core && pnpm --filter @estacionar/conductor dev",
+    "dev:permisionario": "pnpm build:core && pnpm --filter @estacionar/permisionario dev",
+    "test": "pnpm --filter @estacionar/core test",
+    "typecheck": "pnpm build:core && pnpm -r --filter=!@estacionar/core typecheck",
+    "lint": "pnpm -r typecheck"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "@estacionar/config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    "./tsconfig.base.json": "./tsconfig.base.json",
+    "./tailwind-preset": "./tailwind-preset.cjs",
+    "./theme": "./theme.js"
+  },
+  "files": [
+    "tsconfig.base.json",
+    "tailwind-preset.cjs",
+    "theme.js"
+  ]
+}
