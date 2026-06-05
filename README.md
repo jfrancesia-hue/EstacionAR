@@ -19,7 +19,19 @@ Con los servidores levantados:
 - Permisionario: http://localhost:5175
 - API health: http://localhost:4000/api/health
 
-## Comandos
+## Arranque rápido en Windows
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\DEMO_START.ps1
+```
+
+Para detener:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\DEMO_STOP.ps1
+```
+
+## Comandos manuales
 
 ```bash
 pnpm install

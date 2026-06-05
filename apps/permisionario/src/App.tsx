@@ -15,8 +15,13 @@ export default function App() {
       <MarcaDemo texto="APP PERMISIONARIO DEMO — registros inmutables" />
       <main className="mx-auto grid min-h-screen max-w-6xl gap-8 px-6 py-8 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
         <section>
-          <Logo />
-          <Badge tono="cyan">Credencial activa · Municipalidad de Salta</Badge>
+          <div className="flex flex-wrap items-center gap-3">
+            <Logo />
+            <div className="rounded-2xl bg-white px-3 py-2 shadow-sm">
+              <img src="/municipalidad-salta.jpeg" alt="Municipalidad de Salta" className="h-8 w-auto object-contain" />
+            </div>
+          </div>
+          <div className="mt-3"><Badge tono="cyan">Credencial activa · Municipalidad de Salta</Badge></div>
           <h1 className="mt-5 text-5xl font-extrabold leading-tight tracking-tight">Tu recaudación clara, tu QR protegido.</h1>
           <p className="mt-4 max-w-xl text-lg text-texto-tenue">La app del permisionario registra efectivo sin duplicados, muestra movimientos del día y mantiene al Municipio viendo la recaudación en tiempo real.</p>
           <div className="mt-8 grid gap-4 sm:grid-cols-3"><Kpi label="Hoy" valor={fmt.format(total)} /><Kpi label="Digital" valor={fmt.format(digital)} /><Kpi label="Efectivo" valor={fmt.format(cash)} acento="ambar" /></div>

@@ -43,13 +43,21 @@ export default function App() {
       <header className="sticky top-0 z-20 border-b border-white/10 bg-nocturno/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <Logo />
-          <div className="flex items-center gap-3"><Badge tono="cyan">Municipalidad de Salta</Badge><Boton variante="ambar">Solicitar demo</Boton></div>
+          <div className="flex items-center gap-3">
+            <div className="hidden items-center rounded-2xl bg-white px-3 py-2 shadow-sm sm:flex">
+              <img src="/municipalidad-salta.jpeg" alt="Municipalidad de Salta" className="h-9 w-auto object-contain" />
+            </div>
+            <Boton variante="ambar">Solicitar demo</Boton>
+          </div>
         </div>
       </header>
       <main className="mx-auto max-w-7xl px-6 py-10">
         <section className="grid gap-8 lg:grid-cols-[1.05fr_.95fr] lg:items-center">
           <div>
-            <Badge tono="cyan">EstacionAR · Control municipal en tiempo real</Badge>
+            <div className="flex flex-wrap items-center gap-3">
+              <Badge tono="cyan">EstacionAR · Control municipal en tiempo real</Badge>
+              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-texto-tenue">Municipalidad de Salta</span>
+            </div>
             <h1 className="mt-5 text-5xl font-extrabold leading-tight tracking-tight md:text-7xl">
               Estacionamiento medido con <span className="text-cyan">recaudación trazable</span> para Salta.
             </h1>

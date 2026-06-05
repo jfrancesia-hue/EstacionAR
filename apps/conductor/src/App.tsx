@@ -8,12 +8,8 @@ const fmt = new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS",
 
 function SaltaMark() {
   return (
-    <div className="flex min-w-0 items-center gap-2 rounded-2xl bg-white px-3 py-2 text-[#0067B1] shadow-sm">
-      <div className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-[#0067B1] text-sm font-black text-white">S</div>
-      <div className="min-w-0 leading-none">
-        <p className="truncate text-sm font-black">Salta</p>
-        <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-[#0067B1]/70">Municipalidad</p>
-      </div>
+    <div className="flex min-w-0 items-center rounded-2xl bg-white px-3 py-2 shadow-sm">
+      <img src="/municipalidad-salta.jpeg" alt="Municipalidad de Salta" className="h-9 max-w-[130px] object-contain" />
     </div>
   );
 }
