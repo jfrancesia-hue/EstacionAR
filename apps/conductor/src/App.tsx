@@ -36,6 +36,7 @@ export default function App() {
           <div className="flex flex-wrap items-center gap-3">
             <Logo />
             <Badge tono="cyan">Municipalidad de Salta</Badge>
+            <a href="http://localhost:5173" className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-texto-tenue hover:text-texto">Volver al backoffice</a>
           </div>
           <h1 className="mt-5 max-w-2xl text-4xl font-extrabold leading-[0.98] tracking-tight sm:text-5xl lg:text-6xl">
             Pagá tu estacionamiento en segundos.

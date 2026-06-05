@@ -64,7 +64,11 @@ export default function App() {
             <p className="mt-6 max-w-2xl text-lg text-texto-tenue">
               Una plataforma MotionSite + backoffice fiscal: el Municipio ve cada peso antes de liquidar, el permisionario conserva su rol y el conductor no paga dos veces si se mueve.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3"><Boton grande>Ver panel municipal</Boton><Boton grande variante="secundario">Probar flujo conductor</Boton></div>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Boton grande>Ver panel municipal</Boton>
+              <a href="http://localhost:5174" target="_blank" rel="noreferrer"><Boton grande variante="secundario">Probar flujo conductor</Boton></a>
+              <a href="http://localhost:5175" target="_blank" rel="noreferrer"><Boton grande variante="fantasma">Ver app permisionario</Boton></a>
+            </div>
           </div>
           <CityMap />
         </section>
@@ -74,6 +78,38 @@ export default function App() {
           <Kpi label="Digital" valor={fmt.format(digital)} sub="MP · MODO · QR · Naranja" />
           <Kpi label="Efectivo auditado" valor={fmt.format(cash)} sub="Carga inmutable permisionario" acento="ambar" />
           <Kpi label="Sesiones activas" valor={activeSessions} sub="Billetera por patente" />
+        </section>
+
+        <section className="mt-10 grid gap-6 lg:grid-cols-[1.05fr_.95fr]">
+          <Tarjeta className="border-cyan/25 bg-gradient-to-br from-cyan/10 to-superficie/80" titulo="Demo guiada en 7 minutos" accion={<Badge tono="cyan">Modo presentación</Badge>}>
+            <div className="grid gap-3 md:grid-cols-2">
+              {[
+                ["1", "Municipio ve recaudación", "El panel muestra digital, efectivo, sesiones y sectores en vivo."],
+                ["2", "Conductor paga por patente", "QR → patente AB123CD → tiempo → comprobante municipal."],
+                ["3", "No paga dos veces", "La billetera se vincula a la patente, no a la cuadra."],
+                ["4", "Permisionario carga efectivo", "Registro inmutable, idempotente y auditado."],
+                ["5", "Auditoría y QR antifraude", "Permisionarios suspendidos no pueden operar."],
+                ["6", "Tarifas configurables", "Actualizar valores es cambiar datos, no código."],
+              ].map(([n, title, body]) => (
+                <div key={n} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                  <span className="grid h-8 w-8 place-items-center rounded-xl bg-cyan text-sm font-black text-nocturno">{n}</span>
+                  <h3 className="mt-3 font-bold text-white">{title}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-texto-tenue">{body}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <a href="http://localhost:5174" target="_blank" rel="noreferrer"><Boton variante="ambar">Abrir Conductor</Boton></a>
+              <a href="http://localhost:5175" target="_blank" rel="noreferrer"><Boton variante="secundario">Abrir Permisionario</Boton></a>
+            </div>
+          </Tarjeta>
+          <Tarjeta titulo="Control fiscal en tiempo real">
+            <div className="space-y-3 text-sm text-texto-tenue">
+              <p><b className="text-texto">Tesis comercial:</b> la plata entra primero al Municipio y cada operación deja rastro.</p>
+              <p><b className="text-texto">Diferencial:</b> preserva el rol del permisionario, ordena efectivo y aumenta pago digital.</p>
+              <p><b className="text-texto">Próximo salto:</b> Supabase real + Mercado Pago sandbox + app PWA instalable.</p>
+            </div>
+          </Tarjeta>
         </section>
 
         <section className="mt-10 grid gap-6 lg:grid-cols-3">

@@ -20,6 +20,7 @@ export default function App() {
             <div className="rounded-2xl bg-white px-3 py-2 shadow-sm">
               <img src="/municipalidad-salta.jpeg" alt="Municipalidad de Salta" className="h-8 w-auto object-contain" />
             </div>
+            <a href="http://localhost:5173" className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-texto-tenue hover:text-texto">Volver al backoffice</a>
           </div>
           <div className="mt-3"><Badge tono="cyan">Credencial activa · Municipalidad de Salta</Badge></div>
           <h1 className="mt-5 text-5xl font-extrabold leading-tight tracking-tight">Tu recaudación clara, tu QR protegido.</h1>

@@ -25,6 +25,12 @@ Con los servidores levantados:
 powershell -ExecutionPolicy Bypass -File .\DEMO_START.ps1
 ```
 
+Para chequear estado:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\DEMO_STATUS.ps1
+```
+
 Para detener:
 
 ```powershell
