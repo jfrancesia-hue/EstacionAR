@@ -12,6 +12,8 @@
   body {
     @apply bg-nocturno font-sans text-texto antialiased;
     -webkit-tap-highlight-color: transparent;
+    /* Áreas seguras (notch / barra de iPhone) cuando se instala como app. */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
 
   /* Foco visible por teclado en todo elemento interactivo (accesibilidad). */
