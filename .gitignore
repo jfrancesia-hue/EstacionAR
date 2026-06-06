@@ -35,3 +35,7 @@ EstacionAR_Dev_Package/
 .vercel/
 
 .vercel
+
+# documentos generados (regenerables con scripts/md-to-pdf.mjs)
+PRODUCTO.html
+*.pdf
