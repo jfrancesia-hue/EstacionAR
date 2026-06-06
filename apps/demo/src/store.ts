@@ -53,6 +53,21 @@ export interface MovimientoDeuda {
   createdAt: string;
 }
 
+// Alerta temporal por patente cuando un excedente no se regulariza (PRODUCTO.md §17).
+export type EstadoAlerta = "excess_alert_active" | "excess_paid" | "excess_alert_expired";
+export interface AlertaExcedente {
+  id: string;
+  plate: string;
+  permisionarioId: string;
+  sectorId: string | null;
+  sesionId: string;
+  montoSugerido: number;
+  minutosExcedidos: number;
+  status: EstadoAlerta;
+  createdAt: string;
+  expiresAt: string; // vencimiento automático de la alerta
+}
+
 interface Store {
   config: ConfigSistema;
   tarifas: Tarifa[];
@@ -64,9 +79,13 @@ interface Store {
   incidencias: Incidencia[];
   ordenesEfectivo: OrdenEfectivo[];
   deudas: MovimientoDeuda[];
+  alertas: AlertaExcedente[];
   auditoria: AuditoriaEntry[];
   idempotencyKeys: Set<string>;
 }
+
+// Plazo de vencimiento de una alerta de excedente (configurable). PRODUCTO.md §17.
+const ALERTA_HORAS = 48;
 
 function init(): Store {
   const now = new Date().toISOString();
@@ -90,6 +109,48 @@ function init(): Store {
       createdAt: now,
     },
   ];
+  // Sesiones vencidas (overdue) demo para fiscalización y excedentes (PRODUCTO.md §15/§16).
+  const nowMs = new Date(now).getTime();
+  const sesionesVencidas: Sesion[] = [];
+  const pagosVencidas: Pago[] = [];
+  [
+    { plate: "GH456IJ", venceHaceMin: 22 },
+    { plate: "KL789MN", venceHaceMin: 41 },
+  ].forEach((v, i) => {
+    const perm = seed.permisionarios[i]!;
+    const endMs = nowMs - v.venceHaceMin * 60000;
+    const startMs = endMs - 60 * 60000;
+    const ses: Sesion = {
+      id: `ses-venc-${i + 1}`,
+      plate: v.plate,
+      vehicleType: "auto",
+      paidMinutes: 60,
+      startValid: new Date(startMs).toISOString(),
+      endValid: new Date(endMs).toISOString(),
+      tarifaId: "tar-auto-2026",
+      amount: 630,
+      originSectorId: perm.sectorId,
+      status: "active",
+      createdAt: new Date(startMs).toISOString(),
+    };
+    sesionesVencidas.push(ses);
+    pagosVencidas.push({
+      id: `pago-venc-${i + 1}`,
+      sesionId: ses.id,
+      method: "mercadopago",
+      amount: 630,
+      status: "approved",
+      externalRef: "MP-DEMO",
+      receiptUrl: null,
+      registeredBy: null,
+      permisionarioId: perm.id,
+      plate: v.plate,
+      sectorId: perm.sectorId,
+      idempotencyKey: null,
+      createdAt: ses.createdAt,
+    });
+  });
+
   return {
     config: seed.config,
     // Descuento al ciudadano = 10% (modelo 80/10/10); el otro 10% que resigna la Muni es la plataforma.
@@ -97,12 +158,13 @@ function init(): Store {
     sectores: seed.sectores,
     // Copias para poder mutar sesiones/pagos sin afectar el seed original.
     permisionarios: seed.permisionarios.map((p) => ({ ...p })),
-    sesiones: seed.sesiones.map((s) => ({ ...s })),
-    pagos: seed.pagos.map((p) => ({ ...p })),
+    sesiones: [...seed.sesiones.map((s) => ({ ...s })), ...sesionesVencidas],
+    pagos: [...seed.pagos.map((p) => ({ ...p })), ...pagosVencidas],
     valoraciones: seed.valoraciones,
     incidencias,
     ordenesEfectivo: [],
     deudas: [],
+    alertas: [],
     auditoria: [],
     idempotencyKeys: new Set(),
   };
@@ -134,6 +196,22 @@ function audit(action: string, entity: string, entityId: string | null, payload:
     payload,
     createdAt: new Date().toISOString(),
   });
+}
+
+export type EstadoSesion = "vigente" | "por_vencer" | "vencida";
+function estadoDeSesion(s: Sesion, ahoraMs: number): EstadoSesion {
+  const diffMin = (new Date(s.endValid).getTime() - ahoraMs) / 60000;
+  if (diffMin > 10) return "vigente";
+  if (diffMin >= 0) return "por_vencer";
+  return "vencida";
+}
+
+/** Devuelve la alerta activa de una patente y vence automáticamente las que pasaron su plazo. */
+function alertaVigente(plate: string, ahoraMs: number): AlertaExcedente | null {
+  for (const a of store.alertas) {
+    if (a.status === "excess_alert_active" && new Date(a.expiresAt).getTime() < ahoraMs) a.status = "excess_alert_expired";
+  }
+  return store.alertas.find((a) => a.plate === plate && a.status === "excess_alert_active") ?? null;
 }
 
 // ── Cliente local (misma forma que EstacionarClient) ────────────────────────────
@@ -506,6 +584,120 @@ export const clientLocal = {
     pendientes.forEach((d) => (d.status = "paid"));
     audit("deuda_pagada", "deuda", permisionarioId, { pagado, operaciones: pendientes.length });
     return { pagado };
+  },
+
+  // ── Fiscalización por patente + excedentes + alertas (PRODUCTO.md §15/§16/§17) ──
+  async fiscalizarPatente(plate: string): Promise<{
+    plate: string;
+    estado: EstadoSesion | "sin_sesion";
+    sesion: Sesion | null;
+    permisionario: Permisionario | null;
+    sector: Sector | null;
+    pago: Pago | null;
+    alerta: AlertaExcedente | null;
+    minutosExcedidos: number;
+  }> {
+    const p = normalizarPatente(plate);
+    const ahora = new Date().getTime();
+    const alerta = alertaVigente(p, ahora);
+    const ses = store.sesiones
+      .filter((s) => s.plate === p && s.status === "active")
+      .sort((a, b) => b.endValid.localeCompare(a.endValid))[0] ?? null;
+    if (!ses) return { plate: p, estado: "sin_sesion", sesion: null, permisionario: null, sector: null, pago: null, alerta, minutosExcedidos: 0 };
+    const pago = store.pagos.filter((x) => x.sesionId === ses.id).sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0] ?? null;
+    const permisionario = pago?.permisionarioId ? store.permisionarios.find((x) => x.id === pago.permisionarioId) ?? null : null;
+    const sector = ses.originSectorId ? store.sectores.find((x) => x.id === ses.originSectorId) ?? null : null;
+    const estado = estadoDeSesion(ses, ahora);
+    const minutosExcedidos = estado === "vencida" ? Math.floor((ahora - new Date(ses.endValid).getTime()) / 60000) : 0;
+    return { plate: p, estado, sesion: ses, permisionario, sector, pago, alerta, minutosExcedidos };
+  },
+
+  async getSesionesVencidas(permisionarioId?: string): Promise<Array<{ sesion: Sesion; permisionarioId: string | null; sectorName: string | null; minutosExcedidos: number }>> {
+    const ahora = new Date().getTime();
+    return store.sesiones
+      .filter((s) => s.status === "active" && estadoDeSesion(s, ahora) === "vencida")
+      .map((s) => {
+        const pago = store.pagos.filter((x) => x.sesionId === s.id).sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0] ?? null;
+        const sector = s.originSectorId ? store.sectores.find((x) => x.id === s.originSectorId) ?? null : null;
+        return {
+          sesion: s,
+          permisionarioId: pago?.permisionarioId ?? null,
+          sectorName: sector?.name ?? null,
+          minutosExcedidos: Math.floor((ahora - new Date(s.endValid).getTime()) / 60000),
+        };
+      })
+      .filter((x) => !permisionarioId || x.permisionarioId === permisionarioId);
+  },
+
+  async cobrarExcedente(data: { sesionId: string; minutes: number; metodo: "digital" | "cash"; permisionarioId: string }): Promise<{ pago: Pago; calc: CalcularTarifaResult }> {
+    const ses = store.sesiones.find((s) => s.id === data.sesionId);
+    if (!ses) throw new Error("Sesión inexistente.");
+    const now = new Date().toISOString();
+    const tarifa = store.tarifas.find((t) => t.vehicleType === ses.vehicleType) ?? store.tarifas[0]!;
+    const calc = calcularTarifa({ vehicleType: ses.vehicleType, minutes: data.minutes, isDigital: true, date: now, tarifa, feriados: store.config.feriados });
+    // Extiende la ventana (operación vinculada a la sesión original, sin pisar el comprobante).
+    const base = new Date(ses.endValid).getTime() >= new Date(now).getTime() ? ses.endValid : now;
+    ses.endValid = new Date(new Date(base).getTime() + data.minutes * 60000).toISOString();
+    ses.paidMinutes += data.minutes;
+    ses.amount += calc.amount;
+    const pago: Pago = {
+      id: newId("pago"),
+      sesionId: ses.id,
+      method: data.metodo === "cash" ? "cash" : "mercadopago",
+      amount: calc.amount,
+      status: "approved",
+      externalRef: data.metodo === "cash" ? null : `MP-EXC-${newId("ref")}`,
+      receiptUrl: null,
+      registeredBy: data.permisionarioId,
+      permisionarioId: data.permisionarioId,
+      plate: ses.plate,
+      sectorId: ses.originSectorId,
+      idempotencyKey: null,
+      createdAt: now,
+    };
+    store.pagos.push(pago);
+    if (data.metodo === "cash") {
+      store.deudas.unshift({ id: newId("deuda"), permisionarioId: data.permisionarioId, ordenId: pago.id, plate: ses.plate, amount: comisionPlataforma(calc.amount), status: "pending", createdAt: now });
+    }
+    const alerta = store.alertas.find((a) => a.plate === ses.plate && a.status === "excess_alert_active");
+    if (alerta) alerta.status = "excess_paid";
+    audit("excedente_cobrado", "pago", pago.id, { plate: ses.plate, minutes: data.minutes, metodo: data.metodo });
+    return { pago, calc };
+  },
+
+  async marcarExcedenteNoPagado(data: { sesionId: string; permisionarioId: string }): Promise<AlertaExcedente> {
+    const ses = store.sesiones.find((s) => s.id === data.sesionId);
+    if (!ses) throw new Error("Sesión inexistente.");
+    const now = new Date();
+    const ahora = now.getTime();
+    const minutosExcedidos = Math.max(0, Math.floor((ahora - new Date(ses.endValid).getTime()) / 60000));
+    const tarifa = store.tarifas.find((t) => t.vehicleType === ses.vehicleType) ?? store.tarifas[0]!;
+    const sugerido = calcularTarifa({ vehicleType: ses.vehicleType, minutes: Math.max(15, Math.ceil(minutosExcedidos / 15) * 15), isDigital: true, date: now.toISOString(), tarifa, feriados: store.config.feriados }).amount;
+    ses.status = "expired"; // se retira sin regularizar
+    const alerta: AlertaExcedente = {
+      id: newId("alerta"),
+      plate: ses.plate,
+      permisionarioId: data.permisionarioId,
+      sectorId: ses.originSectorId,
+      sesionId: ses.id,
+      montoSugerido: sugerido,
+      minutosExcedidos,
+      status: "excess_alert_active",
+      createdAt: now.toISOString(),
+      expiresAt: new Date(ahora + ALERTA_HORAS * 3600000).toISOString(),
+    };
+    store.alertas.unshift(alerta);
+    audit("excedente_no_pagado", "alerta", alerta.id, { plate: ses.plate, minutosExcedidos });
+    return alerta;
+  },
+
+  async getAlertaActiva(plate: string): Promise<AlertaExcedente | null> {
+    return alertaVigente(normalizarPatente(plate), new Date().getTime());
+  },
+
+  async getAlertas(): Promise<AlertaExcedente[]> {
+    alertaVigente("", new Date().getTime()); // fuerza vencimiento automático
+    return [...store.alertas].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   },
 
   async getDashboard(): Promise<Dashboard> {

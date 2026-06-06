@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { Badge, Boton, Campo, Selector, Kpi, Tarjeta, formatARS, formatHora, formatMinutos } from "@estacionar/ui";
 import type { PermisionarioConSector, ResultadoPago } from "@estacionar/ui";
 import type { CalcularTarifaResult, VehicleType } from "@estacionar/core";
-import { clientLocal as client, type OrdenEfectivo } from "../../store.js";
+import { clientLocal as client, type OrdenEfectivo, type AlertaExcedente } from "../../store.js";
 import { imprimirComprobante, compartirComprobante } from "./comprobante.js";
 import { permisionarioIdDesdeQR } from "../../qr.js";
 import { acreditadoPermisionario } from "../../split.js";
@@ -37,6 +37,7 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
   const [metodo, setMetodo] = useState<"digital" | "efectivo">("digital");
   const [ordenPendiente, setOrdenPendiente] = useState<OrdenEfectivo | null>(null);
   const [verificando, setVerificando] = useState(false);
+  const [alertaExc, setAlertaExc] = useState<AlertaExcedente | null>(null);
 
   useEffect(() => {
     client.getPermisionarios().then(setPermisionarios);
@@ -78,6 +79,19 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
       vigente = false;
     };
   }, [vehicleType, minutes]);
+
+  // Aviso suave (no bloqueo) si la patente tiene un excedente reciente sin regularizar (§17).
+  useEffect(() => {
+    if (!plate || plate.length < 3) {
+      setAlertaExc(null);
+      return;
+    }
+    let vig = true;
+    client.getAlertaActiva(plate).then((a) => vig && setAlertaExc(a));
+    return () => {
+      vig = false;
+    };
+  }, [plate]);
 
   function resolverQr(texto: string) {
     setMostrarEscaner(false);
@@ -239,6 +253,11 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
                 </div>
                 <button onClick={() => setPerm(null)} className="shrink-0 text-xs font-bold text-emerald-700 underline">Cambiar</button>
               </div>
+              {alertaExc && (
+                <div className="mb-3 rounded-2xl border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
+                  Esta patente registra un <b>excedente reciente sin regularizar</b>. Podés regularizarlo ahora (no es obligatorio).
+                </div>
+              )}
               <Tarjeta className="border-slate-200 bg-slate-50 p-4 text-slate-900 shadow-none" titulo={<span className="text-slate-500">Pago de estacionamiento</span>}>
                 <div className="space-y-3">
                   <Campo label="Patente" value={plate} onChange={(e) => setPlate(e.target.value.toUpperCase())} placeholder="AB123CD" className="bg-white text-slate-900" />

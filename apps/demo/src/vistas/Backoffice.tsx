@@ -6,6 +6,7 @@ import { SeccionInicio } from "./backoffice/Inicio.js";
 import { SeccionTarifas } from "./backoffice/Tarifas.js";
 import { SeccionPermisionarios } from "./backoffice/Permisionarios.js";
 import { SeccionSectores } from "./backoffice/Sectores.js";
+import { SeccionFiscalizacion } from "./backoffice/Fiscalizacion.js";
 import { SeccionReportes } from "./backoffice/Reportes.js";
 import { SeccionAuditoria } from "./backoffice/Auditoria.js";
 
@@ -14,6 +15,7 @@ const SECCIONES: Array<{ id: Seccion; label: string; icono: string }> = [
   { id: "tarifas", label: "Tarifas", icono: "$" },
   { id: "permisionarios", label: "Permisionarios", icono: "◉" },
   { id: "sectores", label: "Sectores", icono: "⬡" },
+  { id: "fiscalizacion", label: "Fiscalización", icono: "⊙" },
   { id: "reportes", label: "Reportes", icono: "▣" },
   { id: "auditoria", label: "Auditoría", icono: "✓" },
 ];
@@ -23,6 +25,7 @@ const TITULOS: Record<Seccion, string> = {
   tarifas: "Tarifas configurables",
   permisionarios: "Permisionarios",
   sectores: "Sectores y mapa",
+  fiscalizacion: "Fiscalización por patente",
   reportes: "Reportes de gestión",
   auditoria: "Auditoría fiscal",
 };
@@ -91,6 +94,7 @@ export function VistaBackoffice() {
         {seccion === "tarifas" && <SeccionTarifas datos={datos} onCambio={cargar} />}
         {seccion === "permisionarios" && <SeccionPermisionarios datos={datos} onCambio={cargar} />}
         {seccion === "sectores" && <SeccionSectores datos={datos} />}
+        {seccion === "fiscalizacion" && <SeccionFiscalizacion />}
         {seccion === "reportes" && <SeccionReportes datos={datos} />}
         {seccion === "auditoria" && <SeccionAuditoria datos={datos} />}
       </div>

@@ -4,6 +4,7 @@ import { clientLocal as client } from "../store.js";
 import type { DatosPermisionario, PestanaPerm } from "./permisionario/tipos.js";
 import { SeccionRecaudacion } from "./permisionario/Recaudacion.js";
 import { SeccionRegistrarEfectivo } from "./permisionario/RegistrarEfectivo.js";
+import { SeccionVencidas } from "./permisionario/Vencidas.js";
 import { SeccionMovimientos } from "./permisionario/Movimientos.js";
 import { SeccionIncidencias } from "./permisionario/Incidencias.js";
 import { SeccionPerfil } from "./permisionario/Perfil.js";
@@ -11,6 +12,7 @@ import { SeccionPerfil } from "./permisionario/Perfil.js";
 const PESTANAS: Array<{ id: PestanaPerm; label: string }> = [
   { id: "recaudacion", label: "Recaudación" },
   { id: "efectivo", label: "Efectivo" },
+  { id: "vencidas", label: "Vencidas" },
   { id: "movimientos", label: "Movimientos" },
   { id: "incidencias", label: "Incidencias" },
   { id: "perfil", label: "Mi credencial" },
@@ -25,14 +27,15 @@ export function VistaPermisionario() {
     const permisionarios = await client.getPermisionarios();
     const perm = permisionarios.find((p) => p.status === "active") ?? permisionarios[0];
     if (!perm) return;
-    const [recaudacion, movimientos, incidencias, ordenesPendientes, deuda] = await Promise.all([
+    const [recaudacion, movimientos, incidencias, ordenesPendientes, deuda, vencidas] = await Promise.all([
       client.getRecaudacionHoy(perm.id),
       client.getMovimientos(perm.id),
       client.getIncidencias(perm.id),
       client.getOrdenesEfectivoPendientes(perm.id),
       client.getDeuda(perm.id),
+      client.getSesionesVencidas(perm.id),
     ]);
-    setDatos({ perm, recaudacion, movimientos, incidencias, ordenesPendientes, deuda });
+    setDatos({ perm, recaudacion, movimientos, incidencias, ordenesPendientes, deuda, vencidas });
     setCargando(false);
   }
 
@@ -71,12 +74,16 @@ export function VistaPermisionario() {
             {p.id === "efectivo" && datos.ordenesPendientes.length > 0 && (
               <span className="ml-2 rounded-full bg-ambar px-1.5 text-[10px] font-black text-nocturno">{datos.ordenesPendientes.length}</span>
             )}
+            {p.id === "vencidas" && datos.vencidas.length > 0 && (
+              <span className="ml-2 rounded-full bg-red-500 px-1.5 text-[10px] font-black text-white">{datos.vencidas.length}</span>
+            )}
           </button>
         ))}
       </nav>
 
       {pestana === "recaudacion" && <SeccionRecaudacion datos={datos} onCambio={cargar} />}
       {pestana === "efectivo" && <SeccionRegistrarEfectivo datos={datos} onCambio={cargar} />}
+      {pestana === "vencidas" && <SeccionVencidas datos={datos} onCambio={cargar} />}
       {pestana === "movimientos" && <SeccionMovimientos datos={datos} />}
       {pestana === "incidencias" && <SeccionIncidencias datos={datos} onCambio={cargar} />}
       {pestana === "perfil" && <SeccionPerfil datos={datos} />}
