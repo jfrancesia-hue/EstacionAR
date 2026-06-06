@@ -24,6 +24,7 @@ import {
   type VehicleType,
 } from "@estacionar/core";
 import type { Dashboard, PermisionarioConSector, ResultadoPago } from "@estacionar/ui";
+import { SPLIT } from "./split.js";
 
 interface Store {
   config: ConfigSistema;
@@ -62,7 +63,8 @@ function init(): Store {
   ];
   return {
     config: seed.config,
-    tarifas: seed.tarifas,
+    // Descuento al ciudadano = 10% (modelo 80/10/10); el otro 10% que resigna la Muni es la plataforma.
+    tarifas: seed.tarifas.map((t) => ({ ...t, digitalDiscountPct: SPLIT.descuentoCiudadanoPct })),
     sectores: seed.sectores,
     // Copias para poder mutar sesiones/pagos sin afectar el seed original.
     permisionarios: seed.permisionarios.map((p) => ({ ...p })),

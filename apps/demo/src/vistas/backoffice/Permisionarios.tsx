@@ -2,7 +2,7 @@ import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { Badge, Boton, Tarjeta, EstadoPill, formatARS } from "@estacionar/ui";
 import { clientLocal as client } from "../../store.js";
-import { payloadQR } from "../../qr.js";
+import { urlPagoQR } from "../../qr.js";
 import type { DatosBackoffice } from "./tipos.js";
 
 export function SeccionPermisionarios({ datos, onCambio }: { datos: DatosBackoffice; onCambio: () => void }) {
@@ -60,7 +60,7 @@ export function SeccionPermisionarios({ datos, onCambio }: { datos: DatosBackoff
                 </div>
               </div>
               <div className="shrink-0 rounded-xl bg-white p-2 shadow-inner">
-                <QRCodeSVG value={payloadQR(sel)} size={96} bgColor="#ffffff" fgColor="#0A1A2F" level="M" />
+                <QRCodeSVG value={urlPagoQR(sel)} size={96} bgColor="#ffffff" fgColor="#0A1A2F" level="M" />
               </div>
             </div>
 

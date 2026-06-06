@@ -9,7 +9,7 @@ const PESTANAS: Array<{ id: Pestana; label: string }> = [
   { id: "mitiempo", label: "Mi tiempo" },
 ];
 
-export function VistaConductor() {
+export function VistaConductor({ qrId }: { qrId?: string }) {
   const [pestana, setPestana] = useState<Pestana>("pagar");
 
   return (
@@ -29,7 +29,7 @@ export function VistaConductor() {
         ))}
       </nav>
 
-      {pestana === "pagar" ? <SeccionPagar /> : <SeccionMiTiempo />}
+      {pestana === "pagar" ? <SeccionPagar qrId={qrId} /> : <SeccionMiTiempo />}
     </main>
   );
 }

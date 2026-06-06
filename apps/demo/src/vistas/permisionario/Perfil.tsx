@@ -1,6 +1,6 @@
 import { QRCodeSVG } from "qrcode.react";
 import { Badge, Tarjeta, EstadoPill } from "@estacionar/ui";
-import { payloadQR } from "../../qr.js";
+import { urlPagoQR } from "../../qr.js";
 import type { DatosPermisionario } from "./tipos.js";
 
 export function SeccionPerfil({ datos }: { datos: DatosPermisionario }) {
@@ -13,7 +13,7 @@ export function SeccionPerfil({ datos }: { datos: DatosPermisionario }) {
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
           <div className="text-center">
             <div className="inline-block rounded-2xl bg-white p-3 shadow-inner">
-              <QRCodeSVG value={payloadQR(p)} size={160} bgColor="#ffffff" fgColor="#0A1A2F" level="M" />
+              <QRCodeSVG value={urlPagoQR(p)} size={160} bgColor="#ffffff" fgColor="#0A1A2F" level="M" />
             </div>
             <p className="mt-2 text-xs text-texto-tenue">Credencial QR · escaneable</p>
           </div>

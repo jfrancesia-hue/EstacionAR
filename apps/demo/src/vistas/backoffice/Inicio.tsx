@@ -1,25 +1,27 @@
 import { Badge, Kpi, Tarjeta, formatARS } from "@estacionar/ui";
 import { MapaSectores } from "./Mapa.js";
+import { desglosarPagado, SPLIT } from "../../split.js";
 import type { DatosBackoffice } from "./tipos.js";
 
 export function SeccionInicio({ datos }: { datos: DatosBackoffice }) {
   const k = datos.dashboard.kpis;
+  const sp = desglosarPagado(k.recaudacionTotal);
   return (
     <div className="space-y-8">
       <section className="grid gap-4 md:grid-cols-4">
-        <Kpi label="Pagos fiscalizados hoy" valor={formatARS(k.recaudacionHoy)} sub="Acreditación directa" />
-        <Kpi label="Digital con beneficio" valor={formatARS(k.digitalTotal)} sub="20% menos por app" />
-        <Kpi label="Efectivo auditado" valor={formatARS(k.cashTotal)} sub="Carga inmutable permisionario" acento="ambar" />
-        <Kpi label="Operaciones" valor={k.operaciones} sub={`Ticket promedio ${formatARS(k.ticketPromedio)}`} />
+        <Kpi label="Transado hoy" valor={formatARS(k.recaudacionHoy)} sub={`${k.operaciones} operaciones fiscalizadas`} />
+        <Kpi label="Acreditado a permisionarios" valor={formatARS(sp.permisionario)} sub={`${SPLIT.permisionarioPct}% · directo, sin liquidar`} />
+        <Kpi label="Plataforma (Nativos)" valor={formatARS(sp.plataforma)} sub={`${SPLIT.plataformaPct}% · sostén del sistema`} acento="ambar" />
+        <Kpi label="Al Municipio" valor="$0" sub="No maneja fondos: fiscaliza" acento="texto" />
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[1.1fr_.9fr]">
         <div>
-          <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-texto-tenue">Mapa de sectores</h2>
+          <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-texto-tenue">Mapa de sectores fiscalizados</h2>
           <MapaSectores sectores={datos.dashboard.porSector} />
         </div>
         <div>
-          <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-texto-tenue">Acreditado por permisionario</h2>
+          <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-texto-tenue">Acreditación por permisionario</h2>
           <Tarjeta>
             <div className="space-y-2">
               {datos.dashboard.porPermisionario.slice(0, 6).map((p, i) => (
@@ -29,7 +31,7 @@ export function SeccionInicio({ datos }: { datos: DatosBackoffice }) {
                     <span className="truncate">{p.fullName.replace(" (DEMO)", "")}</span>
                   </span>
                   <span className="text-texto-tenue">{p.ops} ops</span>
-                  <b className="text-cyan">{formatARS(p.total)}</b>
+                  <b className="text-cyan">{formatARS(desglosarPagado(p.total).permisionario)}</b>
                 </div>
               ))}
             </div>
@@ -44,9 +46,9 @@ export function SeccionInicio({ datos }: { datos: DatosBackoffice }) {
       <section>
         <Tarjeta titulo="Tesis comercial" accion={<Badge tono="cyan">Para el Municipio</Badge>}>
           <div className="grid gap-3 text-sm text-texto-tenue md:grid-cols-3">
-            <p><b className="text-texto">La plata no entra a rentas generales.</b> El pago digital se acredita directo al permisionario asociado al QR.</p>
-            <p><b className="text-texto">Beneficio completo al vecino.</b> Sin 10% para proveedor ni comisión municipal: el 20% se convierte en descuento por usar la app.</p>
-            <p><b className="text-texto">Control sin carga administrativa.</b> El Municipio ve comprobantes, sectores y operaciones en vivo sin transferirle a 800/900 personas por día.</p>
+            <p><b className="text-texto">El permisionario cobra al instante.</b> Su {SPLIT.permisionarioPct}% se acredita directo a su cuenta en cada pago digital — sin liquidar a cientos de personas ni pasar por rentas generales.</p>
+            <p><b className="text-texto">El Municipio no maneja fondos.</b> Resigna su 20% para dar beneficio al ciudadano y sostener la plataforma; gana modernización, trazabilidad y control online.</p>
+            <p><b className="text-texto">El ciudadano paga menos.</b> {SPLIT.descuentoCiudadanoPct}% de descuento por usar la app vs. el efectivo con talonario, con comprobante digital.</p>
           </div>
         </Tarjeta>
       </section>

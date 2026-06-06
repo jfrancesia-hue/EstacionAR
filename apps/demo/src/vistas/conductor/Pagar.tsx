@@ -4,7 +4,8 @@ import type { PermisionarioConSector, ResultadoPago } from "@estacionar/ui";
 import type { CalcularTarifaResult, VehicleType } from "@estacionar/core";
 import { clientLocal as client } from "../../store.js";
 import { imprimirComprobante, compartirComprobante } from "./comprobante.js";
-import { parseQR } from "../../qr.js";
+import { permisionarioIdDesdeQR } from "../../qr.js";
+import { acreditadoPermisionario } from "../../split.js";
 
 // El lector de QR (@zxing) se carga sólo al abrir el escáner: mantiene liviano el bundle inicial.
 const EscanerQR = lazy(() => import("./EscanerQR.js").then((m) => ({ default: m.EscanerQR })));
@@ -19,7 +20,7 @@ function SaltaMark() {
   );
 }
 
-export function SeccionPagar() {
+export function SeccionPagar({ qrId }: { qrId?: string }) {
   const [permisionarios, setPermisionarios] = useState<PermisionarioConSector[]>([]);
   const [perm, setPerm] = useState<PermisionarioConSector | null>(null);
   const [mostrarEscaner, setMostrarEscaner] = useState(false);
@@ -38,6 +39,14 @@ export function SeccionPagar() {
     client.getPermisionarios().then(setPermisionarios);
   }, []);
 
+  // Si entró por /pagar/:qrId, resolvemos el permisionario y salteamos el escaneo.
+  useEffect(() => {
+    if (!qrId || perm || !permisionarios.length) return;
+    const encontrado = permisionarios.find((p) => p.id === qrId);
+    if (encontrado) setPerm(encontrado);
+    else setAvisoQr("El QR no corresponde a un permisionario de EstacionAR.");
+  }, [qrId, permisionarios, perm]);
+
   useEffect(() => {
     let vigente = true;
     setCotizando(true);
@@ -52,8 +61,8 @@ export function SeccionPagar() {
 
   function resolverQr(texto: string) {
     setMostrarEscaner(false);
-    const parsed = parseQR(texto);
-    const encontrado = parsed && permisionarios.find((p) => p.id === parsed.permisionarioId);
+    const id = permisionarioIdDesdeQR(texto);
+    const encontrado = id && permisionarios.find((p) => p.id === id);
     if (!encontrado) {
       setAvisoQr("Ese QR no corresponde a un permisionario de EstacionAR.");
       return;
@@ -145,6 +154,7 @@ export function SeccionPagar() {
                 <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Patente</span><b className="rounded-lg bg-[#0067B1] px-2 py-1 tracking-widest text-white">{resultado.pago.plate}</b></div>
                 <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Vigencia</span><b className="text-right">{formatHora(resultado.sesion.startValid)} → {formatHora(resultado.sesion.endValid)}</b></div>
                 <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Tiempo total</span><b>{formatMinutos(resultado.sesion.paidMinutes)}</b></div>
+                <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Se acredita al permisionario</span><b className="text-emerald-600">{formatARS(acreditadoPermisionario(resultado.pago.amount))}</b></div>
                 <div className="flex items-end justify-between gap-4 border-t border-slate-200 pt-3 text-lg"><span className="text-slate-500">Pagaste</span><b className="text-2xl text-[#0067B1]">{formatARS(resultado.pago.amount)}</b></div>
               </div>
               <div className="mt-4 grid grid-cols-2 gap-2">
