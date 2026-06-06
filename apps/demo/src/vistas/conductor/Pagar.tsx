@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { Badge, Boton, Campo, Selector, Kpi, Tarjeta, formatARS, formatHora, formatMinutos } from "@estacionar/ui";
 import type { PermisionarioConSector, ResultadoPago } from "@estacionar/ui";
 import type { CalcularTarifaResult, VehicleType } from "@estacionar/core";
@@ -63,8 +63,12 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
         return;
       }
       const orden = await client.getOrdenEfectivo(oid);
-      if (orden && orden.status === "pending_cash_confirmation") setOrdenPendiente(orden);
-      else sessionStorage.removeItem("estacionar:orden");
+      if (orden && orden.status === "pending_cash_confirmation") {
+        setOrdenPendiente(orden);
+      } else {
+        sessionStorage.removeItem("estacionar:orden");
+        setError("Tu pago en efectivo en curso se canceló al recargar. Volvé a cargarlo.");
+      }
     })();
   }, []);
 
@@ -72,8 +76,9 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
   useEffect(() => {
     if (!qrId || perm || !permisionarios.length) return;
     const encontrado = permisionarios.find((p) => p.id === qrId);
-    if (encontrado) setPerm(encontrado);
-    else setAvisoQr("El QR no corresponde a un permisionario de EstacionAR.");
+    if (!encontrado) setAvisoQr("El QR no corresponde a un permisionario de EstacionAR.");
+    else if (encontrado.status !== "active") setAvisoQr("Ese permisionario no está habilitado para operar.");
+    else setPerm(encontrado);
   }, [qrId, permisionarios, perm]);
 
   useEffect(() => {
@@ -90,7 +95,7 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
 
   // Aviso suave (no bloqueo) si la patente tiene un excedente reciente sin regularizar (§17).
   useEffect(() => {
-    if (!plate || plate.length < 3) {
+    if (!esPatenteValida(plate)) {
       setAlertaExc(null);
       return;
     }
@@ -101,17 +106,24 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
     };
   }, [plate]);
 
-  function resolverQr(texto: string) {
-    setMostrarEscaner(false);
-    const id = permisionarioIdDesdeQR(texto);
-    const encontrado = id && permisionarios.find((p) => p.id === id);
-    if (!encontrado) {
-      setAvisoQr("Ese QR no corresponde a un permisionario de EstacionAR.");
-      return;
-    }
-    setAvisoQr(null);
-    setPerm(encontrado);
-  }
+  const resolverQr = useCallback(
+    (texto: string) => {
+      setMostrarEscaner(false);
+      const id = permisionarioIdDesdeQR(texto);
+      const encontrado = id ? permisionarios.find((p) => p.id === id) : undefined;
+      if (!encontrado) {
+        setAvisoQr("Ese QR no corresponde a un permisionario de EstacionAR.");
+        return;
+      }
+      if (encontrado.status !== "active") {
+        setAvisoQr(`El permisionario está ${encontrado.status} y no puede operar.`);
+        return;
+      }
+      setAvisoQr(null);
+      setPerm(encontrado);
+    },
+    [permisionarios],
+  );
 
   function simularEscaneo() {
     const activos = permisionarios.filter((p) => p.status === "active");

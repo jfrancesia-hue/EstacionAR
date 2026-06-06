@@ -294,6 +294,11 @@ export const clientLocal = {
     permisionarioId?: string | null;
     method?: "qr" | "mercadopago" | "modo" | "naranja" | "card";
   }): Promise<ResultadoPago> {
+    // Antifraude (§3.3): un permisionario suspendido/vencido no puede operar.
+    if (data.permisionarioId) {
+      const perm = store.permisionarios.find((p) => p.id === data.permisionarioId);
+      if (perm && perm.status !== "active") throw new Error(`El permisionario está ${perm.status} y no puede operar.`);
+    }
     const now = new Date().toISOString();
     const tarifa = seleccionarTarifaVigente(store.tarifas, data.vehicleType, now);
     if (!tarifa) throw new Error("No hay tarifa vigente.");

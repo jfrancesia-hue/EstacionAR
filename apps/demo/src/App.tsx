@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { Routes, Route, Navigate, Link, useNavigate, useParams } from "react-router-dom";
-import { Badge, Boton, Logo, MarcaDemo } from "@estacionar/ui";
+import { Badge, Boton, Cargando, Logo, MarcaDemo } from "@estacionar/ui";
 import { VistaHome } from "./vistas/Home.js";
 import { VistaLogin } from "./vistas/Login.js";
-import { VistaConductor } from "./vistas/Conductor.js";
-import { VistaPermisionario } from "./vistas/Permisionario.js";
-import { VistaBackoffice } from "./vistas/Backoffice.js";
 import { reiniciarDemo } from "./store.js";
 import { CUENTAS_DEMO, type Rol, type SesionDemo } from "./auth.js";
+
+// Code-splitting por rol: el ciudadano no descarga el código del permisionario ni del backoffice.
+const VistaConductor = lazy(() => import("./vistas/Conductor.js").then((m) => ({ default: m.VistaConductor })));
+const VistaPermisionario = lazy(() => import("./vistas/Permisionario.js").then((m) => ({ default: m.VistaPermisionario })));
+const VistaBackoffice = lazy(() => import("./vistas/Backoffice.js").then((m) => ({ default: m.VistaBackoffice })));
 
 const BANNER = "DEMO EstacionAR — datos de muestra · pagos simulados (en producción se integran Mercado Pago, MODO y Naranja X)";
 const RUTA_ROL: Record<Rol, string> = { conductor: "/pagar", permisionario: "/permisionario", admin: "/municipio" };
@@ -65,7 +67,9 @@ function CiudadanoRoute() {
     <>
       <HeaderPublico volver />
       <div id="contenido" tabIndex={-1}>
-        <VistaConductor qrId={qrId} />
+        <Suspense fallback={<Cargando texto="Cargando…" />}>
+          <VistaConductor qrId={qrId} />
+        </Suspense>
       </div>
     </>
   );
@@ -99,7 +103,9 @@ function RutaRol({
     <>
       <HeaderLogueado sesion={sesion} onReiniciar={onReiniciar} onCerrar={() => { onCerrar(); navigate("/"); }} />
       <div id="contenido" tabIndex={-1}>
-        {rol === "permisionario" ? <VistaPermisionario /> : <VistaBackoffice />}
+        <Suspense fallback={<Cargando texto="Cargando…" />}>
+          {rol === "permisionario" ? <VistaPermisionario /> : <VistaBackoffice />}
+        </Suspense>
       </div>
     </>
   );
@@ -123,6 +129,7 @@ export default function App() {
   }
   const reiniciar = () => {
     reiniciarDemo();
+    sessionStorage.removeItem("estacionar:orden");
     setVersion((v) => v + 1);
   };
 

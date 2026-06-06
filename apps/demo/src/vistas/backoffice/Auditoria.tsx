@@ -94,5 +94,5 @@ export function SeccionAuditoria({ datos }: { datos: DatosBackoffice }) {
 function resumenPayload(payload: Record<string, unknown>): string {
   const entries = Object.entries(payload).slice(0, 3);
   if (entries.length === 0) return "";
-  return entries.map(([k, v]) => `${k}: ${String(v)}`).join("  ·  ");
+  return entries.map(([k, v]) => `${k}: ${v !== null && typeof v === "object" ? JSON.stringify(v) : String(v)}`).join("  ·  ");
 }

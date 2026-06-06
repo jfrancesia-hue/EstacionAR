@@ -24,6 +24,8 @@ export function EscanerQR({ onDetectar, onCerrar }: { onDetectar: (texto: string
             }
           },
         );
+        // Si se desmontó o ya detectó mientras esperábamos el await, frenamos la cámara.
+        if (!activo) controls.stop();
       } catch {
         setError("No pudimos acceder a la cámara. Usá “Simular escaneo”.");
       }

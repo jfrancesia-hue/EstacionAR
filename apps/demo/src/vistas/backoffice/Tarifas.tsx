@@ -5,6 +5,12 @@ import type { Tarifa } from "@estacionar/core";
 import type { DatosBackoffice } from "./tipos.js";
 import { SPLIT } from "../../split.js";
 
+// Parseo seguro de inputs numéricos: nunca NaN, clampeado a [0, max].
+function num(v: string, max = Number.MAX_SAFE_INTEGER): number {
+  const n = Number(v);
+  return Number.isFinite(n) ? Math.min(max, Math.max(0, n)) : 0;
+}
+
 function EditorTarifa({ tarifa, onGuardar }: { tarifa: Tarifa; onGuardar: () => void }) {
   const [first, setFirst] = useState(tarifa.firstUnitAmount);
   const [next, setNext] = useState(tarifa.nextUnitAmount);
@@ -29,9 +35,9 @@ function EditorTarifa({ tarifa, onGuardar }: { tarifa: Tarifa; onGuardar: () => 
       accion={<Badge tono="cyan">Fracción {formatMinutos(tarifa.minUnitMinutes)}</Badge>}
     >
       <div className="grid gap-3 sm:grid-cols-3">
-        <Campo label="Primera hora ($)" type="number" min={0} value={first} onChange={(e) => setFirst(Number(e.target.value))} />
-        <Campo label="Fracción adic. ($)" type="number" min={0} value={next} onChange={(e) => setNext(Number(e.target.value))} />
-        <Campo label="Beneficio app (%)" type="number" min={0} max={100} value={desc} onChange={(e) => setDesc(Number(e.target.value))} />
+        <Campo label="Primera hora ($)" type="number" min={0} value={first} onChange={(e) => setFirst(num(e.target.value))} />
+        <Campo label="Fracción adic. ($)" type="number" min={0} value={next} onChange={(e) => setNext(num(e.target.value))} />
+        <Campo label="Beneficio app (%)" type="number" min={0} max={100} value={desc} onChange={(e) => setDesc(num(e.target.value, 100))} />
       </div>
       <div className="mt-4 flex items-center justify-between gap-3">
         <p className="text-xs text-texto-tenue">
