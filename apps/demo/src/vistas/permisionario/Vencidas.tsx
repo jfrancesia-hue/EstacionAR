@@ -11,15 +11,21 @@ function ItemVencida({ item, permId, onCambio }: { item: VencidaItem; permId: st
 
   async function cobrar(metodo: "digital" | "cash") {
     setProc(metodo);
-    await client.cobrarExcedente({ sesionId: item.sesion.id, minutes, metodo, permisionarioId: permId });
-    setProc(null);
-    onCambio();
+    try {
+      await client.cobrarExcedente({ sesionId: item.sesion.id, minutes, metodo, permisionarioId: permId });
+      onCambio();
+    } finally {
+      setProc(null);
+    }
   }
   async function noPago() {
     setProc("nopago");
-    await client.marcarExcedenteNoPagado({ sesionId: item.sesion.id, permisionarioId: permId });
-    setProc(null);
-    onCambio();
+    try {
+      await client.marcarExcedenteNoPagado({ sesionId: item.sesion.id, permisionarioId: permId });
+      onCambio();
+    } finally {
+      setProc(null);
+    }
   }
 
   return (

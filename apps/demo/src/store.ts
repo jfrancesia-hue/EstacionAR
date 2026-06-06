@@ -596,6 +596,7 @@ export const clientLocal = {
     pago: Pago | null;
     alerta: AlertaExcedente | null;
     minutosExcedidos: number;
+    toleranceMinutes: number;
   }> {
     const p = normalizarPatente(plate);
     const ahora = new Date().getTime();
@@ -603,13 +604,13 @@ export const clientLocal = {
     const ses = store.sesiones
       .filter((s) => s.plate === p && s.status === "active")
       .sort((a, b) => b.endValid.localeCompare(a.endValid))[0] ?? null;
-    if (!ses) return { plate: p, estado: "sin_sesion", sesion: null, permisionario: null, sector: null, pago: null, alerta, minutosExcedidos: 0 };
+    if (!ses) return { plate: p, estado: "sin_sesion", sesion: null, permisionario: null, sector: null, pago: null, alerta, minutosExcedidos: 0, toleranceMinutes: store.config.toleranceMinutes };
     const pago = store.pagos.filter((x) => x.sesionId === ses.id).sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0] ?? null;
     const permisionario = pago?.permisionarioId ? store.permisionarios.find((x) => x.id === pago.permisionarioId) ?? null : null;
     const sector = ses.originSectorId ? store.sectores.find((x) => x.id === ses.originSectorId) ?? null : null;
     const estado = estadoDeSesion(ses, ahora);
     const minutosExcedidos = estado === "vencida" ? Math.floor((ahora - new Date(ses.endValid).getTime()) / 60000) : 0;
-    return { plate: p, estado, sesion: ses, permisionario, sector, pago, alerta, minutosExcedidos };
+    return { plate: p, estado, sesion: ses, permisionario, sector, pago, alerta, minutosExcedidos, toleranceMinutes: store.config.toleranceMinutes };
   },
 
   async getSesionesVencidas(permisionarioId?: string): Promise<Array<{ sesion: Sesion; permisionarioId: string | null; sectorName: string | null; minutosExcedidos: number }>> {

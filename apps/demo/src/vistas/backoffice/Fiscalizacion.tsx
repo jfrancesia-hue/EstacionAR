@@ -57,7 +57,7 @@ export function SeccionFiscalizacion() {
               <div className="grid gap-4 sm:grid-cols-3">
                 <Kpi label="Vigencia" valor={res.sesion ? `${formatHora(res.sesion.startValid)}–${formatHora(res.sesion.endValid)}` : "—"} acento="texto" />
                 <Kpi label={res.estado === "vencida" ? "Excedido" : "Restante"} valor={res.estado === "vencida" ? formatMinutos(res.minutosExcedidos) : res.sesion ? formatMinutos(Math.max(0, Math.round((new Date(res.sesion.endValid).getTime() - Date.now()) / 60000))) : "—"} acento={res.estado === "vencida" ? "ambar" : "cyan"} />
-                <Kpi label="Tolerancia" valor={formatMinutos(5)} acento="texto" />
+                <Kpi label="Tolerancia" valor={formatMinutos(res.toleranceMinutes)} acento="texto" />
               </div>
               <div className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
                 <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Permisionario</p><b>{res.permisionario?.fullName.replace(" (DEMO)", "") ?? "—"}</b></div>

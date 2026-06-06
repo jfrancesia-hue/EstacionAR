@@ -4,18 +4,44 @@ import type { DatosBackoffice } from "./tipos.js";
 
 const ETIQUETA_ACCION: Record<string, string> = {
   pago_digital: "Pago digital",
-  pago_efectivo: "Pago efectivo",
+  efectivo_confirmado: "Efectivo confirmado",
+  orden_efectivo_creada: "Efectivo iniciado",
+  orden_efectivo_cancelada: "Efectivo cancelado",
+  deuda_pagada: "Deuda saldada",
+  excedente_cobrado: "Excedente cobrado",
+  excedente_no_pagado: "Excedente no pagado",
+  valoracion: "Valoración ciudadana",
   tarifa_update: "Cambio de tarifa",
   permisionario_update: "ABM permisionario",
+  permisionario_alta: "Alta de permisionario",
+  permisionarios_importados: "Importación de padrón",
+  permisionario_approved: "Permisionario aprobado",
+  permisionario_observed: "Permisionario observado",
+  permisionario_rejected: "Permisionario rechazado",
   config_update: "Cambio de config",
+  incidencia_create: "Incidencia creada",
+  incidencia_update: "Incidencia actualizada",
 };
 
-const TONO_ACCION: Record<string, "ok" | "alerta" | "cyan" | "neutro"> = {
+const TONO_ACCION: Record<string, "ok" | "alerta" | "cyan" | "neutro" | "error"> = {
   pago_digital: "cyan",
-  pago_efectivo: "alerta",
+  efectivo_confirmado: "alerta",
+  orden_efectivo_creada: "neutro",
+  orden_efectivo_cancelada: "neutro",
+  deuda_pagada: "ok",
+  excedente_cobrado: "alerta",
+  excedente_no_pagado: "error",
+  valoracion: "ok",
   tarifa_update: "ok",
   permisionario_update: "neutro",
+  permisionario_alta: "cyan",
+  permisionarios_importados: "cyan",
+  permisionario_approved: "ok",
+  permisionario_observed: "alerta",
+  permisionario_rejected: "error",
   config_update: "neutro",
+  incidencia_create: "alerta",
+  incidencia_update: "neutro",
 };
 
 export function SeccionAuditoria({ datos }: { datos: DatosBackoffice }) {

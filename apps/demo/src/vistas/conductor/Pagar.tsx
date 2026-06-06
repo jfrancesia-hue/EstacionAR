@@ -5,7 +5,7 @@ import type { CalcularTarifaResult, VehicleType } from "@estacionar/core";
 import { clientLocal as client, type OrdenEfectivo, type AlertaExcedente } from "../../store.js";
 import { imprimirComprobante, compartirComprobante } from "./comprobante.js";
 import { permisionarioIdDesdeQR } from "../../qr.js";
-import { acreditadoPermisionario } from "../../split.js";
+import { acreditadoPermisionario, SPLIT } from "../../split.js";
 
 // El lector de QR (@zxing) se carga sólo al abrir el escáner: mantiene liviano el bundle inicial.
 const EscanerQR = lazy(() => import("./EscanerQR.js").then((m) => ({ default: m.EscanerQR })));
@@ -174,12 +174,12 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
           Pagá tu estacionamiento en segundos.
         </h1>
         <p className="mt-4 max-w-xl text-base leading-relaxed text-texto-tenue sm:text-lg">
-          Escaneás el QR del permisionario, ingresás tu patente y pagás con 10% de beneficio por usar la app. Si te movés de sector, no volvés a pagar.
+          Escaneás el QR del permisionario, ingresás tu patente y pagás con {SPLIT.descuentoCiudadanoPct}% de beneficio por usar la app. Si te movés de sector, no volvés a pagar.
         </p>
         <div className="mt-8 grid gap-3 sm:grid-cols-3">
           <Kpi label="Patente" valor={plate || "—"} />
           <Kpi label="Tiempo" valor={formatMinutos(minutes)} />
-          <Kpi label="Precio app" valor={cotizando ? "…" : formatARS(monto)} acento="ambar" sub="10% menos" />
+          <Kpi label="Precio app" valor={cotizando ? "…" : formatARS(monto)} acento="ambar" sub={`${SPLIT.descuentoCiudadanoPct}% menos`} />
         </div>
         <div className="mt-6 grid gap-3 rounded-3xl border border-cyan/15 bg-cyan/10 p-4 text-sm text-cyan-300 sm:grid-cols-3">
           <span>1. Escaneá QR</span>

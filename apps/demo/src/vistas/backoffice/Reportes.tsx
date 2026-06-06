@@ -41,7 +41,7 @@ export function SeccionReportes({ datos }: { datos: DatosBackoffice }) {
     <div className="space-y-6">
       <section className="grid gap-4 md:grid-cols-3">
         <Kpi label="Pagos fiscalizados del mes" valor={formatARS(k.recaudacionMes)} />
-        <Kpi label="Acreditado total" valor={formatARS(k.recaudacionTotal)} acento="ambar" />
+        <Kpi label="Transado total" valor={formatARS(k.recaudacionTotal)} acento="ambar" sub="volumen fiscalizado" />
         <Kpi label="Ticket promedio" valor={formatARS(k.ticketPromedio)} acento="texto" />
       </section>
 

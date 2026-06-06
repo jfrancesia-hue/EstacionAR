@@ -15,24 +15,33 @@ export function SeccionRegistrarEfectivo({ datos, onCambio }: { datos: DatosPerm
 
   async function confirmar(ordenId: string) {
     setProcesando(ordenId);
-    await client.confirmarEfectivo(ordenId);
-    setProcesando(null);
-    setAviso("Efectivo confirmado: tiempo activado y comprobante emitido.");
-    onCambio();
+    try {
+      await client.confirmarEfectivo(ordenId);
+      setAviso("Efectivo confirmado: tiempo activado y comprobante emitido.");
+      onCambio();
+    } finally {
+      setProcesando(null);
+    }
   }
   async function cancelar(ordenId: string) {
     setProcesando(ordenId);
-    await client.cancelarOrdenEfectivo(ordenId);
-    setProcesando(null);
-    onCambio();
+    try {
+      await client.cancelarOrdenEfectivo(ordenId);
+      onCambio();
+    } finally {
+      setProcesando(null);
+    }
   }
   async function registrarManual() {
     setProcesando("manual");
-    const orden = await client.crearOrdenEfectivo({ plate, vehicleType, minutes, permisionarioId: datos.perm.id });
-    await client.confirmarEfectivo(orden.id);
-    setProcesando(null);
-    setAviso(`Efectivo registrado: ${plate}`);
-    onCambio();
+    try {
+      const orden = await client.crearOrdenEfectivo({ plate, vehicleType, minutes, permisionarioId: datos.perm.id });
+      await client.confirmarEfectivo(orden.id);
+      setAviso(`Efectivo registrado: ${plate}`);
+      onCambio();
+    } finally {
+      setProcesando(null);
+    }
   }
 
   return (

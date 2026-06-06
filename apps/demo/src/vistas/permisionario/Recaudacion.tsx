@@ -17,18 +17,21 @@ export function SeccionRecaudacion({ datos, onCambio }: { datos: DatosPermisiona
 
   async function pagarDeuda() {
     setPagando(true);
-    const { pagado } = await client.pagarDeuda(datos.perm.id);
-    setPagando(false);
-    setAviso(`Deuda saldada: ${formatARS(pagado)}. ¡Gracias!`);
-    onCambio();
+    try {
+      const { pagado } = await client.pagarDeuda(datos.perm.id);
+      setAviso(`Deuda saldada: ${formatARS(pagado)}. ¡Gracias!`);
+      onCambio();
+    } finally {
+      setPagando(false);
+    }
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <Badge tono="cyan">Acreditado a tu cuenta hoy</Badge>
+        <Badge tono="cyan">Tu dinero de hoy</Badge>
         <h1 className="mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">{formatARS(totalTuyo)}</h1>
-        <p className="mt-2 text-texto-tenue">{r.count} operaciones · acreditación directa, sin esperar liquidación del Municipio.</p>
+        <p className="mt-2 text-texto-tenue">{r.count} operaciones · el digital se acredita directo a tu cuenta (80%); el efectivo lo cobrás en mano.</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
