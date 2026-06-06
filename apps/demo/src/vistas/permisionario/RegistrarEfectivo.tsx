@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Boton, Campo, Selector, Tarjeta, formatARS, formatMinutos } from "@estacionar/ui";
+import { Boton, Campo, Selector, Tarjeta, formatARS, formatHora, formatMinutos } from "@estacionar/ui";
 import type { VehicleType } from "@estacionar/core";
 import { clientLocal as client } from "../../store.js";
 import type { DatosPermisionario } from "./tipos.js";
@@ -10,36 +10,68 @@ export function SeccionRegistrarEfectivo({ datos, onCambio }: { datos: DatosPerm
   const [plate, setPlate] = useState("AC456DE");
   const [vehicleType, setVehicleType] = useState<VehicleType>("auto");
   const [minutes, setMinutes] = useState(60);
-  const [registrando, setRegistrando] = useState(false);
+  const [procesando, setProcesando] = useState<string | null>(null);
   const [aviso, setAviso] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
-  async function registrar() {
-    setError(null);
-    setAviso(null);
-    setRegistrando(true);
-    try {
-      // idempotencyKey única por operación: antiduplicidad (registro inmutable).
-      const idempotencyKey = `ef-${datos.perm.id}-${plate}-${minutes}-${crypto.randomUUID()}`;
-      const r = await client.pagarEfectivo({ plate, vehicleType, minutes, permisionarioId: datos.perm.id, idempotencyKey });
-      setAviso(r.duplicado ? "Operación ya registrada (antiduplicidad)." : `Efectivo registrado: ${formatARS(r.pago.amount)} · ${r.pago.plate}`);
-      onCambio();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "No se pudo registrar el efectivo.");
-    } finally {
-      setRegistrando(false);
-    }
+  async function confirmar(ordenId: string) {
+    setProcesando(ordenId);
+    await client.confirmarEfectivo(ordenId);
+    setProcesando(null);
+    setAviso("Efectivo confirmado: tiempo activado y comprobante emitido.");
+    onCambio();
+  }
+  async function cancelar(ordenId: string) {
+    setProcesando(ordenId);
+    await client.cancelarOrdenEfectivo(ordenId);
+    setProcesando(null);
+    onCambio();
+  }
+  async function registrarManual() {
+    setProcesando("manual");
+    const orden = await client.crearOrdenEfectivo({ plate, vehicleType, minutes, permisionarioId: datos.perm.id });
+    await client.confirmarEfectivo(orden.id);
+    setProcesando(null);
+    setAviso(`Efectivo registrado: ${plate}`);
+    onCambio();
   }
 
   return (
-    <div className="mx-auto max-w-xl space-y-4">
+    <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-extrabold tracking-tight">Registrar efectivo</h1>
-        <p className="mt-2 text-texto-tenue">En 2-3 toques. El registro es inmutable, queda con sello de tiempo y no se puede duplicar.</p>
+        <h1 className="text-3xl font-extrabold tracking-tight">Efectivo</h1>
+        <p className="mt-2 text-texto-tenue">
+          Confirmá los pagos en efectivo que te marcan los ciudadanos. Recién al confirmar se activa el tiempo y se emite el comprobante.
+        </p>
       </div>
-      <Tarjeta>
+
+      <Tarjeta titulo={`Pendientes de confirmar (${datos.ordenesPendientes.length})`}>
+        {datos.ordenesPendientes.length === 0 ? (
+          <p className="py-4 text-center text-sm text-texto-tenue">
+            No tenés efectivos pendientes. Cuando un ciudadano elija “Efectivo” en su pago, aparece acá para que confirmes.
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {datos.ordenesPendientes.map((o) => (
+              <div key={o.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-ambar/30 bg-ambar/10 p-3">
+                <div>
+                  <p className="font-mono font-bold">{o.plate}</p>
+                  <p className="text-xs text-texto-tenue">{formatMinutos(o.minutes)} · {formatHora(o.createdAt)}</p>
+                </div>
+                <b className="text-lg">{formatARS(o.amount)}</b>
+                <div className="flex gap-2">
+                  <Boton variante="fantasma" onClick={() => cancelar(o.id)} cargando={procesando === o.id}>Cancelar</Boton>
+                  <Boton variante="ambar" onClick={() => confirmar(o.id)} cargando={procesando === o.id}>Efectivo recibido</Boton>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </Tarjeta>
+
+      <Tarjeta titulo="Registrar efectivo manual">
+        <p className="mb-3 text-xs text-texto-tenue">Si cobraste un efectivo sin que el ciudadano lo cargue desde la app, registralo acá.</p>
         <div className="space-y-3">
-          <Campo label="Patente del vehículo" value={plate} onChange={(e) => setPlate(e.target.value.toUpperCase())} placeholder="AC456DE" />
+          <Campo label="Patente" value={plate} onChange={(e) => setPlate(e.target.value.toUpperCase())} placeholder="AC456DE" />
           <div className="grid grid-cols-2 gap-3">
             <Selector label="Vehículo" value={vehicleType} onChange={(e) => setVehicleType(e.target.value as VehicleType)}>
               <option value="auto">Auto</option>
@@ -50,15 +82,17 @@ export function SeccionRegistrarEfectivo({ datos, onCambio }: { datos: DatosPerm
             </Selector>
           </div>
         </div>
-        <Boton className="mt-5 w-full" variante="ambar" grande onClick={registrar} cargando={registrando} disabled={!plate}>
-          Cargá el pago en efectivo
+        <Boton className="mt-4 w-full" variante="secundario" onClick={registrarManual} cargando={procesando === "manual"} disabled={!plate}>
+          Registrar y confirmar
         </Boton>
-        {aviso && <p className="mt-3 rounded-xl bg-emerald-500/15 px-3 py-2 text-sm text-emerald-300">{aviso}</p>}
-        {error && <p className="mt-3 rounded-xl bg-red-500/15 px-3 py-2 text-sm text-red-300">{error}</p>}
       </Tarjeta>
-      <p className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-texto-tenue">
-        El efectivo se carga sin descuento digital y crea/extiende la sesión por patente igual que el pago digital.
-      </p>
+
+      {aviso && <p className="rounded-xl bg-emerald-500/15 px-3 py-2 text-sm text-emerald-300">{aviso}</p>}
+
+      <div className="rounded-2xl border border-ambar/20 bg-ambar/10 p-4 text-sm text-ambar-400">
+        Cada efectivo confirmado suma una <b>deuda de plataforma del 10%</b> (lo que en el pago digital se descuenta solo).
+        La ves y la pagás desde “Recaudación”.
+      </div>
     </div>
   );
 }

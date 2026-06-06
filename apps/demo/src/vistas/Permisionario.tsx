@@ -10,7 +10,7 @@ import { SeccionPerfil } from "./permisionario/Perfil.js";
 
 const PESTANAS: Array<{ id: PestanaPerm; label: string }> = [
   { id: "recaudacion", label: "Recaudación" },
-  { id: "efectivo", label: "Registrar efectivo" },
+  { id: "efectivo", label: "Efectivo" },
   { id: "movimientos", label: "Movimientos" },
   { id: "incidencias", label: "Incidencias" },
   { id: "perfil", label: "Mi credencial" },
@@ -25,12 +25,14 @@ export function VistaPermisionario() {
     const permisionarios = await client.getPermisionarios();
     const perm = permisionarios.find((p) => p.status === "active") ?? permisionarios[0];
     if (!perm) return;
-    const [recaudacion, movimientos, incidencias] = await Promise.all([
+    const [recaudacion, movimientos, incidencias, ordenesPendientes, deuda] = await Promise.all([
       client.getRecaudacionHoy(perm.id),
       client.getMovimientos(perm.id),
       client.getIncidencias(perm.id),
+      client.getOrdenesEfectivoPendientes(perm.id),
+      client.getDeuda(perm.id),
     ]);
-    setDatos({ perm, recaudacion, movimientos, incidencias });
+    setDatos({ perm, recaudacion, movimientos, incidencias, ordenesPendientes, deuda });
     setCargando(false);
   }
 
@@ -66,11 +68,14 @@ export function VistaPermisionario() {
             }`}
           >
             {p.label}
+            {p.id === "efectivo" && datos.ordenesPendientes.length > 0 && (
+              <span className="ml-2 rounded-full bg-ambar px-1.5 text-[10px] font-black text-nocturno">{datos.ordenesPendientes.length}</span>
+            )}
           </button>
         ))}
       </nav>
 
-      {pestana === "recaudacion" && <SeccionRecaudacion datos={datos} />}
+      {pestana === "recaudacion" && <SeccionRecaudacion datos={datos} onCambio={cargar} />}
       {pestana === "efectivo" && <SeccionRegistrarEfectivo datos={datos} onCambio={cargar} />}
       {pestana === "movimientos" && <SeccionMovimientos datos={datos} />}
       {pestana === "incidencias" && <SeccionIncidencias datos={datos} onCambio={cargar} />}

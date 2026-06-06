@@ -24,7 +24,34 @@ import {
   type VehicleType,
 } from "@estacionar/core";
 import type { Dashboard, PermisionarioConSector, ResultadoPago } from "@estacionar/ui";
-import { SPLIT } from "./split.js";
+import { SPLIT, comisionPlataforma } from "./split.js";
+
+// Efectivo registrado (PRODUCTO.md §9): el ciudadano elige efectivo → orden pendiente;
+// el permisionario confirma "recibido" → se activa el tiempo y se genera comprobante + deuda.
+export type EstadoOrdenEfectivo = "pending_cash_confirmation" | "cash_confirmed" | "cash_cancelled";
+export interface OrdenEfectivo {
+  id: string;
+  permisionarioId: string;
+  plate: string;
+  vehicleType: VehicleType;
+  minutes: number;
+  amount: number; // lo que paga el ciudadano (con descuento app)
+  sectorId: string | null;
+  status: EstadoOrdenEfectivo;
+  createdAt: string;
+}
+
+// Deuda del permisionario hacia la plataforma (Nativos) por la comisión del efectivo (§10).
+export type EstadoDeuda = "pending" | "paid";
+export interface MovimientoDeuda {
+  id: string;
+  permisionarioId: string;
+  ordenId: string;
+  plate: string;
+  amount: number; // 10% que el permisionario debe a la plataforma
+  status: EstadoDeuda;
+  createdAt: string;
+}
 
 interface Store {
   config: ConfigSistema;
@@ -35,6 +62,8 @@ interface Store {
   pagos: Pago[];
   valoraciones: Valoracion[];
   incidencias: Incidencia[];
+  ordenesEfectivo: OrdenEfectivo[];
+  deudas: MovimientoDeuda[];
   auditoria: AuditoriaEntry[];
   idempotencyKeys: Set<string>;
 }
@@ -72,6 +101,8 @@ function init(): Store {
     pagos: seed.pagos.map((p) => ({ ...p })),
     valoraciones: seed.valoraciones,
     incidencias,
+    ordenesEfectivo: [],
+    deudas: [],
     auditoria: [],
     idempotencyKeys: new Set(),
   };
@@ -349,6 +380,132 @@ export const clientLocal = {
     inc.status = status;
     audit("incidencia_update", "incidencia", id, { status });
     return inc;
+  },
+
+  // ── Efectivo registrado con confirmación + deuda (PRODUCTO.md §9/§10) ──────────
+  async crearOrdenEfectivo(data: {
+    plate: string;
+    vehicleType: VehicleType;
+    minutes: number;
+    permisionarioId: string;
+    sectorId?: string | null;
+  }): Promise<OrdenEfectivo> {
+    const perm = store.permisionarios.find((p) => p.id === data.permisionarioId);
+    if (!perm) throw new Error("Permisionario inexistente.");
+    if (perm.status !== "active") throw new Error(`El permisionario está ${perm.status}.`);
+    const now = new Date().toISOString();
+    const tarifa = seleccionarTarifaVigente(store.tarifas, data.vehicleType, now);
+    if (!tarifa) throw new Error("No hay tarifa vigente.");
+    // Efectivo vía app: mismo descuento que digital (beneficio por usar la app).
+    const calc = calcularTarifa({ vehicleType: data.vehicleType, minutes: data.minutes, isDigital: true, date: now, tarifa, feriados: store.config.feriados });
+    const orden: OrdenEfectivo = {
+      id: newId("orden"),
+      permisionarioId: perm.id,
+      plate: normalizarPatente(data.plate),
+      vehicleType: data.vehicleType,
+      minutes: data.minutes,
+      amount: calc.amount,
+      sectorId: data.sectorId ?? perm.sectorId,
+      status: "pending_cash_confirmation",
+      createdAt: now,
+    };
+    store.ordenesEfectivo.unshift(orden);
+    audit("orden_efectivo_creada", "orden_efectivo", orden.id, { plate: orden.plate, amount: orden.amount });
+    return orden;
+  },
+
+  async getOrdenesEfectivoPendientes(permisionarioId: string): Promise<OrdenEfectivo[]> {
+    return store.ordenesEfectivo.filter((o) => o.permisionarioId === permisionarioId && o.status === "pending_cash_confirmation");
+  },
+
+  async getOrdenEfectivo(ordenId: string): Promise<OrdenEfectivo | null> {
+    return store.ordenesEfectivo.find((o) => o.id === ordenId) ?? null;
+  },
+
+  /** Comprobante de una orden de efectivo ya confirmada (para el ciudadano). */
+  async getResultadoOrden(ordenId: string): Promise<ResultadoPago | null> {
+    const pago = store.pagos.find((p) => p.idempotencyKey === ordenId);
+    if (!pago) return null;
+    const sesion = store.sesiones.find((s) => s.id === pago.sesionId);
+    if (!sesion) return null;
+    const tarifa = store.tarifas.find((t) => t.id === sesion.tarifaId) ?? store.tarifas[0]!;
+    const calc = calcularTarifa({ vehicleType: sesion.vehicleType, minutes: sesion.paidMinutes, isDigital: true, date: pago.createdAt, tarifa, feriados: store.config.feriados });
+    return { sesion, pago, calc, extended: false };
+  },
+
+  async confirmarEfectivo(ordenId: string): Promise<ResultadoPago> {
+    const orden = store.ordenesEfectivo.find((o) => o.id === ordenId);
+    if (!orden) throw new Error("Orden inexistente.");
+    if (orden.status !== "pending_cash_confirmation") throw new Error("La orden ya fue procesada.");
+    const now = new Date().toISOString();
+    const tarifa = store.tarifas.find((t) => t.vehicleType === orden.vehicleType) ?? store.tarifas[0]!;
+    const { sesion, extended } = crearOExtenderSesion(store.sesiones, {
+      plate: orden.plate,
+      minutes: orden.minutes,
+      vehicleType: orden.vehicleType,
+      tarifaId: tarifa.id,
+      amount: orden.amount,
+      sectorId: orden.sectorId,
+      now,
+      toleranceMinutes: store.config.toleranceMinutes,
+      newId: () => newId("ses"),
+    });
+    if (!extended) store.sesiones.push(sesion);
+
+    const pago: Pago = {
+      id: newId("pago"),
+      sesionId: sesion.id,
+      method: "cash",
+      amount: orden.amount,
+      status: "approved",
+      externalRef: null,
+      receiptUrl: null,
+      registeredBy: orden.permisionarioId,
+      permisionarioId: orden.permisionarioId,
+      plate: orden.plate,
+      sectorId: orden.sectorId,
+      idempotencyKey: orden.id,
+      createdAt: now,
+    };
+    store.pagos.push(pago);
+    orden.status = "cash_confirmed";
+
+    // Genera deuda del permisionario hacia la plataforma por la comisión (10%).
+    const comision = comisionPlataforma(orden.amount);
+    store.deudas.unshift({
+      id: newId("deuda"),
+      permisionarioId: orden.permisionarioId,
+      ordenId: orden.id,
+      plate: orden.plate,
+      amount: comision,
+      status: "pending",
+      createdAt: now,
+    });
+    audit("efectivo_confirmado", "pago", pago.id, { plate: pago.plate, amount: pago.amount, comision });
+    const calc = calcularTarifa({ vehicleType: orden.vehicleType, minutes: orden.minutes, isDigital: true, date: now, tarifa, feriados: store.config.feriados });
+    return { sesion, pago, calc, extended };
+  },
+
+  async cancelarOrdenEfectivo(ordenId: string): Promise<void> {
+    const orden = store.ordenesEfectivo.find((o) => o.id === ordenId);
+    if (orden && orden.status === "pending_cash_confirmation") {
+      orden.status = "cash_cancelled";
+      audit("orden_efectivo_cancelada", "orden_efectivo", orden.id, {});
+    }
+  },
+
+  async getDeuda(permisionarioId: string): Promise<{ total: number; movimientos: MovimientoDeuda[] }> {
+    const movimientos = store.deudas.filter((d) => d.permisionarioId === permisionarioId);
+    const total = movimientos.filter((d) => d.status === "pending").reduce((a, d) => a + d.amount, 0);
+    return { total, movimientos };
+  },
+
+  async pagarDeuda(permisionarioId: string): Promise<{ pagado: number }> {
+    const pendientes = store.deudas.filter((d) => d.permisionarioId === permisionarioId && d.status === "pending");
+    const pagado = pendientes.reduce((a, d) => a + d.amount, 0);
+    pendientes.forEach((d) => (d.status = "paid"));
+    audit("deuda_pagada", "deuda", permisionarioId, { pagado, operaciones: pendientes.length });
+    return { pagado };
   },
 
   async getDashboard(): Promise<Dashboard> {

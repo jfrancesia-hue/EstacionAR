@@ -1,12 +1,27 @@
-import { Badge, Kpi, Tarjeta, formatARS } from "@estacionar/ui";
+import { useState } from "react";
+import { Badge, Boton, Kpi, Tarjeta, formatARS } from "@estacionar/ui";
 import { acreditadoPermisionario, SPLIT } from "../../split.js";
+import { clientLocal as client } from "../../store.js";
 import type { DatosPermisionario } from "./tipos.js";
 
-export function SeccionRecaudacion({ datos }: { datos: DatosPermisionario }) {
-  const { recaudacion: r } = datos;
-  // El permisionario recibe el 80% de cada pago digital, acreditado directo. El efectivo lo cobra en mano.
+// Umbrales de deuda (configurables). Sobre el crítico, el Municipio podría restringir nuevos efectivos.
+const DEUDA_AVISO = 2000;
+const DEUDA_CRITICA = 5000;
+
+export function SeccionRecaudacion({ datos, onCambio }: { datos: DatosPermisionario; onCambio: () => void }) {
+  const { recaudacion: r, deuda } = datos;
   const acreditadoDigital = acreditadoPermisionario(r.digital);
   const totalTuyo = acreditadoDigital + r.cash;
+  const [pagando, setPagando] = useState(false);
+  const [aviso, setAviso] = useState<string | null>(null);
+
+  async function pagarDeuda() {
+    setPagando(true);
+    const { pagado } = await client.pagarDeuda(datos.perm.id);
+    setPagando(false);
+    setAviso(`Deuda saldada: ${formatARS(pagado)}. ¡Gracias!`);
+    onCambio();
+  }
 
   return (
     <div className="space-y-6">
@@ -21,6 +36,28 @@ export function SeccionRecaudacion({ datos }: { datos: DatosPermisionario }) {
         <Kpi label="Efectivo en mano" valor={formatARS(r.cash)} acento="ambar" sub="genera deuda de plataforma" />
         <Kpi label="Operaciones" valor={r.count} acento="texto" />
       </div>
+
+      {/* Deuda de plataforma (comisión del efectivo) */}
+      <Tarjeta titulo="Deuda de plataforma" accion={deuda.total > 0 ? <Badge tono={deuda.total >= DEUDA_CRITICA ? "error" : deuda.total >= DEUDA_AVISO ? "alerta" : "cyan"}>{deuda.total >= DEUDA_AVISO ? "A regularizar" : "Al día"}</Badge> : <Badge tono="ok">Sin deuda</Badge>}>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-3xl font-extrabold">{formatARS(deuda.total)}</p>
+            <p className="text-xs text-texto-tenue">10% de cada efectivo confirmado · lo que en digital se descuenta solo.</p>
+          </div>
+          <Boton variante="primario" onClick={pagarDeuda} cargando={pagando} disabled={deuda.total <= 0}>Pagar deuda</Boton>
+        </div>
+        {deuda.total >= DEUDA_CRITICA && (
+          <p className="mt-3 rounded-xl bg-red-500/15 px-3 py-2 text-sm text-red-300">
+            Tu deuda superó el límite. Regularizala para seguir registrando efectivo.
+          </p>
+        )}
+        {deuda.total >= DEUDA_AVISO && deuda.total < DEUDA_CRITICA && (
+          <p className="mt-3 rounded-xl bg-ambar/15 px-3 py-2 text-sm text-ambar-400">
+            Conviene regularizar tu deuda de plataforma pronto.
+          </p>
+        )}
+        {aviso && <p className="mt-3 rounded-xl bg-emerald-500/15 px-3 py-2 text-sm text-emerald-300">{aviso}</p>}
+      </Tarjeta>
 
       <Tarjeta titulo="Cómo se reparte cada pago digital">
         <div className="mb-3 flex h-5 overflow-hidden rounded-full bg-white/10 text-[10px] font-bold">
