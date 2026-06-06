@@ -38,6 +38,13 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
   const [ordenPendiente, setOrdenPendiente] = useState<OrdenEfectivo | null>(null);
   const [verificando, setVerificando] = useState(false);
   const [alertaExc, setAlertaExc] = useState<AlertaExcedente | null>(null);
+  const [valorado, setValorado] = useState(false);
+
+  async function valorar(rating: number) {
+    if (!resultado?.pago.permisionarioId) return;
+    await client.valorar({ permisionarioId: resultado.pago.permisionarioId, sesionId: resultado.sesion.id, rating });
+    setValorado(true);
+  }
 
   useEffect(() => {
     client.getPermisionarios().then(setPermisionarios);
@@ -115,6 +122,7 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
   async function pagar() {
     if (!perm) return;
     setError(null);
+    setValorado(false);
     setPagando(true);
     try {
       if (metodo === "efectivo") {
@@ -141,6 +149,7 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
     const r = await client.getResultadoOrden(ordenPendiente.id);
     setVerificando(false);
     if (r) {
+      setValorado(false);
       setResultado(r);
       setOrdenPendiente(null);
       sessionStorage.removeItem("estacionar:orden");
@@ -210,7 +219,23 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
                 <Boton variante="primario" onClick={() => imprimirComprobante(resultado)}>Imprimir / PDF</Boton>
                 <Boton variante="ambar" onClick={() => compartirComprobante(resultado)}>Compartir</Boton>
               </div>
-              <Boton variante="secundario" className="mt-2 w-full" onClick={() => setResultado(null)}>Nuevo pago</Boton>
+              {resultado.pago.permisionarioId && (
+                <div className="mt-4 rounded-2xl bg-slate-50 p-4 text-center">
+                  {valorado ? (
+                    <p className="text-sm font-semibold text-emerald-600">¡Gracias por tu valoración! 🙌</p>
+                  ) : (
+                    <>
+                      <p className="text-sm text-slate-600">¿Cómo fue la atención del permisionario?</p>
+                      <div className="mt-2 flex justify-center gap-1.5">
+                        {[1, 2, 3, 4, 5].map((n) => (
+                          <button key={n} onClick={() => valorar(n)} aria-label={`Calificar con ${n}`} className="text-3xl leading-none text-amber-400 transition hover:scale-110">★</button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+              <Boton variante="secundario" className="mt-2 w-full" onClick={() => { setResultado(null); setValorado(false); }}>Nuevo pago</Boton>
             </div>
           ) : ordenPendiente ? (
             // Efectivo: esperando que el permisionario confirme que lo recibió

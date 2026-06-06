@@ -176,7 +176,8 @@ function init(): Store {
   });
 
   return {
-    config: seed.config,
+    // Comisión de plataforma = 10% (modelo 80/10/10), no la retención municipal vieja.
+    config: { ...seed.config, feePct: SPLIT.plataformaPct },
     // Descuento al ciudadano = 10% (modelo 80/10/10); el otro 10% que resigna la Muni es la plataforma.
     tarifas: seed.tarifas.map((t) => ({ ...t, digitalDiscountPct: SPLIT.descuentoCiudadanoPct })),
     sectores: seed.sectores,
@@ -342,78 +343,22 @@ export const clientLocal = {
     return consultarSesionCore(store.sesiones, plate, new Date().toISOString(), store.config.toleranceMinutes);
   },
 
-  async pagarEfectivo(data: {
-    plate: string;
-    vehicleType: VehicleType;
-    minutes: number;
-    permisionarioId: string;
-    sectorId?: string | null;
-    idempotencyKey: string;
-  }): Promise<ResultadoPago> {
-    // Antiduplicidad: misma idempotency_key => no se vuelve a registrar.
-    if (store.idempotencyKeys.has(data.idempotencyKey)) {
-      const existente = store.pagos.find((p) => p.idempotencyKey === data.idempotencyKey)!;
-      const sesion = store.sesiones.find((s) => s.id === existente.sesionId)!;
-      const tarifa = store.tarifas.find((t) => t.id === sesion.tarifaId) ?? store.tarifas[0]!;
-      const calc = calcularTarifa({
-        vehicleType: data.vehicleType,
-        minutes: data.minutes,
-        isDigital: false,
-        date: existente.createdAt,
-        tarifa,
-        feriados: store.config.feriados,
-      });
-      return { sesion, pago: existente, calc, extended: false, duplicado: true };
-    }
-
+  // Valoración ciudadana del servicio del permisionario (PRODUCTO.md / Fase 5).
+  async valorar(data: { permisionarioId: string; sesionId?: string | null; rating: number; comment?: string | null }): Promise<{ nuevoPromedio: number }> {
+    store.valoraciones.unshift({
+      id: newId("vlr"),
+      permisionarioId: data.permisionarioId,
+      sesionId: data.sesionId ?? null,
+      rating: data.rating,
+      comment: data.comment ?? null,
+      createdAt: new Date().toISOString(),
+    });
+    const vs = store.valoraciones.filter((v) => v.permisionarioId === data.permisionarioId);
+    const nuevoPromedio = vs.length ? Math.round((vs.reduce((a, v) => a + v.rating, 0) / vs.length) * 10) / 10 : 0;
     const perm = store.permisionarios.find((p) => p.id === data.permisionarioId);
-    if (!perm) throw new Error("Permisionario inexistente.");
-    if (perm.status !== "active") throw new Error(`El permisionario está ${perm.status}.`);
-
-    const now = new Date().toISOString();
-    const tarifa = seleccionarTarifaVigente(store.tarifas, data.vehicleType, now);
-    if (!tarifa) throw new Error("No hay tarifa vigente.");
-    // Efectivo: SIN descuento digital.
-    const calc = calcularTarifa({
-      vehicleType: data.vehicleType,
-      minutes: data.minutes,
-      isDigital: false,
-      date: now,
-      tarifa,
-      feriados: store.config.feriados,
-    });
-    const { sesion, extended } = crearOExtenderSesion(store.sesiones, {
-      plate: data.plate,
-      minutes: data.minutes,
-      vehicleType: data.vehicleType,
-      tarifaId: tarifa.id,
-      amount: calc.amount,
-      sectorId: data.sectorId ?? perm.sectorId,
-      now,
-      toleranceMinutes: store.config.toleranceMinutes,
-      newId: () => newId("ses"),
-    });
-    if (!extended) store.sesiones.push(sesion);
-
-    const pago: Pago = {
-      id: newId("pago"),
-      sesionId: sesion.id,
-      method: "cash",
-      amount: calc.amount,
-      status: "approved",
-      externalRef: null,
-      receiptUrl: null,
-      registeredBy: perm.id,
-      permisionarioId: perm.id,
-      plate: normalizarPatente(data.plate),
-      sectorId: data.sectorId ?? perm.sectorId,
-      idempotencyKey: data.idempotencyKey,
-      createdAt: now,
-    };
-    store.pagos.push(pago);
-    store.idempotencyKeys.add(data.idempotencyKey);
-    audit("pago_efectivo", "pago", pago.id, { plate: pago.plate, amount: pago.amount, permisionarioId: perm.id });
-    return { sesion, pago, calc, extended };
+    if (perm) perm.rating = nuevoPromedio;
+    audit("valoracion", "permisionario", data.permisionarioId, { rating: data.rating });
+    return { nuevoPromedio };
   },
 
   async getPermisionarios(): Promise<PermisionarioConSector[]> {

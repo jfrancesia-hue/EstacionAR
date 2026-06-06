@@ -3,6 +3,7 @@ import { Badge, Boton, Campo, Tarjeta, formatARS, formatMinutos } from "@estacio
 import { clientLocal as client } from "../../store.js";
 import type { Tarifa } from "@estacionar/core";
 import type { DatosBackoffice } from "./tipos.js";
+import { SPLIT } from "../../split.js";
 
 function EditorTarifa({ tarifa, onGuardar }: { tarifa: Tarifa; onGuardar: () => void }) {
   const [first, setFirst] = useState(tarifa.firstUnitAmount);
@@ -57,12 +58,14 @@ export function SeccionTarifas({ datos, onCambio }: { datos: DatosBackoffice; on
           <EditorTarifa key={t.id} tarifa={t} onGuardar={onCambio} />
         ))}
       </div>
-      <Tarjeta titulo="Parámetros del sistema">
-        <div className="grid gap-4 sm:grid-cols-3 text-sm">
-          <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Retención municipal/proveedor</p><b className="text-lg">{datos.config.feePct}%</b></div>
-          <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Tolerancia post-vencimiento</p><b className="text-lg">{formatMinutos(datos.config.toleranceMinutes)}</b></div>
-          <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Feriados sin cobro</p><b className="text-lg">{datos.config.feriados.length}</b></div>
+      <Tarjeta titulo="Reparto de cada pago (modelo 80/10/10)">
+        <div className="grid gap-4 text-sm sm:grid-cols-4">
+          <div className="rounded-xl bg-cyan/10 p-3"><p className="text-texto-tenue">Permisionario</p><b className="text-lg text-cyan">{SPLIT.permisionarioPct}%</b></div>
+          <div className="rounded-xl bg-ambar/10 p-3"><p className="text-texto-tenue">Comisión plataforma</p><b className="text-lg text-ambar">{SPLIT.plataformaPct}%</b></div>
+          <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Beneficio ciudadano</p><b className="text-lg">{SPLIT.descuentoCiudadanoPct}%</b></div>
+          <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Al Municipio</p><b className="text-lg">0%</b></div>
         </div>
+        <p className="mt-3 text-xs text-texto-tenue">Tolerancia post-vencimiento {formatMinutos(datos.config.toleranceMinutes)} · {datos.config.feriados.length} feriados sin cobro. El Municipio no retiene fondos: fiscaliza.</p>
       </Tarjeta>
     </div>
   );

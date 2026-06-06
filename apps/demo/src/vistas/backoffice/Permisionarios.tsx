@@ -3,6 +3,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { Badge, Boton, Tarjeta, EstadoPill, formatARS } from "@estacionar/ui";
 import { clientLocal as client } from "../../store.js";
 import { urlPagoQR } from "../../qr.js";
+import { desglosarPagado } from "../../split.js";
 import type { DatosBackoffice } from "./tipos.js";
 
 export function SeccionPermisionarios({ datos, onCambio }: { datos: DatosBackoffice; onCambio: () => void }) {
@@ -66,7 +67,7 @@ export function SeccionPermisionarios({ datos, onCambio }: { datos: DatosBackoff
 
             <div className="mt-5 grid grid-cols-2 gap-3 text-sm sm:grid-cols-3">
               <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Sector</p><b>{sel.sector?.name ?? "—"}</b></div>
-              <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Recaudación</p><b className="text-cyan">{formatARS(recaudacion?.total ?? 0)}</b></div>
+              <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Acreditado (80%)</p><b className="text-cyan">{formatARS(desglosarPagado(recaudacion?.total ?? 0).permisionario)}</b></div>
               <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Operaciones</p><b>{recaudacion?.ops ?? 0}</b></div>
             </div>
 

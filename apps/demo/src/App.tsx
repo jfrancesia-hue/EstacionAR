@@ -106,8 +106,21 @@ function RutaRol({
 }
 
 export default function App() {
-  const [sesion, setSesion] = useState<SesionDemo | null>(null);
+  // La sesión persiste en sessionStorage: refrescar no te saca al login.
+  const [sesion, setSesion] = useState<SesionDemo | null>(() => {
+    try {
+      const s = sessionStorage.getItem("estacionar:sesion");
+      return s ? (JSON.parse(s) as SesionDemo) : null;
+    } catch {
+      return null;
+    }
+  });
   const [version, setVersion] = useState(0);
+  function guardarSesion(s: SesionDemo | null) {
+    setSesion(s);
+    if (s) sessionStorage.setItem("estacionar:sesion", JSON.stringify(s));
+    else sessionStorage.removeItem("estacionar:sesion");
+  }
   const reiniciar = () => {
     reiniciarDemo();
     setVersion((v) => v + 1);
@@ -123,11 +136,11 @@ export default function App() {
         <Route path="/pagar/:qrId" element={<CiudadanoRoute />} />
         <Route
           path="/permisionario"
-          element={<RutaRol rol="permisionario" sesion={sesion} onLogin={setSesion} onReiniciar={reiniciar} onCerrar={() => setSesion(null)} />}
+          element={<RutaRol rol="permisionario" sesion={sesion} onLogin={guardarSesion} onReiniciar={reiniciar} onCerrar={() => guardarSesion(null)} />}
         />
         <Route
           path="/municipio"
-          element={<RutaRol rol="admin" sesion={sesion} onLogin={setSesion} onReiniciar={reiniciar} onCerrar={() => setSesion(null)} />}
+          element={<RutaRol rol="admin" sesion={sesion} onLogin={guardarSesion} onReiniciar={reiniciar} onCerrar={() => guardarSesion(null)} />}
         />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
