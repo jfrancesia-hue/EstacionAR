@@ -68,6 +68,29 @@ export interface AlertaExcedente {
   expiresAt: string; // vencimiento automático de la alerta
 }
 
+// Alta y validación de permisionarios (PRODUCTO.md §5/§18).
+export type EstadoValidacion = "pending_validation" | "approved" | "observed" | "rejected";
+export interface AltaInput {
+  fullName: string;
+  dni: string;
+  legajo: string;
+  telefono: string;
+  email: string;
+  calle: string;
+  entreCalles: string;
+  altura: string;
+  mano: "par" | "impar" | "ambos";
+  turno: "diurno" | "nocturno";
+  medioAcreditacion: string; // alias / CBU / cuenta del permisionario
+}
+export interface Validacion extends AltaInput {
+  id: string;
+  permisionarioId: string;
+  estado: EstadoValidacion;
+  motivo: string | null;
+  createdAt: string;
+}
+
 interface Store {
   config: ConfigSistema;
   tarifas: Tarifa[];
@@ -80,6 +103,7 @@ interface Store {
   ordenesEfectivo: OrdenEfectivo[];
   deudas: MovimientoDeuda[];
   alertas: AlertaExcedente[];
+  validaciones: Validacion[];
   auditoria: AuditoriaEntry[];
   idempotencyKeys: Set<string>;
 }
@@ -165,6 +189,7 @@ function init(): Store {
     ordenesEfectivo: [],
     deudas: [],
     alertas: [],
+    validaciones: [],
     auditoria: [],
     idempotencyKeys: new Set(),
   };
@@ -212,6 +237,36 @@ function alertaVigente(plate: string, ahoraMs: number): AlertaExcedente | null {
     if (a.status === "excess_alert_active" && new Date(a.expiresAt).getTime() < ahoraMs) a.status = "excess_alert_expired";
   }
   return store.alertas.find((a) => a.plate === plate && a.status === "excess_alert_active") ?? null;
+}
+
+/** Detecta duplicados de un alta por DNI y legajo (permiso personal e intransferible, §5). */
+function detectarDup(dni: string, legajo: string): string[] {
+  const motivos: string[] = [];
+  const d = dni.trim();
+  const l = legajo.trim();
+  if (d && store.permisionarios.some((p) => p.dni === d)) motivos.push(`DNI ${d} ya registrado`);
+  if (l && store.validaciones.some((v) => v.legajo.trim() === l)) motivos.push(`Legajo ${l} ya registrado`);
+  return motivos;
+}
+
+function altaAPermisionario(data: AltaInput): Permisionario {
+  const id = newId("perm");
+  const perm: Permisionario = {
+    id,
+    userId: null,
+    dni: data.dni.trim(),
+    fullName: data.fullName.trim(),
+    contactPhone: data.telefono.trim(),
+    status: "suspended", // no opera hasta ser aprobado
+    qrToken: `nuevo-${id}`,
+    sectorId: null,
+    shift: data.turno,
+    rating: 0,
+    createdAt: new Date().toISOString(),
+  };
+  store.permisionarios.push(perm);
+  store.validaciones.unshift({ id: newId("val"), permisionarioId: id, estado: "pending_validation", motivo: null, createdAt: new Date().toISOString(), ...data });
+  return perm;
 }
 
 // ── Cliente local (misma forma que EstacionarClient) ────────────────────────────
@@ -698,6 +753,50 @@ export const clientLocal = {
   async getAlertas(): Promise<AlertaExcedente[]> {
     alertaVigente("", new Date().getTime()); // fuerza vencimiento automático
     return [...store.alertas].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  },
+
+  // ── Alta, validación e importación de permisionarios (PRODUCTO.md §5/§18) ──────
+  async detectarDuplicados(data: { dni: string; legajo: string }): Promise<string[]> {
+    return detectarDup(data.dni, data.legajo);
+  },
+
+  async crearPermisionarioAlta(data: AltaInput): Promise<{ permisionario: Permisionario; duplicados: string[] }> {
+    const duplicados = detectarDup(data.dni, data.legajo);
+    const permisionario = altaAPermisionario(data);
+    audit("permisionario_alta", "permisionario", permisionario.id, { fullName: data.fullName, dni: data.dni, legajo: data.legajo });
+    return { permisionario, duplicados };
+  },
+
+  async importarPermisionarios(filas: AltaInput[]): Promise<{ creados: number; omitidos: Array<{ fila: AltaInput; motivos: string[] }> }> {
+    let creados = 0;
+    const omitidos: Array<{ fila: AltaInput; motivos: string[] }> = [];
+    for (const fila of filas) {
+      const motivos = detectarDup(fila.dni, fila.legajo);
+      if (motivos.length) {
+        omitidos.push({ fila, motivos });
+        continue;
+      }
+      altaAPermisionario(fila);
+      creados++;
+    }
+    audit("permisionarios_importados", "permisionario", null, { creados, omitidos: omitidos.length });
+    return { creados, omitidos };
+  },
+
+  async getValidaciones(estado?: EstadoValidacion): Promise<Array<Validacion & { permisionario: Permisionario | null }>> {
+    return store.validaciones
+      .filter((v) => !estado || v.estado === estado)
+      .map((v) => ({ ...v, permisionario: store.permisionarios.find((p) => p.id === v.permisionarioId) ?? null }));
+  },
+
+  async resolverValidacion(permisionarioId: string, accion: "approved" | "observed" | "rejected", motivo?: string): Promise<void> {
+    const v = store.validaciones.find((x) => x.permisionarioId === permisionarioId);
+    if (!v) return;
+    v.estado = accion;
+    v.motivo = motivo ?? null;
+    const perm = store.permisionarios.find((p) => p.id === permisionarioId);
+    if (perm) perm.status = accion === "approved" ? "active" : accion === "rejected" ? "expired" : "suspended";
+    audit(`permisionario_${accion}`, "permisionario", permisionarioId, { motivo: motivo ?? "" });
   },
 
   async getDashboard(): Promise<Dashboard> {

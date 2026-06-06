@@ -5,6 +5,7 @@ import type { DatosBackoffice, Seccion } from "./backoffice/tipos.js";
 import { SeccionInicio } from "./backoffice/Inicio.js";
 import { SeccionTarifas } from "./backoffice/Tarifas.js";
 import { SeccionPermisionarios } from "./backoffice/Permisionarios.js";
+import { SeccionAltas } from "./backoffice/Altas.js";
 import { SeccionSectores } from "./backoffice/Sectores.js";
 import { SeccionFiscalizacion } from "./backoffice/Fiscalizacion.js";
 import { SeccionReportes } from "./backoffice/Reportes.js";
@@ -14,6 +15,7 @@ const SECCIONES: Array<{ id: Seccion; label: string; icono: string }> = [
   { id: "inicio", label: "Inicio", icono: "▦" },
   { id: "tarifas", label: "Tarifas", icono: "$" },
   { id: "permisionarios", label: "Permisionarios", icono: "◉" },
+  { id: "altas", label: "Altas", icono: "✚" },
   { id: "sectores", label: "Sectores", icono: "⬡" },
   { id: "fiscalizacion", label: "Fiscalización", icono: "⊙" },
   { id: "reportes", label: "Reportes", icono: "▣" },
@@ -24,6 +26,7 @@ const TITULOS: Record<Seccion, string> = {
   inicio: "Panel municipal",
   tarifas: "Tarifas configurables",
   permisionarios: "Permisionarios",
+  altas: "Alta y validación de permisionarios",
   sectores: "Sectores y mapa",
   fiscalizacion: "Fiscalización por patente",
   reportes: "Reportes de gestión",
@@ -93,6 +96,7 @@ export function VistaBackoffice() {
         {seccion === "inicio" && <SeccionInicio datos={datos} />}
         {seccion === "tarifas" && <SeccionTarifas datos={datos} onCambio={cargar} />}
         {seccion === "permisionarios" && <SeccionPermisionarios datos={datos} onCambio={cargar} />}
+        {seccion === "altas" && <SeccionAltas onCambio={cargar} />}
         {seccion === "sectores" && <SeccionSectores datos={datos} />}
         {seccion === "fiscalizacion" && <SeccionFiscalizacion />}
         {seccion === "reportes" && <SeccionReportes datos={datos} />}
