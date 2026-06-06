@@ -7,8 +7,8 @@ export function SeccionInicio({ datos }: { datos: DatosBackoffice }) {
   return (
     <div className="space-y-8">
       <section className="grid gap-4 md:grid-cols-4">
-        <Kpi label="Recaudación de hoy" valor={formatARS(k.recaudacionHoy)} sub="Cuenta recaudadora municipal" />
-        <Kpi label="Digital" valor={formatARS(k.digitalTotal)} sub="MP · MODO · QR · Naranja" />
+        <Kpi label="Pagos fiscalizados hoy" valor={formatARS(k.recaudacionHoy)} sub="Acreditación directa" />
+        <Kpi label="Digital con beneficio" valor={formatARS(k.digitalTotal)} sub="20% menos por app" />
         <Kpi label="Efectivo auditado" valor={formatARS(k.cashTotal)} sub="Carga inmutable permisionario" acento="ambar" />
         <Kpi label="Operaciones" valor={k.operaciones} sub={`Ticket promedio ${formatARS(k.ticketPromedio)}`} />
       </section>
@@ -19,7 +19,7 @@ export function SeccionInicio({ datos }: { datos: DatosBackoffice }) {
           <MapaSectores sectores={datos.dashboard.porSector} />
         </div>
         <div>
-          <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-texto-tenue">Recaudación por permisionario</h2>
+          <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-texto-tenue">Acreditado por permisionario</h2>
           <Tarjeta>
             <div className="space-y-2">
               {datos.dashboard.porPermisionario.slice(0, 6).map((p, i) => (
@@ -44,9 +44,9 @@ export function SeccionInicio({ datos }: { datos: DatosBackoffice }) {
       <section>
         <Tarjeta titulo="Tesis comercial" accion={<Badge tono="cyan">Para el Municipio</Badge>}>
           <div className="grid gap-3 text-sm text-texto-tenue md:grid-cols-3">
-            <p><b className="text-texto">La plata entra primero al Municipio.</b> Toda la recaudación —digital y efectivo— ingresa a la cuenta municipal antes de cualquier liquidación.</p>
-            <p><b className="text-texto">Trazabilidad total.</b> Cada operación queda auditada (QR firmado → patente → pago → sesión → rendición).</p>
-            <p><b className="text-texto">Se preserva al permisionario.</b> No pierde ingresos; el sistema ordena el efectivo y aumenta el pago digital.</p>
+            <p><b className="text-texto">La plata no entra a rentas generales.</b> El pago digital se acredita directo al permisionario asociado al QR.</p>
+            <p><b className="text-texto">Beneficio completo al vecino.</b> Sin 10% para proveedor ni comisión municipal: el 20% se convierte en descuento por usar la app.</p>
+            <p><b className="text-texto">Control sin carga administrativa.</b> El Municipio ve comprobantes, sectores y operaciones en vivo sin transferirle a 800/900 personas por día.</p>
           </div>
         </Tarjeta>
       </section>

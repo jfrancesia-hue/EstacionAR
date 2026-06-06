@@ -39,7 +39,7 @@ export interface Db {
 }
 
 export const db: Db = {
-  config: { feePct: 8, toleranceMinutes: 5, feriados: [], nocturnoCorridors: [] },
+  config: { feePct: 0, toleranceMinutes: 5, feriados: [], nocturnoCorridors: [] },
   users: [],
   tarifas: [],
   sectores: [],

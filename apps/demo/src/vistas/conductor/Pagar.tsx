@@ -107,12 +107,12 @@ export function SeccionPagar() {
           Pagá tu estacionamiento en segundos.
         </h1>
         <p className="mt-4 max-w-xl text-base leading-relaxed text-texto-tenue sm:text-lg">
-          Escaneás el QR del permisionario, ingresás tu patente y activás una billetera de tiempo. Si te movés de sector, no volvés a pagar.
+          Escaneás el QR del permisionario, ingresás tu patente y pagás con 20% de beneficio por usar la app. Si te movés de sector, no volvés a pagar.
         </p>
         <div className="mt-8 grid gap-3 sm:grid-cols-3">
           <Kpi label="Patente" valor={plate || "—"} />
           <Kpi label="Tiempo" valor={formatMinutos(minutes)} />
-          <Kpi label="Precio digital" valor={cotizando ? "…" : formatARS(monto)} acento="ambar" />
+          <Kpi label="Precio app" valor={cotizando ? "…" : formatARS(monto)} acento="ambar" sub="20% menos" />
         </div>
         <div className="mt-6 grid gap-3 rounded-3xl border border-cyan/15 bg-cyan/10 p-4 text-sm text-cyan-300 sm:grid-cols-3">
           <span>1. Escaneá QR</span>
@@ -139,7 +139,7 @@ export function SeccionPagar() {
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
                 </div>
                 <p className="mt-3 text-lg font-black text-emerald-700">{resultado.extended ? "Tiempo extendido" : "Pago aprobado"}</p>
-                <p className="text-xs text-emerald-700/70">Comprobante municipal · {resultado.pago.id}</p>
+                <p className="text-xs text-emerald-700/70">Acreditado al permisionario · {resultado.pago.id}</p>
               </div>
               <div className="mt-4 space-y-3 rounded-2xl bg-slate-50 p-4 text-sm text-slate-900">
                 <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Patente</span><b className="rounded-lg bg-[#0067B1] px-2 py-1 tracking-widest text-white">{resultado.pago.plate}</b></div>
@@ -202,7 +202,7 @@ export function SeccionPagar() {
           {error && <p className="mt-3 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
         </div>
         <div className="relative mt-4 rounded-2xl border border-cyan/20 bg-cyan/10 p-4 text-sm leading-relaxed text-cyan-300">
-          Comprobante municipal listo para descargar o enviar por WhatsApp. La recaudación entra primero al Municipio.
+          Comprobante online listo para descargar o enviar por WhatsApp. El pago se acredita directo al permisionario y el Municipio lo fiscaliza en tiempo real.
         </div>
       </section>
     </div>

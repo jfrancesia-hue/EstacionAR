@@ -29,7 +29,7 @@ function prng(seed: number) {
 }
 
 export const CONFIG_DEMO: ConfigSistema = {
-  feePct: 8, // comision municipal sobre pago digital (editable en backoffice)
+  feePct: 0, // sin retencion municipal ni fee del proveedor: el beneficio digital va al ciudadano
   toleranceMinutes: 5,
   feriados: ["2026-06-20", "2026-07-09"], // Dia de la Bandera, Independencia
   nocturnoCorridors: ["Paseo Balcarce", "Paseo Güemes"],

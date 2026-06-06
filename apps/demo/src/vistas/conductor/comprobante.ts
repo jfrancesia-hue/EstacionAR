@@ -68,7 +68,7 @@ export function imprimirComprobante(r: ResultadoPago): void {
         <div class="row"><span>Total</span><b class="total">${formatARS(r.pago.amount)}</b></div>
         <div class="row"><span>N.º</span><b>${r.pago.id}</b></div>
       </div>
-      <div class="foot">Recaudación a cuenta municipal. Comprobante de demostración — datos de muestra.</div>
+      <div class="foot">Pago acreditado al permisionario. Fiscalización municipal online — datos de muestra.</div>
     </div>
   </body></html>`;
   w.document.write(html);

@@ -19,12 +19,12 @@ export function VistaHome({ onElegirRol }: { onElegirRol: (rol: Rol) => void }) 
             Estacionar en Salta, <span className="text-cyan">simple y trazable</span>.
           </h1>
           <p className="mt-6 max-w-xl text-lg text-texto-tenue">
-            Una plataforma para el ciudadano, el permisionario y el Municipio. Pago digital por patente,
-            efectivo auditado y recaudación municipal en tiempo real. Elegí cómo querés ingresar.
+            Una plataforma para el ciudadano, el permisionario y el Municipio. Pago digital por patente con 20% de beneficio,
+            acreditación directa al permisionario y control municipal en tiempo real. Elegí cómo querés ingresar.
           </p>
           <div className="mt-8 flex flex-wrap gap-6 text-sm text-texto-tenue">
             <span>✓ Pago por patente (billetera de tiempo)</span>
-            <span>✓ Control fiscal municipal</span>
+            <span>✓ 20% de beneficio por usar la app</span>
             <span>✓ Tarifas configurables</span>
           </div>
         </div>
@@ -57,10 +57,10 @@ export function VistaHome({ onElegirRol }: { onElegirRol: (rol: Rol) => void }) 
           <p className="text-sm text-texto-tenue">Escaneás un QR, ingresás tu patente y activás tiempo. Si te movés de sector, no pagás de nuevo.</p>
         </Tarjeta>
         <Tarjeta titulo="Para el permisionario">
-          <p className="text-sm text-texto-tenue">Ves tu recaudación del día y cargás efectivo de forma inmutable y sin duplicados.</p>
+          <p className="text-sm text-texto-tenue">Ves cada pago acreditado en el momento y cargás efectivo de forma inmutable y sin duplicados.</p>
         </Tarjeta>
         <Tarjeta titulo="Para el Municipio">
-          <p className="text-sm text-texto-tenue">Toda la recaudación entra a la cuenta municipal y queda auditada antes de cualquier liquidación.</p>
+          <p className="text-sm text-texto-tenue">No administra transferencias masivas ni rentas generales: fiscaliza operaciones online, sectores y comprobantes.</p>
         </Tarjeta>
       </section>
 

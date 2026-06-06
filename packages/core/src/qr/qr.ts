@@ -1,6 +1,6 @@
 // QR firmado + nonce por operacion (CLAUDE.md §3.3). Antifraude.
 // El QR identifica al PERMISIONARIO (estatico). El cobro se procesa SIEMPRE del lado del servidor
-// contra la cuenta recaudadora municipal. Un QR clonado no puede desviar fondos.
+// contra la credencial/cuenta del permisionario. Un QR clonado no puede desviar fondos.
 // Implementacion isomorfica con Web Crypto (Node 20+ y navegador) — sin dependencias externas.
 
 const enc = new TextEncoder();

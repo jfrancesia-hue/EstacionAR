@@ -13,7 +13,7 @@ export function SeccionRecaudacion({ datos }: { datos: DatosPermisionario }) {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <Kpi label="Digital" valor={formatARS(r.digital)} sub={`${pctDigital}% del total`} />
+        <Kpi label="Digital acreditado" valor={formatARS(r.digital)} sub={`${pctDigital}% del total`} />
         <Kpi label="Efectivo" valor={formatARS(r.cash)} acento="ambar" sub="Carga auditada" />
         <Kpi label="Operaciones" valor={r.count} acento="texto" />
       </div>
@@ -30,8 +30,8 @@ export function SeccionRecaudacion({ datos }: { datos: DatosPermisionario }) {
       </Tarjeta>
 
       <div className="rounded-2xl border border-cyan/20 bg-cyan/10 p-4 text-sm text-cyan-300">
-        El Municipio ve esta recaudación <b>en tiempo real</b>, antes de cualquier liquidación. Tu liquidación se acredita
-        T+1 según convenio, descontando solo la comisión configurada.
+        Cada pago digital queda <b>acreditado directo a tu cuenta</b> en el momento y aparece en movimientos con comprobante.
+        El Municipio fiscaliza la operación online, sin retener fondos ni demorar tu cobro.
       </div>
     </div>
   );

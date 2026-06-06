@@ -135,7 +135,7 @@ export default function App() {
               Estacionamiento medido con <span className="text-cyan">recaudación trazable</span> para Salta.
             </h1>
             <p className="mt-6 max-w-2xl text-lg text-texto-tenue">
-              El Municipio ve cada peso antes de liquidar, el permisionario conserva su rol y el conductor no paga dos veces si se mueve.
+              El Municipio fiscaliza cada pago online, el permisionario cobra directo y el conductor obtiene beneficio por usar la app.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a href="http://localhost:5174" target="_blank" rel="noreferrer"><Boton grande>Probar flujo conductor</Boton></a>
@@ -147,7 +147,7 @@ export default function App() {
         </section>
 
         <section className="mt-10 grid gap-4 md:grid-cols-4">
-          <Kpi label="Recaudación de hoy" valor={formatARS(k.recaudacionHoy)} sub="Cuenta recaudadora municipal" />
+          <Kpi label="Pagos fiscalizados hoy" valor={formatARS(k.recaudacionHoy)} sub="Acreditación directa" />
           <Kpi label="Digital" valor={formatARS(k.digitalTotal)} sub="MP · MODO · QR · Naranja" />
           <Kpi label="Efectivo auditado" valor={formatARS(k.cashTotal)} sub="Carga inmutable permisionario" acento="ambar" />
           <Kpi label="Operaciones" valor={k.operaciones} sub={`Ticket promedio ${formatARS(k.ticketPromedio)}`} />

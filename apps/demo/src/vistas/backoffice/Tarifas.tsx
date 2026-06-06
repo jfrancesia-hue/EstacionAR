@@ -30,11 +30,11 @@ function EditorTarifa({ tarifa, onGuardar }: { tarifa: Tarifa; onGuardar: () => 
       <div className="grid gap-3 sm:grid-cols-3">
         <Campo label="Primera hora ($)" type="number" min={0} value={first} onChange={(e) => setFirst(Number(e.target.value))} />
         <Campo label="Fracción adic. ($)" type="number" min={0} value={next} onChange={(e) => setNext(Number(e.target.value))} />
-        <Campo label="Desc. digital (%)" type="number" min={0} max={100} value={desc} onChange={(e) => setDesc(Number(e.target.value))} />
+        <Campo label="Beneficio app (%)" type="number" min={0} max={100} value={desc} onChange={(e) => setDesc(Number(e.target.value))} />
       </div>
       <div className="mt-4 flex items-center justify-between gap-3">
         <p className="text-xs text-texto-tenue">
-          Pago digital 1 h: <b className="text-cyan">{formatARS(Math.round(first * (1 - desc / 100)))}</b>
+          Pago app 1 h: <b className="text-cyan">{formatARS(Math.round(first * (1 - desc / 100)))}</b>
         </p>
         <div className="flex items-center gap-3">
           {ok && <span className="text-sm font-semibold text-emerald-400">Guardado ✓</span>}
@@ -49,8 +49,8 @@ export function SeccionTarifas({ datos, onCambio }: { datos: DatosBackoffice; on
   return (
     <div className="space-y-6">
       <div className="rounded-2xl border border-cyan/20 bg-cyan/10 p-4 text-sm text-cyan-300">
-        Las tarifas son <b>configurables sin tocar código</b>. Editá un valor y guardá: el cambio se aplica
-        al instante y se refleja en lo que paga el conductor. La actualización semestral es solo un cambio de dato.
+        Las tarifas son <b>configurables sin tocar código</b>. El beneficio app se aplica al ciudadano y no se transforma
+        en comisión para proveedor ni retención municipal. La actualización semestral es solo un cambio de dato.
       </div>
       <div className="grid gap-6 lg:grid-cols-2">
         {datos.tarifas.map((t) => (
@@ -59,7 +59,7 @@ export function SeccionTarifas({ datos, onCambio }: { datos: DatosBackoffice; on
       </div>
       <Tarjeta titulo="Parámetros del sistema">
         <div className="grid gap-4 sm:grid-cols-3 text-sm">
-          <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Comisión municipal</p><b className="text-lg">{datos.config.feePct}%</b></div>
+          <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Retención municipal/proveedor</p><b className="text-lg">{datos.config.feePct}%</b></div>
           <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Tolerancia post-vencimiento</p><b className="text-lg">{formatMinutos(datos.config.toleranceMinutes)}</b></div>
           <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Feriados sin cobro</p><b className="text-lg">{datos.config.feriados.length}</b></div>
         </div>

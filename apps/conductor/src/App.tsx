@@ -216,7 +216,7 @@ export default function App() {
           <div className="relative mt-4 rounded-2xl border border-cyan/20 bg-cyan/10 p-4 text-sm leading-relaxed text-cyan-300">
             {apiCaida
               ? "No hay conexión con la API (puerto 4000). Levantá la demo con DEMO_START.ps1."
-              : "Comprobante municipal listo para descargar o enviar por WhatsApp. La recaudación entra primero al Municipio."}
+              : "Comprobante online listo para descargar o enviar por WhatsApp. El pago se acredita directo al permisionario y el Municipio lo fiscaliza en tiempo real."}
           </div>
         </section>
       </main>

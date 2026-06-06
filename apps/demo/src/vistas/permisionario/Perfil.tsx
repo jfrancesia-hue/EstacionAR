@@ -41,7 +41,7 @@ export function SeccionPerfil({ datos }: { datos: DatosPermisionario }) {
 
       <p className="rounded-xl border border-cyan/20 bg-cyan/10 p-4 text-sm text-cyan-300">
         El QR identifica al permisionario y se valida del lado del servidor en cada escaneo (estado, sector y turno vigentes).
-        Un QR clonado no puede desviar fondos: el cobro siempre va a la cuenta recaudadora municipal.
+        Un QR clonado no puede desviar fondos: el pago queda asociado a esta credencial y se acredita directo al permisionario.
       </p>
     </div>
   );

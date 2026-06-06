@@ -1,8 +1,14 @@
 # CLAUDE.md — EstacionAR
 
 > Anchor de sesión para Claude Code. Leer SIEMPRE al inicio de cada sesión.
-> Este archivo define el proyecto, el stack, las reglas de negocio y las convenciones.
-> Ante cualquier duda, este documento manda.
+> Este archivo define el stack y las convenciones técnicas.
+
+> ⚠️ **FUENTE DE VERDAD DE PRODUCTO Y NEGOCIO: [`PRODUCTO.md`](PRODUCTO.md)** (leer también al
+> inicio). Define roles, flujos, QR de EstacionAR, efectivo con deuda, excedentes, fiscalización,
+> alta/validación de permisionarios y el **modelo económico vigente 80/10/10** (permisionario 80%
+> con **acreditación directa e inmediata**, plataforma/Nativos 10%, descuento al ciudadano 10%, el
+> Municipio **no maneja fondos, solo fiscaliza**). Esto **actualiza la §3.4 de abajo** (que describía
+> recaudación a cuenta municipal + liquidación T+1 — modelo descartado). Ante conflicto, manda `PRODUCTO.md`.
 
 ---
 

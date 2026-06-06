@@ -40,12 +40,12 @@ export function SeccionReportes({ datos }: { datos: DatosBackoffice }) {
   return (
     <div className="space-y-6">
       <section className="grid gap-4 md:grid-cols-3">
-        <Kpi label="Recaudación del mes" valor={formatARS(k.recaudacionMes)} />
-        <Kpi label="Acumulado total" valor={formatARS(k.recaudacionTotal)} acento="ambar" />
+        <Kpi label="Pagos fiscalizados del mes" valor={formatARS(k.recaudacionMes)} />
+        <Kpi label="Acreditado total" valor={formatARS(k.recaudacionTotal)} acento="ambar" />
         <Kpi label="Ticket promedio" valor={formatARS(k.ticketPromedio)} acento="texto" />
       </section>
 
-      <Tarjeta titulo="Recaudación diaria (últimos 14 días)" accion={
+      <Tarjeta titulo="Pagos fiscalizados por día (últimos 14 días)" accion={
         <span className="flex items-center gap-3 text-xs text-texto-tenue">
           <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-cyan" /> Digital</span>
           <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-ambar" /> Efectivo</span>
@@ -74,7 +74,7 @@ export function SeccionReportes({ datos }: { datos: DatosBackoffice }) {
           </div>
         </Tarjeta>
 
-        <Tarjeta titulo="Top sectores" accion={<Badge tono="cyan">por recaudación</Badge>}>
+        <Tarjeta titulo="Top sectores" accion={<Badge tono="cyan">por pagos</Badge>}>
           <div className="space-y-2">
             {[...datos.dashboard.porSector].sort((a, b) => b.total - a.total).slice(0, 6).map((s, i) => (
               <div key={s.sectorId} className="flex items-center justify-between gap-3 rounded-xl bg-white/5 p-3 text-sm">

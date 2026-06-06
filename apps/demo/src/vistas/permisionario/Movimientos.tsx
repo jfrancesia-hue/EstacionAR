@@ -7,7 +7,7 @@ export function SeccionMovimientos({ datos }: { datos: DatosPermisionario }) {
     <div className="space-y-5">
       <div>
         <h1 className="text-3xl font-extrabold tracking-tight">Movimientos</h1>
-        <p className="mt-2 text-texto-tenue">Historial de operaciones registradas con tu credencial ({movs.length}).</p>
+        <p className="mt-2 text-texto-tenue">Historial de pagos acreditados con tu credencial ({movs.length}).</p>
       </div>
       <Tarjeta>
         {movs.length === 0 ? (
@@ -19,6 +19,7 @@ export function SeccionMovimientos({ datos }: { datos: DatosPermisionario }) {
                 <span className="flex min-w-0 items-center gap-3">
                   <span className="font-mono font-semibold">{p.plate}</span>
                   <Badge tono={p.method === "cash" ? "alerta" : "cyan"}>{etiquetaMedio(p.method)}</Badge>
+                  <Badge tono="cyan">Acreditado</Badge>
                 </span>
                 <span className="flex items-center gap-4">
                   <time className="text-xs text-texto-tenue">{formatFechaHora(p.createdAt)}</time>

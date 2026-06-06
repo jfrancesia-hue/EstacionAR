@@ -1,6 +1,6 @@
 // Flujo transaccional: validacion de QR, cotizacion, pago digital, pago efectivo y
 // consulta de billetera de tiempo (FASE 1 y 2). El cobro SIEMPRE se procesa del lado del
-// servidor contra la cuenta recaudadora municipal.
+// servidor contra la credencial/cuenta del permisionario.
 import { Router } from "express";
 import { z } from "zod";
 import {
