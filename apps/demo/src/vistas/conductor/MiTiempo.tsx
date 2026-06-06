@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Badge, Boton, Campo, Kpi, Tarjeta, formatARS, formatFechaHora, formatHora, formatMinutos, etiquetaMedio } from "@estacionar/ui";
 import type { ConsultaSesion, Pago } from "@estacionar/core";
 import { clientLocal as client } from "../../store.js";
+import { esPatenteValida } from "../../patente.js";
 
 export function SeccionMiTiempo() {
   const [plate, setPlate] = useState("AB123CD");
@@ -35,7 +36,7 @@ export function SeccionMiTiempo() {
         <div className="flex-1 min-w-[220px]">
           <Campo label="Patente" value={plate} onChange={(e) => setPlate(e.target.value.toUpperCase())} placeholder="AB123CD" />
         </div>
-        <Boton type="submit" grande cargando={cargando} disabled={!plate}>Consultar</Boton>
+        <Boton type="submit" grande cargando={cargando} disabled={!esPatenteValida(plate)}>Consultar</Boton>
       </form>
 
       {consultado && (

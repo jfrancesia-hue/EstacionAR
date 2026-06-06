@@ -6,6 +6,7 @@ import { clientLocal as client, type OrdenEfectivo, type AlertaExcedente } from 
 import { imprimirComprobante, compartirComprobante } from "./comprobante.js";
 import { permisionarioIdDesdeQR } from "../../qr.js";
 import { acreditadoPermisionario, SPLIT } from "../../split.js";
+import { esPatenteValida } from "../../patente.js";
 
 // El lector de QR (@zxing) se carga sólo al abrir el escáner: mantiene liviano el bundle inicial.
 const EscanerQR = lazy(() => import("./EscanerQR.js").then((m) => ({ default: m.EscanerQR })));
@@ -286,6 +287,7 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
               <Tarjeta className="border-slate-200 bg-slate-50 p-4 text-slate-900 shadow-none" titulo={<span className="text-slate-500">Pago de estacionamiento</span>}>
                 <div className="space-y-3">
                   <Campo label="Patente" value={plate} onChange={(e) => setPlate(e.target.value.toUpperCase())} placeholder="AB123CD" className="bg-white text-slate-900" />
+                  {plate && !esPatenteValida(plate) && <p className="text-xs text-amber-600">Formato: AB123CD o ABC123</p>}
                   <div className="grid grid-cols-2 gap-3">
                     <Selector label="Vehículo" value={vehicleType} onChange={(e) => setVehicleType(e.target.value as VehicleType)} className="bg-white text-slate-900">
                       <option value="auto">Auto</option>
@@ -307,7 +309,7 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
                     <button type="button" onClick={() => setMetodo("efectivo")} className={`rounded-xl border p-2.5 text-sm font-bold transition ${metodo === "efectivo" ? "border-amber-500 bg-amber-50 text-amber-700" : "border-slate-200 text-slate-400"}`}>Efectivo</button>
                   </div>
                 </div>
-                <Boton className="mt-3 w-full whitespace-nowrap" grande onClick={pagar} cargando={pagando} disabled={!plate}>{metodo === "efectivo" ? "Pagar en efectivo" : "Pagá y activá"}</Boton>
+                <Boton className="mt-3 w-full whitespace-nowrap" grande onClick={pagar} cargando={pagando} disabled={!esPatenteValida(plate)}>{metodo === "efectivo" ? "Pagar en efectivo" : "Pagá y activá"}</Boton>
               </Tarjeta>
             </>
           )}

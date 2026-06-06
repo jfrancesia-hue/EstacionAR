@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Boton, Campo, Selector, Tarjeta, formatARS, formatHora, formatMinutos } from "@estacionar/ui";
 import type { VehicleType } from "@estacionar/core";
 import { clientLocal as client } from "../../store.js";
+import { esPatenteValida } from "../../patente.js";
 import type { DatosPermisionario } from "./tipos.js";
 
 const OPCIONES_MINUTOS = [30, 60, 90, 120];
@@ -91,7 +92,7 @@ export function SeccionRegistrarEfectivo({ datos, onCambio }: { datos: DatosPerm
             </Selector>
           </div>
         </div>
-        <Boton className="mt-4 w-full" variante="secundario" onClick={registrarManual} cargando={procesando === "manual"} disabled={!plate}>
+        <Boton className="mt-4 w-full" variante="secundario" onClick={registrarManual} cargando={procesando === "manual"} disabled={!esPatenteValida(plate)}>
           Registrar y confirmar
         </Boton>
       </Tarjeta>

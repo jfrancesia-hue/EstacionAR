@@ -8,12 +8,16 @@ const FRACCIONES = [15, 30, 60, 90, 120];
 function ItemVencida({ item, permId, onCambio }: { item: VencidaItem; permId: string; onCambio: () => void }) {
   const [minutes, setMinutes] = useState(30);
   const [proc, setProc] = useState<string | null>(null);
+  const [err, setErr] = useState<string | null>(null);
 
   async function cobrar(metodo: "digital" | "cash") {
     setProc(metodo);
+    setErr(null);
     try {
       await client.cobrarExcedente({ sesionId: item.sesion.id, minutes, metodo, permisionarioId: permId });
       onCambio();
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "No se pudo cobrar el excedente.");
     } finally {
       setProc(null);
     }
@@ -49,6 +53,7 @@ function ItemVencida({ item, permId, onCambio }: { item: VencidaItem; permId: st
         <Boton variante="ambar" onClick={() => cobrar("cash")} cargando={proc === "cash"}>Cobrar efectivo</Boton>
         <Boton variante="fantasma" onClick={noPago} cargando={proc === "nopago"}>No pagó</Boton>
       </div>
+      {err && <p className="mt-2 rounded-xl bg-red-500/15 px-3 py-2 text-sm text-red-300">{err}</p>}
     </Tarjeta>
   );
 }

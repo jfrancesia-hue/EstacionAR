@@ -516,7 +516,7 @@ export const clientLocal = {
     if (!orden) throw new Error("Orden inexistente.");
     if (orden.status !== "pending_cash_confirmation") throw new Error("La orden ya fue procesada.");
     const now = new Date().toISOString();
-    const tarifa = store.tarifas.find((t) => t.vehicleType === orden.vehicleType) ?? store.tarifas[0]!;
+    const tarifa = seleccionarTarifaVigente(store.tarifas, orden.vehicleType, now) ?? store.tarifas[0]!;
     const { sesion, extended } = crearOExtenderSesion(store.sesiones, {
       plate: orden.plate,
       minutes: orden.minutes,
@@ -633,8 +633,10 @@ export const clientLocal = {
   async cobrarExcedente(data: { sesionId: string; minutes: number; metodo: "digital" | "cash"; permisionarioId: string }): Promise<{ pago: Pago; calc: CalcularTarifaResult }> {
     const ses = store.sesiones.find((s) => s.id === data.sesionId);
     if (!ses) throw new Error("Sesión inexistente.");
+    // Guard anti-duplicado (§16): sólo se cobra excedente sobre una sesión efectivamente vencida.
+    if (estadoDeSesion(ses, new Date().getTime()) !== "vencida") throw new Error("La sesión ya no está vencida: el excedente ya fue regularizado.");
     const now = new Date().toISOString();
-    const tarifa = store.tarifas.find((t) => t.vehicleType === ses.vehicleType) ?? store.tarifas[0]!;
+    const tarifa = seleccionarTarifaVigente(store.tarifas, ses.vehicleType, now) ?? store.tarifas[0]!;
     const calc = calcularTarifa({ vehicleType: ses.vehicleType, minutes: data.minutes, isDigital: true, date: now, tarifa, feriados: store.config.feriados });
     // Extiende la ventana (operación vinculada a la sesión original, sin pisar el comprobante).
     const base = new Date(ses.endValid).getTime() >= new Date(now).getTime() ? ses.endValid : now;
@@ -672,7 +674,7 @@ export const clientLocal = {
     const now = new Date();
     const ahora = now.getTime();
     const minutosExcedidos = Math.max(0, Math.floor((ahora - new Date(ses.endValid).getTime()) / 60000));
-    const tarifa = store.tarifas.find((t) => t.vehicleType === ses.vehicleType) ?? store.tarifas[0]!;
+    const tarifa = seleccionarTarifaVigente(store.tarifas, ses.vehicleType, now.toISOString()) ?? store.tarifas[0]!;
     const sugerido = calcularTarifa({ vehicleType: ses.vehicleType, minutes: Math.max(15, Math.ceil(minutosExcedidos / 15) * 15), isDigital: true, date: now.toISOString(), tarifa, feriados: store.config.feriados }).amount;
     ses.status = "expired"; // se retira sin regularizar
     const alerta: AlertaExcedente = {
