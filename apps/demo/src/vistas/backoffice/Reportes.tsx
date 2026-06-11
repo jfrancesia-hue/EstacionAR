@@ -1,4 +1,5 @@
-import { Badge, Kpi, Tarjeta, formatARS, etiquetaMedio } from "@estacionar/ui";
+import { Badge, Boton, Kpi, Tarjeta, formatARS, etiquetaMedio } from "@estacionar/ui";
+import { descargarCSV } from "../../exportar.js";
 import type { DatosBackoffice } from "./tipos.js";
 
 function GraficoBarras({ serie }: { serie: DatosBackoffice["dashboard"]["serieDiaria"] }) {
@@ -37,8 +38,22 @@ export function SeccionReportes({ datos }: { datos: DatosBackoffice }) {
   const mix = Object.entries(datos.dashboard.mixMedios).sort((a, b) => b[1] - a[1]);
   const totalMix = mix.reduce((a, [, v]) => a + v, 0) || 1;
 
+  function exportarCSV() {
+    descargarCSV(
+      "estacionar-reporte-diario",
+      datos.dashboard.serieDiaria.map((d) => ({ fecha: d.date, total: d.total, digital: d.digital, efectivo: d.cash, operaciones: d.ops })),
+    );
+  }
+
   return (
     <div className="space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
+        <p className="text-sm text-texto-tenue">Exportá los reportes para auditoría o presentación.</p>
+        <div className="flex gap-2">
+          <Boton variante="secundario" onClick={exportarCSV}>Descargar Excel (CSV)</Boton>
+          <Boton variante="secundario" onClick={() => window.print()}>Imprimir / PDF</Boton>
+        </div>
+      </div>
       <section className="grid gap-4 md:grid-cols-3">
         <Kpi label="Pagos fiscalizados del mes" valor={formatARS(k.recaudacionMes)} />
         <Kpi label="Transado total" valor={formatARS(k.recaudacionTotal)} acento="ambar" sub="volumen fiscalizado" />

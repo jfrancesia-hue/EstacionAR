@@ -33,6 +33,31 @@ function parseCSV(texto: string): AltaInput[] {
   return filas;
 }
 
+function SubirFoto({ label, valor, onCambio }: { label: string; valor?: string; onCambio: (url: string) => void }) {
+  return (
+    <label className="flex cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-borde bg-white/5 p-2 text-center transition hover:border-cyan">
+      {valor ? (
+        <img src={valor} alt={label} className="h-14 w-full rounded object-cover" />
+      ) : (
+        <span className="grid h-14 w-full place-items-center text-xl text-texto-tenue">📷</span>
+      )}
+      <span className="text-[11px] text-texto-tenue">{valor ? "✓ " : ""}{label}</span>
+      <input
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = () => onCambio(String(reader.result));
+          reader.readAsDataURL(file);
+        }}
+      />
+    </label>
+  );
+}
+
 export function SeccionAltas({ onCambio }: { onCambio: () => void }) {
   const [tab, setTab] = useState<TabAlta>("pendientes");
   return (
@@ -105,6 +130,7 @@ function Pendientes({ onCambio }: { onCambio: () => void }) {
 
 function Nueva({ onCambio }: { onCambio: () => void }) {
   const [f, setF] = useState<AltaInput>(VACIA);
+  const [fotos, setFotos] = useState<{ dniF?: string; dniD?: string; cred?: string }>({});
   const [creando, setCreando] = useState(false);
   const [aviso, setAviso] = useState<{ ok: boolean; texto: string } | null>(null);
   const set = (k: keyof AltaInput) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value });
@@ -115,6 +141,7 @@ function Nueva({ onCambio }: { onCambio: () => void }) {
     setCreando(false);
     setAviso({ ok: duplicados.length === 0, texto: duplicados.length ? `Cargado, pero ojo: ${duplicados.join("; ")}. Queda pendiente para revisión.` : `${f.fullName} cargado como pendiente de validación.` });
     setF(VACIA);
+    setFotos({});
     onCambio();
   }
 
@@ -137,8 +164,13 @@ function Nueva({ onCambio }: { onCambio: () => void }) {
           <option value="diurno">Diurno</option><option value="nocturno">Nocturno</option>
         </Selector>
       </div>
-      <div className="mt-3 rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-texto-tenue">
-        En producción se suben además: foto DNI frente/dorso, foto de la credencial municipal vigente y, si existe, el QR municipal.
+      <div className="mt-4">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-texto-tenue">Documentación (foto)</p>
+        <div className="grid grid-cols-3 gap-2">
+          <SubirFoto label="DNI frente" valor={fotos.dniF} onCambio={(u) => setFotos((s) => ({ ...s, dniF: u }))} />
+          <SubirFoto label="DNI dorso" valor={fotos.dniD} onCambio={(u) => setFotos((s) => ({ ...s, dniD: u }))} />
+          <SubirFoto label="Credencial municipal" valor={fotos.cred} onCambio={(u) => setFotos((s) => ({ ...s, cred: u }))} />
+        </div>
       </div>
       <Boton className="mt-4" onClick={crear} cargando={creando} disabled={!f.fullName || !f.dni || !f.legajo}>Cargar como pendiente</Boton>
       {aviso && <p className={`mt-3 rounded-xl px-3 py-2 text-sm ${aviso.ok ? "bg-emerald-500/15 text-emerald-300" : "bg-ambar/15 text-ambar-400"}`}>{aviso.texto}</p>}

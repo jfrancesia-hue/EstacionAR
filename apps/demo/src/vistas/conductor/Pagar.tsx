@@ -3,7 +3,7 @@ import { Badge, Boton, Campo, Selector, Kpi, Tarjeta, formatARS, formatHora, for
 import type { PermisionarioConSector, ResultadoPago } from "@estacionar/ui";
 import type { CalcularTarifaResult, VehicleType } from "@estacionar/core";
 import { clientLocal as client, type OrdenEfectivo, type AlertaExcedente } from "../../store.js";
-import { imprimirComprobante, compartirComprobante } from "./comprobante.js";
+import { imprimirComprobante, compartirComprobante, codigoVerif } from "./comprobante.js";
 import { permisionarioIdDesdeQR } from "../../qr.js";
 import { acreditadoPermisionario, SPLIT } from "../../split.js";
 import { esPatenteValida } from "../../patente.js";
@@ -12,6 +12,16 @@ import { esPatenteValida } from "../../patente.js";
 const EscanerQR = lazy(() => import("./EscanerQR.js").then((m) => ({ default: m.EscanerQR })));
 
 const OPCIONES_MINUTOS = [30, 60, 90, 120, 180];
+
+// El ciudadano paga con el medio que ya usa (PRODUCTO.md §7 / propuesta).
+type MedioPago = "mercadopago" | "modo" | "naranja" | "card" | "efectivo";
+const MEDIOS: Array<{ id: MedioPago; label: string }> = [
+  { id: "mercadopago", label: "Mercado Pago" },
+  { id: "modo", label: "MODO" },
+  { id: "naranja", label: "Naranja X" },
+  { id: "card", label: "Tarjeta" },
+  { id: "efectivo", label: "Efectivo" },
+];
 
 function SaltaMark() {
   return (
@@ -35,7 +45,7 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
   const [pagando, setPagando] = useState(false);
   const [resultado, setResultado] = useState<ResultadoPago | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [metodo, setMetodo] = useState<"digital" | "efectivo">("digital");
+  const [medio, setMedio] = useState<MedioPago>("mercadopago");
   const [ordenPendiente, setOrdenPendiente] = useState<OrdenEfectivo | null>(null);
   const [verificando, setVerificando] = useState(false);
   const [alertaExc, setAlertaExc] = useState<AlertaExcedente | null>(null);
@@ -138,14 +148,14 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
     setValorado(false);
     setPagando(true);
     try {
-      if (metodo === "efectivo") {
+      if (medio === "efectivo") {
         // Efectivo: se crea una orden pendiente; el tiempo se activa cuando el permisionario confirma.
         const orden = await client.crearOrdenEfectivo({ plate, vehicleType, minutes, permisionarioId: perm.id, sectorId: perm.sectorId });
         setOrdenPendiente(orden);
         sessionStorage.setItem("estacionar:orden", orden.id);
       } else {
         setResultado(
-          await client.pagarDigital({ plate, vehicleType, minutes, method: "mercadopago", permisionarioId: perm.id, sectorId: perm.sectorId }),
+          await client.pagarDigital({ plate, vehicleType, minutes, method: medio, permisionarioId: perm.id, sectorId: perm.sectorId }),
         );
       }
     } catch (e) {
@@ -227,6 +237,7 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
                 <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Tiempo total</span><b>{formatMinutos(resultado.sesion.paidMinutes)}</b></div>
                 <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Se acredita al permisionario</span><b className="text-emerald-600">{formatARS(acreditadoPermisionario(resultado.pago.amount))}</b></div>
                 <div className="flex items-end justify-between gap-4 border-t border-slate-200 pt-3 text-lg"><span className="text-slate-500">Pagaste</span><b className="text-2xl text-[#0067B1]">{formatARS(resultado.pago.amount)}</b></div>
+                <div className="flex items-center justify-between gap-4 pt-1 text-xs text-slate-400"><span>Código de verificación</span><b className="font-mono">{codigoVerif(resultado.pago.id)}</b></div>
               </div>
               <div className="mt-4 grid grid-cols-2 gap-2">
                 <Boton variante="primario" onClick={() => imprimirComprobante(resultado)}>Imprimir / PDF</Boton>
@@ -316,12 +327,26 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
                 </div>
                 <div className="mt-4">
                   <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500">Cómo pagás</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button type="button" onClick={() => setMetodo("digital")} className={`rounded-xl border p-2.5 text-sm font-bold transition ${metodo === "digital" ? "border-[#0067B1] bg-[#0067B1]/10 text-[#0067B1]" : "border-slate-200 text-slate-400"}`}>Digital</button>
-                    <button type="button" onClick={() => setMetodo("efectivo")} className={`rounded-xl border p-2.5 text-sm font-bold transition ${metodo === "efectivo" ? "border-amber-500 bg-amber-50 text-amber-700" : "border-slate-200 text-slate-400"}`}>Efectivo</button>
+                  <div className="grid grid-cols-3 gap-2">
+                    {MEDIOS.map((m) => (
+                      <button
+                        key={m.id}
+                        type="button"
+                        onClick={() => setMedio(m.id)}
+                        className={`rounded-xl border p-2 text-xs font-bold transition ${
+                          medio === m.id
+                            ? m.id === "efectivo"
+                              ? "border-amber-500 bg-amber-50 text-amber-700"
+                              : "border-[#0067B1] bg-[#0067B1]/10 text-[#0067B1]"
+                            : "border-slate-200 text-slate-400 hover:border-slate-300"
+                        }`}
+                      >
+                        {m.label}
+                      </button>
+                    ))}
                   </div>
                 </div>
-                <Boton className="mt-3 w-full whitespace-nowrap" grande onClick={pagar} cargando={pagando} disabled={!esPatenteValida(plate)}>{metodo === "efectivo" ? "Pagar en efectivo" : "Pagá y activá"}</Boton>
+                <Boton className="mt-3 w-full whitespace-nowrap" grande onClick={pagar} cargando={pagando} disabled={!esPatenteValida(plate)}>{medio === "efectivo" ? "Pagar en efectivo" : "Pagá y activá"}</Boton>
               </Tarjeta>
             </>
           )}

@@ -240,13 +240,19 @@ function alertaVigente(plate: string, ahoraMs: number): AlertaExcedente | null {
   return store.alertas.find((a) => a.plate === plate && a.status === "excess_alert_active") ?? null;
 }
 
-/** Detecta duplicados de un alta por DNI y legajo (permiso personal e intransferible, §5). */
-function detectarDup(dni: string, legajo: string): string[] {
+/** Detecta duplicados de un alta por DNI, legajo y cuadra/turno (permiso personal e intransferible, §5). */
+function detectarDup(data: { dni: string; legajo: string; calle?: string; altura?: string; mano?: string; turno?: string }): string[] {
   const motivos: string[] = [];
-  const d = dni.trim();
-  const l = legajo.trim();
+  const d = data.dni.trim();
+  const l = data.legajo.trim();
   if (d && store.permisionarios.some((p) => p.dni === d)) motivos.push(`DNI ${d} ya registrado`);
   if (l && store.validaciones.some((v) => v.legajo.trim() === l)) motivos.push(`Legajo ${l} ya registrado`);
+  if (data.calle && data.turno) {
+    const cuadra = `${data.calle}|${data.altura ?? ""}|${data.mano ?? ""}|${data.turno}`.toLowerCase();
+    if (store.validaciones.some((v) => `${v.calle}|${v.altura}|${v.mano}|${v.turno}`.toLowerCase() === cuadra)) {
+      motivos.push(`Cuadra/turno (${data.calle} ${data.altura ?? ""}, ${data.turno}) ya asignada`);
+    }
+  }
   return motivos;
 }
 
@@ -710,11 +716,11 @@ export const clientLocal = {
 
   // ── Alta, validación e importación de permisionarios (PRODUCTO.md §5/§18) ──────
   async detectarDuplicados(data: { dni: string; legajo: string }): Promise<string[]> {
-    return detectarDup(data.dni, data.legajo);
+    return detectarDup(data);
   },
 
   async crearPermisionarioAlta(data: AltaInput): Promise<{ permisionario: Permisionario; duplicados: string[] }> {
-    const duplicados = detectarDup(data.dni, data.legajo);
+    const duplicados = detectarDup(data);
     const permisionario = altaAPermisionario(data);
     audit("permisionario_alta", "permisionario", permisionario.id, { fullName: data.fullName, dni: data.dni, legajo: data.legajo });
     return { permisionario, duplicados };
@@ -724,7 +730,7 @@ export const clientLocal = {
     let creados = 0;
     const omitidos: Array<{ fila: AltaInput; motivos: string[] }> = [];
     for (const fila of filas) {
-      const motivos = detectarDup(fila.dni, fila.legajo);
+      const motivos = detectarDup(fila);
       if (motivos.length) {
         omitidos.push({ fila, motivos });
         continue;
