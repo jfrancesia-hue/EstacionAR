@@ -51,13 +51,16 @@ export function SeccionPermisionarios({ datos, onCambio }: { datos: DatosBackoff
           <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-texto-tenue">Ficha</h2>
           <Tarjeta className="bg-gradient-to-br from-superficie to-profundo/60">
             <div className="flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <h3 className="text-2xl font-extrabold">{sel.fullName.replace(" (DEMO)", "")}</h3>
-                <p className="text-sm text-texto-tenue">DNI {sel.dni} · {sel.contactPhone}</p>
-                <div className="mt-2 flex flex-wrap items-center gap-2">
-                  <EstadoPill estado={sel.status} />
-                  <Badge tono={sel.shift === "nocturno" ? "alerta" : "cyan"}>{sel.shift ?? "—"}</Badge>
-                  <Badge tono="neutro">★ {sel.rating || "s/d"}</Badge>
+              <div className="flex items-center gap-3">
+                <img src={`https://i.pravatar.cc/96?u=${sel.id}`} alt="" className="h-16 w-16 shrink-0 rounded-2xl object-cover" loading="lazy" />
+                <div>
+                  <h3 className="text-2xl font-extrabold">{sel.fullName.replace(" (DEMO)", "")}</h3>
+                  <p className="text-sm text-texto-tenue">DNI {sel.dni} · {sel.contactPhone}</p>
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <EstadoPill estado={sel.status} />
+                    <Badge tono={sel.shift === "nocturno" ? "alerta" : "cyan"}>{sel.shift ?? "—"}</Badge>
+                    <Badge tono="neutro">★ {sel.rating || "s/d"}</Badge>
+                  </div>
                 </div>
               </div>
               <div className="shrink-0 rounded-xl bg-white p-2 shadow-inner">

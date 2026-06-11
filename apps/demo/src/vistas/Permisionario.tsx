@@ -50,7 +50,7 @@ export function VistaPermisionario() {
     <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-cyan/15 text-lg font-bold text-cyan">{datos.perm.fullName.charAt(0)}</span>
+          <img src={`https://i.pravatar.cc/88?u=${datos.perm.id}`} alt="" className="h-11 w-11 rounded-2xl object-cover" loading="lazy" />
           <div>
             <p className="font-bold leading-tight">{datos.perm.fullName.replace(" (DEMO)", "")}</p>
             <p className="text-xs text-texto-tenue">{datos.perm.sector?.name ?? "Sin sector"}</p>
