@@ -2,13 +2,9 @@
 // Sin dependencias: se abre una ventana con el comprobante estilizado y se dispara print().
 import { formatARS, formatFechaHora, formatHora, formatMinutos, etiquetaMedio } from "@estacionar/ui";
 import type { ResultadoPago } from "@estacionar/ui";
+import { codigoVerif } from "../../verificacion.js";
 
-/** Código de verificación del comprobante (derivado del id del pago, estable y verificable). */
-export function codigoVerif(pagoId: string): string {
-  let h = 0;
-  for (const c of pagoId) h = (h * 31 + c.charCodeAt(0)) >>> 0;
-  return "EST-" + h.toString(36).toUpperCase().padStart(6, "0").slice(0, 6);
-}
+export { codigoVerif };
 
 export function textoComprobante(r: ResultadoPago): string {
   return [

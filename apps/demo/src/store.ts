@@ -25,6 +25,7 @@ import {
 } from "@estacionar/core";
 import type { Dashboard, PermisionarioConSector, ResultadoPago } from "@estacionar/ui";
 import { SPLIT, comisionPlataforma } from "./split.js";
+import { codigoVerif } from "./verificacion.js";
 
 // Efectivo registrado (PRODUCTO.md §9): el ciudadano elige efectivo → orden pendiente;
 // el permisionario confirma "recibido" → se activa el tiempo y se genera comprobante + deuda.
@@ -111,6 +112,9 @@ interface Store {
 // Plazo de vencimiento de una alerta de excedente (configurable). PRODUCTO.md §17.
 const ALERTA_HORAS = 48;
 
+// Medios digitales para variar el historial del seed (mix de medios más realista en reportes).
+const MEDIOS_DIGITALES: Array<Pago["method"]> = ["mercadopago", "modo", "naranja", "card"];
+
 function init(): Store {
   const now = new Date().toISOString();
   const seed = buildSeed(now);
@@ -184,7 +188,11 @@ function init(): Store {
     // Copias para poder mutar sesiones/pagos sin afectar el seed original.
     permisionarios: seed.permisionarios.map((p) => ({ ...p })),
     sesiones: [...seed.sesiones.map((s) => ({ ...s })), ...sesionesVencidas],
-    pagos: [...seed.pagos.map((p) => ({ ...p })), ...pagosVencidas],
+    // Variamos el medio de los pagos digitales del seed para un mix de medios realista.
+    pagos: [
+      ...seed.pagos.map((p, i) => (p.method === "cash" ? { ...p } : { ...p, method: MEDIOS_DIGITALES[i % MEDIOS_DIGITALES.length]! })),
+      ...pagosVencidas,
+    ],
     valoraciones: seed.valoraciones,
     incidencias,
     ordenesEfectivo: [],
@@ -712,6 +720,16 @@ export const clientLocal = {
   async getAlertas(): Promise<AlertaExcedente[]> {
     alertaVigente("", new Date().getTime()); // fuerza vencimiento automático
     return [...store.alertas].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  },
+
+  /** Verifica un comprobante por su código (pantalla pública /verificar). */
+  async verificarComprobante(codigo: string): Promise<{ valido: boolean; pago: Pago | null; sesion: Sesion | null; permisionario: Permisionario | null }> {
+    const cod = codigo.trim().toUpperCase();
+    const pago = store.pagos.find((p) => codigoVerif(p.id) === cod) ?? null;
+    if (!pago) return { valido: false, pago: null, sesion: null, permisionario: null };
+    const sesion = store.sesiones.find((s) => s.id === pago.sesionId) ?? null;
+    const permisionario = pago.permisionarioId ? store.permisionarios.find((p) => p.id === pago.permisionarioId) ?? null : null;
+    return { valido: true, pago, sesion, permisionario };
   },
 
   // ── Alta, validación e importación de permisionarios (PRODUCTO.md §5/§18) ──────

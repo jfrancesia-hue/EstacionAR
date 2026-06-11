@@ -7,6 +7,7 @@ import { imprimirComprobante, compartirComprobante, codigoVerif } from "./compro
 import { permisionarioIdDesdeQR } from "../../qr.js";
 import { acreditadoPermisionario, SPLIT } from "../../split.js";
 import { esPatenteValida } from "../../patente.js";
+import { Avatar } from "../../Avatar.js";
 
 // El lector de QR (@zxing) se carga sólo al abrir el escáner: mantiene liviano el bundle inicial.
 const EscanerQR = lazy(() => import("./EscanerQR.js").then((m) => ({ default: m.EscanerQR })));
@@ -295,13 +296,14 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
           ) : (
             // Paso 2: cargar patente y pagar
             <>
-              <div className="my-4 flex items-center justify-between gap-2 rounded-2xl bg-emerald-50 p-3">
-                <div className="min-w-0">
-                  <p className="text-xs text-emerald-700/70">Permisionario</p>
+              <div className="my-4 flex items-center gap-3 rounded-2xl bg-emerald-50 p-3">
+                <Avatar id={perm.id} nombre={perm.fullName} size={48} />
+                <div className="min-w-0 flex-1">
                   <p className="truncate font-bold text-emerald-800">{perm.fullName.replace(" (DEMO)", "")}</p>
                   <p className="text-xs text-emerald-700/70">{perm.sector?.name ?? "Sector asignado"}</p>
+                  <span className="text-[11px] font-bold text-emerald-600">● Permisionario habilitado</span>
                 </div>
-                <button onClick={() => setPerm(null)} className="shrink-0 text-xs font-bold text-emerald-700 underline">Cambiar</button>
+                <button onClick={() => setPerm(null)} className="shrink-0 self-start text-xs font-bold text-emerald-700 underline">Cambiar</button>
               </div>
               {alertaExc && (
                 <div className="mb-3 rounded-2xl border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">

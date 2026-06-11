@@ -1,6 +1,9 @@
+import { lazy, Suspense } from "react";
 import { Badge, Tarjeta, formatARS } from "@estacionar/ui";
 import { MapaSectores } from "./Mapa.js";
 import type { DatosBackoffice } from "./tipos.js";
+
+const MapaReal = lazy(() => import("./MapaReal.js").then((m) => ({ default: m.MapaReal })));
 
 export function SeccionSectores({ datos }: { datos: DatosBackoffice }) {
   const porSector = datos.dashboard.porSector;
@@ -8,7 +11,9 @@ export function SeccionSectores({ datos }: { datos: DatosBackoffice }) {
     <div className="grid gap-6 lg:grid-cols-[1.2fr_.8fr]">
       <div>
         <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-texto-tenue">Microcentro de Salta</h2>
-        <MapaSectores sectores={porSector} alto={460} />
+        <Suspense fallback={<MapaSectores sectores={porSector} alto={460} />}>
+          <MapaReal sectores={porSector} alto={460} />
+        </Suspense>
       </div>
       <div>
         <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-texto-tenue">Sectores ({datos.sectores.length})</h2>

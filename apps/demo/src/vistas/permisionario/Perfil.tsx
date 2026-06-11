@@ -1,13 +1,12 @@
 import { QRCodeSVG } from "qrcode.react";
 import { Badge, Tarjeta, EstadoPill } from "@estacionar/ui";
 import { urlPagoQR } from "../../qr.js";
+import { Avatar } from "../../Avatar.js";
 import type { DatosPermisionario } from "./tipos.js";
 
 export function SeccionPerfil({ datos }: { datos: DatosPermisionario }) {
   const p = datos.perm;
   const nombre = p.fullName.replace(" (DEMO)", "");
-  // Foto real (de muestra) determinista por permisionario; en producción es la cargada en el alta.
-  const fotoUrl = `https://i.pravatar.cc/240?u=${p.id}`;
   const habilitado = p.status === "active";
 
   return (
@@ -31,12 +30,7 @@ export function SeccionPerfil({ datos }: { datos: DatosPermisionario }) {
 
         <div className="grid gap-5 p-5 sm:grid-cols-[auto_1fr_auto] sm:items-center">
           <div className="mx-auto">
-            <img
-              src={fotoUrl}
-              alt={nombre}
-              loading="lazy"
-              className="h-28 w-28 rounded-2xl border-2 border-cyan/40 object-cover shadow-lg"
-            />
+            <Avatar id={p.id} nombre={nombre} size={112} className="border-2 border-cyan/40 shadow-lg" />
           </div>
 
           <div className="text-center sm:text-left">

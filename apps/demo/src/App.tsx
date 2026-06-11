@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, Link, useNavigate, useParams } from "react-rou
 import { Badge, Boton, Cargando, Logo, MarcaDemo } from "@estacionar/ui";
 import { VistaHome } from "./vistas/Home.js";
 import { VistaLogin } from "./vistas/Login.js";
+import { VistaVerificar } from "./vistas/Verificar.js";
 import { reiniciarDemo } from "./store.js";
 import { CUENTAS_DEMO, type Rol, type SesionDemo } from "./auth.js";
 
@@ -21,6 +22,7 @@ function HeaderPublico({ volver }: { volver?: boolean }) {
         <Link to="/" aria-label="Ir al inicio"><Logo /></Link>
         <div className="flex items-center gap-3">
           {volver && <Link to="/" className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-texto-tenue hover:text-texto">← Inicio</Link>}
+          <Link to="/verificar" className="hidden rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-texto-tenue hover:text-texto sm:inline-block">Verificar comprobante</Link>
           <div className="hidden items-center rounded-2xl bg-white px-3 py-1.5 shadow-sm sm:flex">
             <img src="/municipalidad-salta.jpeg" alt="Municipalidad de Salta" className="h-8 w-auto object-contain" />
           </div>
@@ -56,6 +58,17 @@ function HomeRoute() {
       <HeaderPublico />
       <div id="contenido" tabIndex={-1}>
         <VistaHome onElegirRol={(rol) => navigate(RUTA_ROL[rol])} />
+      </div>
+    </>
+  );
+}
+
+function VerificarRoute() {
+  return (
+    <>
+      <HeaderPublico volver />
+      <div id="contenido" tabIndex={-1}>
+        <VistaVerificar />
       </div>
     </>
   );
@@ -149,6 +162,7 @@ export default function App() {
           path="/municipio"
           element={<RutaRol rol="admin" sesion={sesion} onLogin={guardarSesion} onReiniciar={reiniciar} onCerrar={() => guardarSesion(null)} />}
         />
+        <Route path="/verificar" element={<VerificarRoute />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 

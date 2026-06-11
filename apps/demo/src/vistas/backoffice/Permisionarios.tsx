@@ -3,6 +3,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { Badge, Boton, Tarjeta, EstadoPill, formatARS } from "@estacionar/ui";
 import { clientLocal as client } from "../../store.js";
 import { urlPagoQR } from "../../qr.js";
+import { Avatar } from "../../Avatar.js";
 import { desglosarPagado } from "../../split.js";
 import type { DatosBackoffice } from "./tipos.js";
 
@@ -52,7 +53,7 @@ export function SeccionPermisionarios({ datos, onCambio }: { datos: DatosBackoff
           <Tarjeta className="bg-gradient-to-br from-superficie to-profundo/60">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="flex items-center gap-3">
-                <img src={`https://i.pravatar.cc/96?u=${sel.id}`} alt="" className="h-16 w-16 shrink-0 rounded-2xl object-cover" loading="lazy" />
+                <Avatar id={sel.id} nombre={sel.fullName} size={64} />
                 <div>
                   <h3 className="text-2xl font-extrabold">{sel.fullName.replace(" (DEMO)", "")}</h3>
                   <p className="text-sm text-texto-tenue">DNI {sel.dni} · {sel.contactPhone}</p>
