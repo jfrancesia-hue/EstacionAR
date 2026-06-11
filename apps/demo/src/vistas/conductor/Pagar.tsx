@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useState } from "react";
-import { Badge, Boton, Campo, Selector, Kpi, Tarjeta, formatARS, formatHora, formatMinutos } from "@estacionar/ui";
+import { Badge, Boton, Campo, Selector, Kpi, Tarjeta, formatARS, formatHora, formatMinutos, etiquetaMedio } from "@estacionar/ui";
 import type { PermisionarioConSector, ResultadoPago } from "@estacionar/ui";
 import type { CalcularTarifaResult, VehicleType } from "@estacionar/core";
 import { clientLocal as client, type OrdenEfectivo, type AlertaExcedente } from "../../store.js";
@@ -235,6 +235,7 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
                 <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Patente</span><b className="rounded-lg bg-[#0067B1] px-2 py-1 tracking-widest text-white">{resultado.pago.plate}</b></div>
                 <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Vigencia</span><b className="text-right">{formatHora(resultado.sesion.startValid)} → {formatHora(resultado.sesion.endValid)}</b></div>
                 <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Tiempo total</span><b>{formatMinutos(resultado.sesion.paidMinutes)}</b></div>
+                <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Medio de pago</span><b>{etiquetaMedio(resultado.pago.method)}</b></div>
                 <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Se acredita al permisionario</span><b className="text-emerald-600">{formatARS(acreditadoPermisionario(resultado.pago.amount))}</b></div>
                 <div className="flex items-end justify-between gap-4 border-t border-slate-200 pt-3 text-lg"><span className="text-slate-500">Pagaste</span><b className="text-2xl text-[#0067B1]">{formatARS(resultado.pago.amount)}</b></div>
                 <div className="flex items-center justify-between gap-4 pt-1 text-xs text-slate-400"><span>Código de verificación</span><b className="font-mono">{codigoVerif(resultado.pago.id)}</b></div>
