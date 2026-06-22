@@ -1,10 +1,7 @@
-import { lazy, Suspense } from "react";
 import { Badge, Kpi, Tarjeta, formatARS } from "@estacionar/ui";
 import { MapaSectores } from "./Mapa.js";
 import { desglosarPagado, SPLIT } from "../../split.js";
 import type { DatosBackoffice } from "./tipos.js";
-
-const MapaReal = lazy(() => import("./MapaReal.js").then((m) => ({ default: m.MapaReal })));
 
 export function SeccionInicio({ datos }: { datos: DatosBackoffice }) {
   const k = datos.dashboard.kpis;
@@ -21,9 +18,7 @@ export function SeccionInicio({ datos }: { datos: DatosBackoffice }) {
       <section className="grid gap-6 lg:grid-cols-[1.1fr_.9fr]">
         <div>
           <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-texto-tenue">Mapa de sectores fiscalizados</h2>
-          <Suspense fallback={<MapaSectores sectores={datos.dashboard.porSector} />}>
-            <MapaReal sectores={datos.dashboard.porSector} />
-          </Suspense>
+          <MapaSectores sectores={datos.dashboard.porSector} />
         </div>
         <div>
           <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-texto-tenue">Acreditación por permisionario</h2>

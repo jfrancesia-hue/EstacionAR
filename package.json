@@ -9,22 +9,25 @@
   },
   "scripts": {
     "build:core": "pnpm --filter @estacionar/core build",
-    "build": "pnpm build:core && pnpm --filter @estacionar/api build && pnpm -r --filter \"./apps/*\" build",
+    "build:ui": "pnpm --filter @estacionar/ui build",
+    "build": "pnpm build:core && pnpm build:ui && pnpm --filter @estacionar/api build && pnpm -r --filter \"./apps/*\" build",
     "build:demo": "pnpm build:core && pnpm --filter @estacionar/ui build && pnpm --filter @estacionar/demo build",
     "dev:demo": "pnpm build:core && pnpm --filter @estacionar/ui build && pnpm --filter @estacionar/demo dev",
-    "dev": "pnpm build:core && pnpm -r --parallel --filter=!@estacionar/core dev",
+    "dev": "pnpm build:core && pnpm build:ui && pnpm -r --parallel --filter=!@estacionar/core --filter=!@estacionar/ui dev",
     "dev:api": "pnpm build:core && pnpm --filter @estacionar/api dev",
-    "dev:backoffice": "pnpm build:core && pnpm --filter @estacionar/backoffice dev",
-    "dev:conductor": "pnpm build:core && pnpm --filter @estacionar/conductor dev",
-    "dev:permisionario": "pnpm build:core && pnpm --filter @estacionar/permisionario dev",
+    "dev:backoffice": "pnpm build:core && pnpm build:ui && pnpm --filter @estacionar/backoffice dev",
+    "dev:conductor": "pnpm build:core && pnpm build:ui && pnpm --filter @estacionar/conductor dev",
+    "dev:permisionario": "pnpm build:core && pnpm build:ui && pnpm --filter @estacionar/permisionario dev",
     "test": "pnpm --filter @estacionar/core test",
-    "typecheck": "pnpm build:core && pnpm -r --filter=!@estacionar/core typecheck",
+    "typecheck": "pnpm build:core && pnpm build:ui && pnpm -r --filter=!@estacionar/core --filter=!@estacionar/ui typecheck",
     "lint": "pnpm -r typecheck"
   },
   "devDependencies": {
     "typescript": "^5.6.3"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild"]
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }
