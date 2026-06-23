@@ -55,7 +55,7 @@ function EditorTarifa({ tarifa, onGuardar }: { tarifa: Tarifa; onGuardar: () => 
 export function SeccionTarifas({ datos, onCambio }: { datos: DatosBackoffice; onCambio: () => void }) {
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl border border-cyan/20 bg-cyan/10 p-4 text-sm text-cyan-300">
+      <div className="rounded-2xl border border-cyan/25 bg-cyan/10 p-4 text-sm text-texto">
         Las tarifas son <b>configurables sin tocar código</b>. El pago app genera comprobante digital, acredita al permisionario
         y asigna el porcentaje municipal con trazabilidad. La actualización semestral es solo un cambio de dato.
       </div>

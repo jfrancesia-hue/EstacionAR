@@ -62,7 +62,7 @@ export function SeccionPerfil({ datos }: { datos: DatosPermisionario }) {
         <p className="mt-3 text-xs text-texto-tenue">Tu DNI y documentación quedan del lado del Municipio para validación. En producción, el circuito puede vincularse con Mesa de Entradas, Tránsito Municipal y Estacionamiento Ordenado.</p>
       </Tarjeta>
 
-      <p className="rounded-xl border border-cyan/20 bg-cyan/10 p-4 text-sm text-cyan-300">
+      <p className="rounded-xl border border-cyan/25 bg-cyan/10 p-4 text-sm text-texto">
         El QR identifica al permisionario y se valida del lado del servidor en cada escaneo (estado, sector y turno vigentes).
         Un QR clonado no puede desviar fondos: el cobro siempre va por el split a la cuenta del permisionario.
       </p>

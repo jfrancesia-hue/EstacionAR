@@ -76,7 +76,7 @@ export function SeccionRecaudacion({ datos, onCambio }: { datos: DatosPermisiona
         </div>
       </Tarjeta>
 
-      <div className="rounded-2xl border border-cyan/20 bg-cyan/10 p-4 text-sm text-cyan-300">
+      <div className="rounded-2xl border border-cyan/25 bg-cyan/10 p-4 text-sm text-texto">
         Tu <b>80% se acredita directo a tu cuenta en el momento</b> de cada pago digital — no esperás liquidación.
         La Municipalidad fiscaliza online cada operación y conserva su 10% sin demorar tu cobro.
       </div>

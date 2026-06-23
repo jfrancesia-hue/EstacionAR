@@ -205,7 +205,7 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
           <Kpi label="Tiempo" valor={formatMinutos(minutes)} />
           <Kpi label="Precio app" valor={cotizando ? "…" : formatARS(monto)} acento="ambar" sub="Comprobante digital" />
         </div>
-        <div className="mt-6 grid gap-3 rounded-3xl border border-cyan/15 bg-cyan/10 p-4 text-sm text-cyan-300 sm:grid-cols-3">
+        <div className="mt-6 grid gap-3 rounded-3xl border border-cyan/25 bg-cyan/10 p-4 text-sm font-semibold text-texto sm:grid-cols-3">
           <span>1. Escaneá QR</span>
           <span>2. Pagá por patente</span>
           <span>3. Usá tu tiempo</span>
@@ -355,7 +355,7 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
           )}
           {error && <p className="mt-3 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
         </div>
-        <div className="relative mt-4 rounded-2xl border border-cyan/20 bg-cyan/10 p-4 text-sm leading-relaxed text-cyan-300">
+        <div className="relative mt-4 rounded-2xl border border-cyan/25 bg-cyan/10 p-4 text-sm leading-relaxed text-texto">
           Comprobante online listo para descargar o enviar por WhatsApp. El pago se acredita directo al permisionario y el Municipio lo fiscaliza en tiempo real.
         </div>
       </section>

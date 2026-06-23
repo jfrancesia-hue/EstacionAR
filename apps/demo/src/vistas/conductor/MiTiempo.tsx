@@ -52,7 +52,7 @@ export function SeccionMiTiempo() {
           </div>
 
           {saldo?.vigente && (
-            <div className="rounded-2xl border border-cyan/20 bg-cyan/10 p-4 text-sm text-cyan-300">
+            <div className="rounded-2xl border border-cyan/25 bg-cyan/10 p-4 text-sm text-texto">
               La patente <b>{plate}</b> tiene saldo activo hasta las {saldo.sesion ? formatHora(saldo.sesion.endValid) : "—"}.
               Podés reubicarte en otra mano habilitada sin volver a pagar.
             </div>
