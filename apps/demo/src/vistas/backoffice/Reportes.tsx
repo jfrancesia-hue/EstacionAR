@@ -22,9 +22,9 @@ function GraficoBarras({ serie }: { serie: DatosBackoffice["dashboard"]["serieDi
         const esHoy = i === serie.length - 1;
         return (
           <g key={d.date}>
-            <rect x={x} y={yCash} width={bw} height={hCash} rx="2" fill="#E0A82E" opacity={esHoy ? 1 : 0.75} />
-            <rect x={x} y={yDig} width={bw} height={hDig} rx="2" fill="#C1272D" opacity={esHoy ? 1 : 0.75} />
-            {esHoy && <text x={x + bw / 2} y={yDig - 5} textAnchor="middle" fill="#C1272D" fontSize="10" fontWeight="700">hoy</text>}
+            <rect x={x} y={yCash} width={bw} height={hCash} rx="2" fill="#F28C00" opacity={esHoy ? 1 : 0.75} />
+            <rect x={x} y={yDig} width={bw} height={hDig} rx="2" fill="#00A6D6" opacity={esHoy ? 1 : 0.75} />
+            {esHoy && <text x={x + bw / 2} y={yDig - 5} textAnchor="middle" fill="#00A6D6" fontSize="10" fontWeight="700">hoy</text>}
             <text x={x + bw / 2} y={H - 9} textAnchor="middle" fill="rgba(255,255,255,.4)" fontSize="9">{d.date.slice(8, 10)}</text>
           </g>
         );
@@ -47,7 +47,7 @@ export function SeccionReportes({ datos }: { datos: DatosBackoffice }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-borde bg-profundo/70 p-3">
         <p className="text-sm text-texto-tenue">Exportá los reportes para auditoría o presentación.</p>
         <div className="flex gap-2">
           <Boton variante="secundario" onClick={exportarCSV}>Descargar Excel (CSV)</Boton>
@@ -80,7 +80,7 @@ export function SeccionReportes({ datos }: { datos: DatosBackoffice }) {
                     <span>{etiquetaMedio(medio)}</span>
                     <b>{formatARS(valor)} · {pct}%</b>
                   </div>
-                  <div className="h-2.5 rounded-full bg-white/10">
+                  <div className="h-2.5 rounded-full bg-profundo">
                     <div className="h-2.5 rounded-full bg-gradient-to-r from-cyan to-ambar" style={{ width: `${pct}%` }} />
                   </div>
                 </div>
@@ -92,7 +92,7 @@ export function SeccionReportes({ datos }: { datos: DatosBackoffice }) {
         <Tarjeta titulo="Top sectores" accion={<Badge tono="cyan">por pagos</Badge>}>
           <div className="space-y-2">
             {[...datos.dashboard.porSector].sort((a, b) => b.total - a.total).slice(0, 6).map((s, i) => (
-              <div key={s.sectorId} className="flex items-center justify-between gap-3 rounded-xl bg-white/5 p-3 text-sm">
+              <div key={s.sectorId} className="flex items-center justify-between gap-3 rounded-xl bg-profundo/70 p-3 text-sm">
                 <span className="flex items-center gap-2"><span className="grid h-6 w-6 place-items-center rounded-lg bg-ambar/20 text-xs font-bold text-ambar">{i + 1}</span>{s.name}</span>
                 <b className="text-cyan">{formatARS(s.total)}</b>
               </div>
@@ -101,7 +101,7 @@ export function SeccionReportes({ datos }: { datos: DatosBackoffice }) {
         </Tarjeta>
       </section>
 
-      <p className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-texto-tenue">
+      <p className="rounded-xl border border-borde bg-profundo/70 p-3 text-xs text-texto-tenue">
         En producción estos reportes se exportan a Excel y PDF, con comparativas de período y filtros por fecha, sector y permisionario.
       </p>
     </div>

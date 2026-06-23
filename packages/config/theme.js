@@ -1,17 +1,15 @@
-// Paleta e identidad visual de EstacionAR Catamarca (Trama Poncho Operativa).
-// Compartida por todas las apps para mantener coherencia municipal y territorial.
+// Paleta e identidad visual de EstacionAR SFVC.
+// Inspirada en la identidad pública de Catamarca Capital: azul institucional,
+// celeste operativo y naranja de acción/servicio.
 export const colors = {
-  // Bordó/poncho institucional
-  nocturno: "#2B0F15", // vino profundo (fondos)
-  profundo: "#3A161E", // bordó superficie
-  // Acentos
-  cyan: "#C1272D", // rojo poncho (acción primaria; conserva key cyan por compatibilidad UI)
-  ambar: "#E0A82E", // ocre poncho (alertas, efectivo, corredores nocturnos)
-  // Neutros derivados
-  superficie: "#241015",
-  borde: "#6F2A28",
-  texto: "#FFF4EA",
-  textoTenue: "#D8B8A3",
+  nocturno: "#F4F8FC", // fondo institucional claro
+  profundo: "#E8F1F8", // superficie secundaria
+  cyan: "#00A6D6", // celeste municipal (acción primaria; conserva key cyan por compatibilidad UI)
+  ambar: "#F28C00", // naranja institucional (alertas, efectivo, destacados)
+  superficie: "#FFFFFF",
+  borde: "#D5E3EF",
+  texto: "#163A63",
+  textoTenue: "#526B83",
 };
 
 export const fonts = {

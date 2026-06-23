@@ -45,7 +45,7 @@ export function SeccionRecaudacion({ datos, onCambio }: { datos: DatosPermisiona
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-3xl font-extrabold">{formatARS(deuda.total)}</p>
-            <p className="text-xs text-texto-tenue">10% de cada efectivo confirmado · lo que en digital se descuenta solo.</p>
+            <p className="text-xs text-texto-tenue">10% de plataforma por cada efectivo confirmado · porcentaje municipal trazado en backoffice.</p>
           </div>
           <Boton variante="primario" onClick={pagarDeuda} cargando={pagando} disabled={deuda.total <= 0}>Pagar deuda</Boton>
         </div>
@@ -63,22 +63,22 @@ export function SeccionRecaudacion({ datos, onCambio }: { datos: DatosPermisiona
       </Tarjeta>
 
       <Tarjeta titulo="Cómo se reparte cada pago digital">
-        <div className="mb-3 flex h-5 overflow-hidden rounded-full bg-white/10 text-[10px] font-bold">
+        <div className="mb-3 flex h-5 overflow-hidden rounded-full bg-profundo text-[10px] font-bold">
           <div className="flex items-center justify-center bg-cyan text-nocturno" style={{ width: `${SPLIT.permisionarioPct}%` }}>VOS {SPLIT.permisionarioPct}%</div>
           <div className="flex items-center justify-center bg-ambar text-nocturno" style={{ width: `${SPLIT.plataformaPct}%` }}>{SPLIT.plataformaPct}%</div>
-          <div className="flex items-center justify-center bg-white/30" style={{ width: `${SPLIT.descuentoCiudadanoPct}%` }}>{SPLIT.descuentoCiudadanoPct}%</div>
+          <div className="flex items-center justify-center bg-profundo text-texto" style={{ width: `${SPLIT.municipioPct}%` }}>{SPLIT.municipioPct}%</div>
         </div>
         <div className="grid grid-cols-2 gap-2 text-xs text-texto-tenue sm:grid-cols-4">
           <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-cyan" /> Vos (permisionario) {SPLIT.permisionarioPct}%</span>
           <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-ambar" /> Plataforma {SPLIT.plataformaPct}%</span>
-          <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-white/30" /> Descuento al ciudadano {SPLIT.descuentoCiudadanoPct}%</span>
-          <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-white/10" /> Municipio 0%</span>
+          <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-profundo" /> Municipalidad {SPLIT.municipioPct}%</span>
+          <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-white/30" /> Descuento app {SPLIT.descuentoCiudadanoPct}%</span>
         </div>
       </Tarjeta>
 
       <div className="rounded-2xl border border-cyan/20 bg-cyan/10 p-4 text-sm text-cyan-300">
         Tu <b>80% se acredita directo a tu cuenta en el momento</b> de cada pago digital — no esperás liquidación.
-        El Municipio fiscaliza online cada operación, sin retener fondos ni demorar tu cobro.
+        La Municipalidad fiscaliza online cada operación y conserva su 10% sin demorar tu cobro.
       </div>
     </div>
   );

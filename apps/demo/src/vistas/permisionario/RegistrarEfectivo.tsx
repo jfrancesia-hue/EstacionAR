@@ -100,7 +100,7 @@ export function SeccionRegistrarEfectivo({ datos, onCambio }: { datos: DatosPerm
       {aviso && <p className="rounded-xl bg-emerald-500/15 px-3 py-2 text-sm text-emerald-300">{aviso}</p>}
 
       <div className="rounded-2xl border border-ambar/20 bg-ambar/10 p-4 text-sm text-ambar-400">
-        Cada efectivo confirmado suma una <b>deuda de plataforma del 10%</b> (lo que en el pago digital se descuenta solo).
+        Cada efectivo confirmado suma una <b>deuda de plataforma del 10%</b> y deja trazado el porcentaje municipal.
         La ves y la pagás desde “Recaudación”.
       </div>
     </div>

@@ -37,14 +37,15 @@ La demo no declara integración oficial: usa estos datos como contexto territori
 
 ## Diseño
 
-Dirección visual: poncho bordó/ocre, microcentro SFVC y controles municipales. Evitar estética SaaS azul/cyan genérica.
+Dirección visual: identidad institucional Catamarca Capital, con fondo claro, azul municipal, celeste operativo, naranja de acción y logo oficial provisto como referencia.
 
 Paleta principal:
 
-- Vino profundo: `#2B0F15`.
-- Superficie bordó: `#3A161E`.
-- Rojo poncho: `#C1272D`.
-- Ocre: `#E0A82E`.
+- Azul institucional: `#163A63`.
+- Fondo claro: `#F4F8FC`.
+- Superficie secundaria: `#E8F1F8`.
+- Celeste operativo: `#00A6D6`.
+- Naranja institucional: `#F28C00`.
 
 ## Verificación
 

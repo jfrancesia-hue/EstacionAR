@@ -39,7 +39,7 @@ export function EscanerQR({ onDetectar, onCerrar }: { onDetectar: (texto: string
 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-nocturno/90 p-4" role="dialog" aria-modal="true" aria-label="Escanear QR del permisionario">
-      <div className="w-full max-w-sm rounded-3xl border border-white/10 bg-superficie p-4 shadow-2xl">
+      <div className="w-full max-w-sm rounded-3xl border border-borde bg-superficie p-4 shadow-2xl">
         <div className="flex items-center justify-between">
           <h3 className="font-bold">Escaneá el QR del permisionario</h3>
           <button onClick={onCerrar} aria-label="Cerrar escáner" className="rounded-lg px-2 py-1 text-texto-tenue hover:text-texto">✕</button>

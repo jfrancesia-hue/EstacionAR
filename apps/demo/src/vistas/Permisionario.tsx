@@ -63,7 +63,7 @@ export function VistaPermisionario() {
           <button
             onClick={() => setNotis((v) => !v)}
             aria-label={`Notificaciones (${datos.vencidas.length})`}
-            className="relative rounded-xl border border-white/10 bg-white/5 p-2 text-lg leading-none transition hover:bg-white/10"
+            className="relative rounded-xl border border-borde bg-profundo/70 p-2 text-lg leading-none transition hover:bg-profundo"
           >
             🔔
             {datos.vencidas.length > 0 && (
@@ -72,7 +72,7 @@ export function VistaPermisionario() {
           </button>
           <Badge tono="cyan">Credencial activa</Badge>
           {notis && (
-            <div className="absolute right-0 top-12 z-30 w-72 rounded-2xl border border-white/10 bg-superficie p-3 shadow-2xl">
+            <div className="absolute right-0 top-12 z-30 w-72 rounded-2xl border border-borde bg-superficie p-3 shadow-2xl">
               <p className="mb-2 text-sm font-bold">Notificaciones</p>
               {datos.vencidas.length === 0 ? (
                 <p className="py-2 text-xs text-texto-tenue">Sin avisos. Todo al día en tu zona.</p>
@@ -93,14 +93,14 @@ export function VistaPermisionario() {
         </div>
       </div>
 
-      <nav aria-label="Secciones del permisionario" className="mb-6 flex gap-1 overflow-x-auto rounded-2xl border border-white/10 bg-white/5 p-1">
+      <nav aria-label="Secciones del permisionario" className="mb-6 flex gap-1 overflow-x-auto rounded-2xl border border-borde bg-profundo/70 p-1">
         {PESTANAS.map((p) => (
           <button
             key={p.id}
             onClick={() => setPestana(p.id)}
             aria-current={pestana === p.id ? "page" : undefined}
             className={`shrink-0 whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold transition ${
-              pestana === p.id ? "bg-cyan text-nocturno shadow-glow" : "text-texto-tenue hover:text-texto"
+              pestana === p.id ? "bg-cyan text-white shadow-glow" : "text-texto-tenue hover:text-texto"
             }`}
           >
             {p.label}

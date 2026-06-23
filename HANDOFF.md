@@ -19,7 +19,7 @@ Stack: Vite + React 18 + PWA + monorepo pnpm.
 - Textos cambiados de Salta a San Fernando del Valle de Catamarca / SFVC.
 - Paleta cambiada a vino/bordó/ocre.
 - Sectores demo: Plaza 25 de Mayo, Peatonal Rivadavia, Calle Sarmiento, Calle República, Calle Esquiú y Av. Belgrano.
-- Assets nuevos: `catamarca-preview.jpeg`, `catamarca-brand.svg`, `icon.svg` recoloreado.
+- Assets nuevos: `catamarca-preview.jpeg`, `catamarca-logo.png`, `icon.svg` recoloreado.
 - Backoffice usa `MapaSectores` SVG; `MapaReal.tsx` queda como adapter SVG sin dependencias de mapa.
 - Removidas dependencias de Leaflet del demo: `leaflet`, `react-leaflet`, `@types/leaflet`.
 

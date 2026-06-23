@@ -56,8 +56,8 @@ export function SeccionTarifas({ datos, onCambio }: { datos: DatosBackoffice; on
   return (
     <div className="space-y-6">
       <div className="rounded-2xl border border-cyan/20 bg-cyan/10 p-4 text-sm text-cyan-300">
-        Las tarifas son <b>configurables sin tocar código</b>. El beneficio app se aplica al ciudadano y no se transforma
-        en comisión para proveedor ni retención municipal. La actualización semestral es solo un cambio de dato.
+        Las tarifas son <b>configurables sin tocar código</b>. El pago app genera comprobante digital, acredita al permisionario
+        y asigna el porcentaje municipal con trazabilidad. La actualización semestral es solo un cambio de dato.
       </div>
       <div className="grid gap-6 lg:grid-cols-2">
         {datos.tarifas.map((t) => (
@@ -68,10 +68,10 @@ export function SeccionTarifas({ datos, onCambio }: { datos: DatosBackoffice; on
         <div className="grid gap-4 text-sm sm:grid-cols-4">
           <div className="rounded-xl bg-cyan/10 p-3"><p className="text-texto-tenue">Permisionario</p><b className="text-lg text-cyan">{SPLIT.permisionarioPct}%</b></div>
           <div className="rounded-xl bg-ambar/10 p-3"><p className="text-texto-tenue">Comisión plataforma</p><b className="text-lg text-ambar">{SPLIT.plataformaPct}%</b></div>
-          <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Beneficio ciudadano</p><b className="text-lg">{SPLIT.descuentoCiudadanoPct}%</b></div>
-          <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Al Municipio</p><b className="text-lg">0%</b></div>
+          <div className="rounded-xl bg-profundo/70 p-3"><p className="text-texto-tenue">Al Municipio</p><b className="text-lg">{SPLIT.municipioPct}%</b></div>
+          <div className="rounded-xl bg-profundo/70 p-3"><p className="text-texto-tenue">Descuento app</p><b className="text-lg">{SPLIT.descuentoCiudadanoPct}%</b></div>
         </div>
-        <p className="mt-3 text-xs text-texto-tenue">Tolerancia post-vencimiento {formatMinutos(datos.config.toleranceMinutes)} · {datos.config.feriados.length} feriados sin cobro. El Municipio no retiene fondos: fiscaliza.</p>
+        <p className="mt-3 text-xs text-texto-tenue">Tolerancia post-vencimiento {formatMinutos(datos.config.toleranceMinutes)} · {datos.config.feriados.length} feriados sin cobro. El Municipio fiscaliza y conserva su 10% con trazabilidad.</p>
       </Tarjeta>
     </div>
   );

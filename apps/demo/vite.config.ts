@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["icon.svg", "catamarca-preview.jpeg", "catamarca-brand.svg"],
+      includeAssets: ["icon.svg", "catamarca-preview.jpeg", "catamarca-logo.png"],
       manifest: {
         name: "EstacionAR · Municipalidad de SFVC",
         short_name: "EstacionAR",
@@ -18,8 +18,8 @@ export default defineConfig({
         scope: "/",
         display: "standalone",
         orientation: "portrait",
-        background_color: "#2B0F15",
-        theme_color: "#2B0F15",
+        background_color: "#163A63",
+        theme_color: "#163A63",
         icons: [
           { src: "/icon.svg", sizes: "any", type: "image/svg+xml", purpose: "any" },
           { src: "/icon.svg", sizes: "512x512", type: "image/svg+xml", purpose: "maskable" },

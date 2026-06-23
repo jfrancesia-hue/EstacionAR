@@ -1,4 +1,4 @@
-// Design system compartido de EstacionAR. Estetica premium B2G (paleta CLAUDE.md §6).
+// Design system compartido de EstacionAR. Identidad institucional SFVC.
 import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from "react";
 
 function cn(...xs: Array<string | false | null | undefined>): string {
@@ -10,11 +10,13 @@ export function Logo({ size = 28, withText = true }: { size?: number; withText?:
   return (
     <div className="flex items-center gap-2.5">
       <svg width={size} height={size} viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <rect width="40" height="40" rx="10" fill="#C1272D" />
-        <g transform="translate(8 7)" stroke="#FFF4EA" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+        <rect width="40" height="40" rx="5" fill="#163A63" />
+        <path d="M0 28h40v12H0z" fill="#00A6D6" opacity="0.92" />
+        <path d="M28 0h12v14H28z" fill="#F28C00" opacity="0.95" />
+        <g transform="translate(8 7)" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
-          <circle cx="7" cy="17" r="2" fill="#C1272D" />
-          <circle cx="17" cy="17" r="2" fill="#C1272D" />
+          <circle cx="7" cy="17" r="2" fill="#163A63" />
+          <circle cx="17" cy="17" r="2" fill="#163A63" />
         </g>
       </svg>
       {withText && (
@@ -29,7 +31,7 @@ export function Logo({ size = 28, withText = true }: { size?: number; withText?:
 // Banner que deja claro que es una demo (nunca presentar datos falsos como reales).
 export function MarcaDemo({ texto = "DATOS DEMO — no son datos reales de produccion" }: { texto?: string }) {
   return (
-    <div className="flex items-center justify-center gap-2 bg-ambar/15 px-3 py-1 text-center text-[11px] font-semibold uppercase tracking-wider text-ambar-400">
+    <div className="flex items-center justify-center gap-2 border-b border-borde bg-white px-3 py-1 text-center text-[11px] font-semibold uppercase tracking-wider text-texto-tenue">
       <span className="inline-block h-1.5 w-1.5 rounded-full bg-ambar" />
       {texto}
     </div>
@@ -45,13 +47,13 @@ type BotonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 export function Boton({ variante = "primario", grande, cargando, type = "button", className, children, disabled, ...rest }: BotonProps) {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan/60 focus-visible:ring-offset-2 focus-visible:ring-offset-nocturno";
+    "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan/60 focus-visible:ring-offset-2 focus-visible:ring-offset-nocturno";
   const tam = grande ? "px-6 py-4 text-lg" : "px-4 py-2.5 text-sm";
   const variantes: Record<string, string> = {
-    primario: "bg-cyan text-nocturno hover:bg-cyan-400 shadow-glow",
-    secundario: "bg-borde/60 text-texto hover:bg-borde",
-    ambar: "bg-ambar text-nocturno hover:bg-ambar-400",
-    fantasma: "bg-transparent text-texto-tenue hover:text-texto hover:bg-borde/40",
+    primario: "bg-cyan text-white hover:bg-cyan-600 shadow-glow",
+    secundario: "border border-borde bg-white text-texto hover:bg-profundo",
+    ambar: "bg-ambar text-white hover:bg-ambar-600",
+    fantasma: "bg-transparent text-texto-tenue hover:text-texto hover:bg-profundo",
     peligro: "bg-red-500/90 text-white hover:bg-red-500",
   };
   return (
@@ -65,7 +67,7 @@ export function Boton({ variante = "primario", grande, cargando, type = "button"
 // ── Tarjeta ─────────────────────────────────────────────────────────────────
 export function Tarjeta({ children, className, titulo, accion }: { children: ReactNode; className?: string; titulo?: ReactNode; accion?: ReactNode }) {
   return (
-    <div className={cn("rounded-2xl border border-borde/70 bg-superficie/80 p-5 shadow-card backdrop-blur", className)}>
+    <div className={cn("rounded-xl border border-borde bg-superficie p-5 shadow-card", className)}>
       {(titulo || accion) && (
         <div className="mb-4 flex items-center justify-between gap-3">
           {titulo && <h3 className="text-sm font-bold uppercase tracking-wide text-texto-tenue">{titulo}</h3>}
@@ -81,7 +83,7 @@ export function Tarjeta({ children, className, titulo, accion }: { children: Rea
 export function Kpi({ label, valor, sub, acento = "cyan", icono }: { label: string; valor: ReactNode; sub?: ReactNode; acento?: "cyan" | "ambar" | "texto"; icono?: ReactNode }) {
   const color = acento === "ambar" ? "text-ambar" : acento === "texto" ? "text-texto" : "text-cyan";
   return (
-    <div className="rounded-2xl border border-borde/70 bg-gradient-to-br from-superficie to-profundo/60 p-5 shadow-card">
+    <div className="rounded-xl border border-borde bg-gradient-to-br from-white to-profundo/70 p-5 shadow-card">
       <div className="flex items-center justify-between">
         <p className="text-xs font-semibold uppercase tracking-wider text-texto-tenue">{label}</p>
         {icono && <span className={color}>{icono}</span>}
@@ -95,13 +97,13 @@ export function Kpi({ label, valor, sub, acento = "cyan", icono }: { label: stri
 // ── Badge / pill de estado ────────────────────────────────────────────────────
 export function Badge({ children, tono = "neutro" }: { children: ReactNode; tono?: "neutro" | "ok" | "alerta" | "error" | "cyan" }) {
   const tonos: Record<string, string> = {
-    neutro: "bg-borde/60 text-texto-tenue",
+    neutro: "bg-profundo text-texto-tenue",
     ok: "bg-emerald-500/15 text-emerald-300",
     alerta: "bg-ambar/15 text-ambar-400",
     error: "bg-red-500/15 text-red-300",
     cyan: "bg-cyan/15 text-cyan-400",
   };
-  return <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold", tonos[tono])}>{children}</span>;
+  return <span className={cn("inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold", tonos[tono])}>{children}</span>;
 }
 
 const ESTADO_TONO: Record<string, "ok" | "alerta" | "error" | "neutro"> = {
@@ -142,7 +144,7 @@ export function Campo({ label, className, ...rest }: InputHTMLAttributes<HTMLInp
       {label && <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-texto-tenue">{label}</span>}
       <input
         className={cn(
-          "w-full rounded-xl border border-borde bg-nocturno/60 px-4 py-3 text-texto placeholder:text-texto-tenue/60 focus:border-cyan focus:outline-none focus:ring-2 focus:ring-cyan/30",
+          "w-full rounded-lg border border-borde bg-white px-4 py-3 text-texto placeholder:text-texto-tenue/60 focus:border-cyan focus:outline-none focus:ring-2 focus:ring-cyan/30",
           className,
         )}
         {...rest}
@@ -157,7 +159,7 @@ export function Selector({ label, className, children, ...rest }: SelectHTMLAttr
       {label && <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-texto-tenue">{label}</span>}
       <select
         className={cn(
-          "w-full rounded-xl border border-borde bg-nocturno/60 px-4 py-3 text-texto focus:border-cyan focus:outline-none focus:ring-2 focus:ring-cyan/30",
+          "w-full rounded-lg border border-borde bg-white px-4 py-3 text-texto focus:border-cyan focus:outline-none focus:ring-2 focus:ring-cyan/30",
           className,
         )}
         {...rest}

@@ -44,7 +44,7 @@ export function SeccionFiscalizacion() {
       <div className="flex flex-wrap gap-2">
         <span className="text-xs text-texto-tenue">Ejemplos demo microcentro SFVC:</span>
         {EJEMPLOS.map((p) => (
-          <button key={p} onClick={() => buscar(p)} className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-mono hover:border-cyan/50">{p}</button>
+          <button key={p} onClick={() => buscar(p)} className="rounded-full border border-borde bg-profundo/70 px-3 py-1 text-xs font-mono hover:border-cyan/50">{p}</button>
         ))}
       </div>
 
@@ -60,10 +60,10 @@ export function SeccionFiscalizacion() {
                 <Kpi label="Tolerancia" valor={formatMinutos(res.toleranceMinutes)} acento="texto" />
               </div>
               <div className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
-                <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Permisionario</p><b>{res.permisionario?.fullName.replace(" (DEMO)", "") ?? "—"}</b></div>
-                <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Sector</p><b>{res.sector?.name ?? "—"}</b></div>
-                <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Medio de pago</p><b>{res.pago ? etiquetaMedio(res.pago.method) : "—"}</b></div>
-                <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Comprobante</p><b className="font-mono text-xs">{res.pago?.id ?? "—"}</b></div>
+                <div className="rounded-xl bg-profundo/70 p-3"><p className="text-texto-tenue">Permisionario</p><b>{res.permisionario?.fullName.replace(" (DEMO)", "") ?? "—"}</b></div>
+                <div className="rounded-xl bg-profundo/70 p-3"><p className="text-texto-tenue">Sector</p><b>{res.sector?.name ?? "—"}</b></div>
+                <div className="rounded-xl bg-profundo/70 p-3"><p className="text-texto-tenue">Medio de pago</p><b>{res.pago ? etiquetaMedio(res.pago.method) : "—"}</b></div>
+                <div className="rounded-xl bg-profundo/70 p-3"><p className="text-texto-tenue">Comprobante</p><b className="font-mono text-xs">{res.pago?.id ?? "—"}</b></div>
               </div>
             </>
           )}

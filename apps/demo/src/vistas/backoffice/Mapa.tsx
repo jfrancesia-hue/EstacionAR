@@ -23,16 +23,16 @@ export function MapaSectores({ sectores, alto = 380 }: { sectores: Dashboard["po
   const py = (lat: number) => pad + ((maxLat - lat) / spanLat) * (H - pad * 2);
 
   return (
-    <div className="relative overflow-hidden rounded-[2rem] border border-ambar/25 bg-[#241015]">
+    <div className="relative overflow-hidden rounded-[2rem] border border-borde bg-white shadow-card">
       <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full" role="img" aria-label="Mapa de sectores del microcentro de San Fernando del Valle de Catamarca">
         {/* grilla */}
         <defs>
           <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M40 0H0V40" fill="none" stroke="rgba(224,168,46,.13)" strokeWidth="1" />
+            <path d="M40 0H0V40" fill="none" stroke="rgba(0,166,214,.14)" strokeWidth="1" />
           </pattern>
           <radialGradient id="glow" cx="50%" cy="40%" r="60%">
-            <stop offset="0%" stopColor="rgba(193,39,45,.18)" />
-            <stop offset="100%" stopColor="rgba(193,39,45,0)" />
+            <stop offset="0%" stopColor="rgba(0,166,214,.18)" />
+            <stop offset="100%" stopColor="rgba(0,166,214,0)" />
           </radialGradient>
         </defs>
         <rect width={W} height={H} fill="url(#grid)" />
@@ -41,7 +41,7 @@ export function MapaSectores({ sectores, alto = 380 }: { sectores: Dashboard["po
         {sectores.map((s) => {
           const ring = s.ring.map(([lng, lat]) => `${px(lng).toFixed(1)},${py(lat).toFixed(1)}`).join(" ");
           const intensidad = 0.15 + (s.total / maxTotal) * 0.55;
-          const color = s.shift === "nocturno" ? "224,168,46" : "193,39,45";
+          const color = s.shift === "nocturno" ? "242,140,0" : "0,166,214";
           return (
             <polygon
               key={`ring-${s.sectorId}`}
@@ -57,18 +57,18 @@ export function MapaSectores({ sectores, alto = 380 }: { sectores: Dashboard["po
           const cx = px(s.centroid[0]);
           const cy = py(s.centroid[1]);
           const r = 5 + (s.total / maxTotal) * 9;
-          const color = s.shift === "nocturno" ? "#E0A82E" : "#C1272D";
+          const color = s.shift === "nocturno" ? "#F28C00" : "#00A6D6";
           return (
             <g key={`pt-${s.sectorId}`}>
               <circle cx={cx} cy={cy} r={r} fill={color} opacity="0.9" />
               <circle cx={cx} cy={cy} r={r + 5} fill="none" stroke={color} strokeWidth="1" opacity="0.4" />
-              <text x={cx} y={cy - r - 7} textAnchor="middle" className="fill-white" fontSize="12" fontWeight="700">{s.name}</text>
-              <text x={cx} y={cy + r + 14} textAnchor="middle" fill="rgba(255,255,255,.6)" fontSize="10">{formatARS(s.total)}</text>
+              <text x={cx} y={cy - r - 7} textAnchor="middle" fill="#163A63" fontSize="12" fontWeight="800">{s.name}</text>
+              <text x={cx} y={cy + r + 14} textAnchor="middle" fill="#526B83" fontSize="10">{formatARS(s.total)}</text>
             </g>
           );
         })}
       </svg>
-      <div className="flex flex-wrap items-center gap-4 border-t border-white/10 px-5 py-3 text-xs text-texto-tenue">
+      <div className="flex flex-wrap items-center gap-4 border-t border-borde bg-profundo/60 px-5 py-3 text-xs text-texto-tenue">
         <span className="flex items-center gap-2"><span className="h-3 w-3 rounded-full bg-cyan" /> Diurno</span>
         <span className="flex items-center gap-2"><span className="h-3 w-3 rounded-full bg-ambar" /> Nocturno</span>
         <span>El tamaño del punto refleja la recaudación del sector.</span>

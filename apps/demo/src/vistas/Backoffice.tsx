@@ -74,7 +74,7 @@ export function VistaBackoffice() {
               onClick={() => setSeccion(s.id)}
               aria-current={seccion === s.id ? "page" : undefined}
               className={`flex shrink-0 items-center gap-3 whitespace-nowrap rounded-xl px-4 py-2.5 text-sm font-semibold transition lg:w-full ${
-                seccion === s.id ? "bg-cyan text-nocturno shadow-glow" : "text-texto-tenue hover:bg-white/5 hover:text-texto"
+                seccion === s.id ? "bg-cyan text-white shadow-glow" : "text-texto-tenue hover:bg-profundo/70 hover:text-texto"
               }`}
             >
               <span aria-hidden="true" className="text-base">{s.icono}</span>

@@ -44,17 +44,17 @@ export function imprimirComprobante(r: ResultadoPago): void {
   <title>Comprobante ${r.pago.plate} · EstacionAR</title>
   <style>
     * { box-sizing: border-box; }
-    body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; padding: 24px; color: #2B0F15; }
+    body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; padding: 24px; color: #163A63; }
     .card { max-width: 360px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 18px; overflow: hidden; }
-    .head { background: #2B0F15; color: #fff; padding: 18px 20px; }
+    .head { background: #163A63; color: #fff; padding: 18px 20px; }
     .head h1 { margin: 0; font-size: 18px; } .head p { margin: 4px 0 0; font-size: 12px; color: #9fb3c8; }
     .ok { background: #ecfdf5; color: #047857; text-align: center; padding: 12px; font-weight: 800; }
     .rows { padding: 16px 20px; }
     .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #e2e8f0; font-size: 14px; }
     .row:last-child { border-bottom: 0; }
     .row b { text-align: right; }
-    .total { font-size: 22px; color: #C1272D; }
-    .plate { background: #C1272D; color: #fff; padding: 2px 8px; border-radius: 6px; letter-spacing: 2px; }
+    .total { font-size: 22px; color: #00A6D6; }
+    .plate { background: #00A6D6; color: #fff; padding: 2px 8px; border-radius: 6px; letter-spacing: 2px; }
     .foot { padding: 14px 20px; font-size: 11px; color: #64748b; text-align: center; }
     @media print { body { padding: 0; } .card { border: 0; } }
   </style></head>

@@ -36,7 +36,7 @@ export interface OrdenEfectivo {
   plate: string;
   vehicleType: VehicleType;
   minutes: number;
-  amount: number; // lo que paga el ciudadano (con descuento app)
+  amount: number; // lo que paga el ciudadano
   sectorId: string | null;
   status: EstadoOrdenEfectivo;
   createdAt: string;
@@ -49,7 +49,7 @@ export interface MovimientoDeuda {
   permisionarioId: string;
   ordenId: string;
   plate: string;
-  amount: number; // 10% que el permisionario debe a la plataforma
+  amount: number; // 10% que el permisionario debe a la plataforma por efectivo
   status: EstadoDeuda;
   createdAt: string;
 }
@@ -180,9 +180,9 @@ function init(): Store {
   });
 
   return {
-    // Comisión de plataforma = 10% (modelo 80/10/10), no la retención municipal vieja.
+    // Comisión de plataforma = 10% y componente municipal = 10% (modelo 80/10/10).
     config: { ...seed.config, feePct: SPLIT.plataformaPct },
-    // Descuento al ciudadano = 10% (modelo 80/10/10); el otro 10% que resigna la Muni es la plataforma.
+    // Sin descuento al ciudadano: el 10% queda asignado a la Municipalidad.
     tarifas: seed.tarifas.map((t) => ({ ...t, digitalDiscountPct: SPLIT.descuentoCiudadanoPct })),
     sectores: seed.sectores,
     // Copias para poder mutar sesiones/pagos sin afectar el seed original.
@@ -493,7 +493,7 @@ export const clientLocal = {
     const now = new Date().toISOString();
     const tarifa = seleccionarTarifaVigente(store.tarifas, data.vehicleType, now);
     if (!tarifa) throw new Error("No hay tarifa vigente.");
-    // Efectivo vía app: mismo descuento que digital (beneficio por usar la app).
+    // Efectivo vía app: mismo precio que digital, con trazabilidad y componente municipal.
     const calc = calcularTarifa({ vehicleType: data.vehicleType, minutes: data.minutes, isDigital: true, date: now, tarifa, feriados: store.config.feriados });
     const orden: OrdenEfectivo = {
       id: newId("orden"),

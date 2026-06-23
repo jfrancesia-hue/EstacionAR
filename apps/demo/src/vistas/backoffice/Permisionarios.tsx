@@ -35,7 +35,7 @@ export function SeccionPermisionarios({ datos, onCambio }: { datos: DatosBackoff
               }`}
             >
               <span className="flex min-w-0 items-center gap-3">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/10 text-sm font-bold">{p.fullName.charAt(0)}</span>
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-profundo text-sm font-bold">{p.fullName.charAt(0)}</span>
                 <span className="min-w-0">
                   <span className="block truncate text-sm font-semibold">{p.fullName.replace(" (DEMO)", "")}</span>
                   <span className="block truncate text-xs text-texto-tenue">{p.sector?.name ?? "Sin sector"}</span>
@@ -65,17 +65,17 @@ export function SeccionPermisionarios({ datos, onCambio }: { datos: DatosBackoff
                 </div>
               </div>
               <div className="shrink-0 rounded-xl bg-white p-2 shadow-inner">
-                <QRCodeSVG value={urlPagoQR(sel)} size={96} bgColor="#ffffff" fgColor="#2B0F15" level="M" />
+                <QRCodeSVG value={urlPagoQR(sel)} size={96} bgColor="#ffffff" fgColor="#163A63" level="M" />
               </div>
             </div>
 
             <div className="mt-5 grid grid-cols-2 gap-3 text-sm sm:grid-cols-3">
-              <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Sector</p><b>{sel.sector?.name ?? "—"}</b></div>
-              <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Acreditado (80%)</p><b className="text-cyan">{formatARS(desglosarPagado(recaudacion?.total ?? 0).permisionario)}</b></div>
-              <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Operaciones</p><b>{recaudacion?.ops ?? 0}</b></div>
+              <div className="rounded-xl bg-profundo/70 p-3"><p className="text-texto-tenue">Sector</p><b>{sel.sector?.name ?? "—"}</b></div>
+              <div className="rounded-xl bg-profundo/70 p-3"><p className="text-texto-tenue">Acreditado (80%)</p><b className="text-cyan">{formatARS(desglosarPagado(recaudacion?.total ?? 0).permisionario)}</b></div>
+              <div className="rounded-xl bg-profundo/70 p-3"><p className="text-texto-tenue">Operaciones</p><b>{recaudacion?.ops ?? 0}</b></div>
             </div>
 
-            <div className="mt-4 rounded-xl border border-white/10 bg-nocturno/40 p-3">
+            <div className="mt-4 rounded-xl border border-borde bg-nocturno/40 p-3">
               <p className="text-xs uppercase tracking-wide text-texto-tenue">Token QR (credencial firmada)</p>
               <p className="mt-1 break-all font-mono text-[11px] text-texto-tenue">{sel.qrToken}</p>
             </div>

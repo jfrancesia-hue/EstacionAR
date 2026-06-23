@@ -35,7 +35,7 @@ function parseCSV(texto: string): AltaInput[] {
 
 function SubirFoto({ label, valor, onCambio }: { label: string; valor?: string; onCambio: (url: string) => void }) {
   return (
-    <label className="flex cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-borde bg-white/5 p-2 text-center transition hover:border-cyan">
+    <label className="flex cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-borde bg-profundo/70 p-2 text-center transition hover:border-cyan">
       {valor ? (
         <img src={valor} alt={label} className="h-14 w-full rounded object-cover" />
       ) : (
@@ -62,9 +62,9 @@ export function SeccionAltas({ onCambio }: { onCambio: () => void }) {
   const [tab, setTab] = useState<TabAlta>("pendientes");
   return (
     <div className="space-y-5">
-      <nav className="inline-flex gap-1 rounded-2xl border border-white/10 bg-white/5 p-1">
+      <nav className="inline-flex gap-1 rounded-2xl border border-borde bg-profundo/70 p-1">
         {(["pendientes", "nueva", "importar"] as TabAlta[]).map((t) => (
-          <button key={t} onClick={() => setTab(t)} className={`rounded-xl px-4 py-2 text-sm font-semibold capitalize transition ${tab === t ? "bg-cyan text-nocturno shadow-glow" : "text-texto-tenue hover:text-texto"}`}>
+          <button key={t} onClick={() => setTab(t)} className={`rounded-xl px-4 py-2 text-sm font-semibold capitalize transition ${tab === t ? "bg-cyan text-white shadow-glow" : "text-texto-tenue hover:text-texto"}`}>
             {t === "pendientes" ? "Validación" : t === "nueva" ? "Alta individual" : "Importar CSV"}
           </button>
         ))}
@@ -219,7 +219,7 @@ function Importar({ onCambio }: { onCambio: () => void }) {
       {preview && (
         <div className="mt-4">
           <p className="mb-2 text-sm font-semibold">{preview.length} filas detectadas</p>
-          <div className="max-h-56 overflow-auto rounded-xl border border-white/10">
+          <div className="max-h-56 overflow-auto rounded-xl border border-borde">
             <table className="w-full text-left text-xs">
               <thead className="sticky top-0 bg-superficie text-texto-tenue">
                 <tr><th className="p-2">Nombre</th><th className="p-2">DNI</th><th className="p-2">Legajo</th><th className="p-2">Cuadra</th><th className="p-2">Turno</th></tr>
