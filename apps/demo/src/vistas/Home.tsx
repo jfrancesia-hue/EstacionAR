@@ -29,8 +29,8 @@ export function VistaHome({ onElegirRol }: { onElegirRol: (rol: Rol) => void }) 
           </div>
         </div>
 
-        <div className="relative">
-          <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-cyan/20 blur-3xl" />
+        <div className="relative overflow-hidden rounded-[2rem] lg:overflow-visible">
+          <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-cyan/20 blur-3xl lg:-right-10 lg:-top-10" />
           <div className="absolute -bottom-10 left-6 h-32 w-56 rounded-full bg-ambar/15 blur-3xl" />
           <div className="relative grid gap-4">
             {ACCESOS.map(({ rol, icono, acento }) => {
