@@ -1,120 +1,51 @@
-# EstacionAR — Handoff demo casi producción
+# EstacionAR · Handoff demo SFVC
 
-## Estado actual
+## Estado
 
-Proyecto creado como monorepo TypeScript para demo comercial de **EstacionAR · Municipalidad de Salta**.
+Demo comercial local para **EstacionAR · Municipalidad de San Fernando del Valle de Catamarca**.
 
-El objetivo de esta primera entrega es mostrar un vertical slice fiscal vendible:
+App desplegable: `apps/demo`.
+Stack: Vite + React 18 + PWA + monorepo pnpm.
 
-1. Municipio ve recaudación y control en tiempo real.
-2. Conductor escanea QR, ingresa patente, paga y recibe comprobante.
-3. La sesión se vincula a la patente, no a la cuadra: si se mueve dentro de la ventana no paga dos veces.
-4. Permisionario carga efectivo de forma auditada e inmutable.
-5. Backoffice separa digital/efectivo, muestra sectores, tarifas, permisionarios y auditoría.
-6. QR/nonce y estado del permisionario preparan la capa antifraude.
-7. Rendición/liquidación modeladas para explicar control fiscal municipal.
+## Reglas importantes
 
-## Branding y diseño
+- No agregar `react-leaflet@5`: exige React 19 y rompe el deploy. El mapa es SVG propio.
+- No tocar el script raíz `build`: ya incluye `build:ui`.
+- Mantener español argentino con voseo.
+- No declarar integración oficial con el Municipio: es demo/prototipo contextualizado.
 
-- Producto: **EstacionAR**.
-- Co-branding: **Municipalidad de Salta**.
-- Referencia visual: `brand_refs/municipalidad_salta.jpeg`.
-- Dirección: MotionSite premium B2G, ciudad nocturna, grilla urbana, sectores, QR, billetera de tiempo por patente, recaudación municipal.
-- Colores:
-  - Azul municipal: `#0067B1` / `#006BB6`.
-  - Azul noche: `#0A1A2F`.
-  - Azul profundo: `#102A47`.
-  - Cyan tecnológico: `#0FB6CE`.
-  - Ámbar vial: `#F5A623`.
+## Personalización aplicada
 
-## Estructura
+- Textos cambiados de Salta a San Fernando del Valle de Catamarca / SFVC.
+- Paleta cambiada a vino/bordó/ocre.
+- Sectores demo: Plaza 25 de Mayo, Peatonal Rivadavia, Calle Sarmiento, Calle República, Calle Esquiú y Av. Belgrano.
+- Assets nuevos: `catamarca-preview.jpeg`, `catamarca-brand.svg`, `icon.svg` recoloreado.
+- Backoffice usa `MapaSectores` SVG; `MapaReal.tsx` queda como adapter SVG sin dependencias de mapa.
+- Removidas dependencias de Leaflet del demo: `leaflet`, `react-leaflet`, `@types/leaflet`.
 
-```txt
-apps/
-  backoffice/       Panel municipal MotionSite
-  conductor/        App/PWA demo para conductor
-  permisionario/    App/PWA demo para permisionario
-packages/
-  api/              API TypeScript demo
-  core/             Reglas puras testeadas
-  ui/               Design system compartido
-  config/           Config compartida
-supabase/
-  migrations/       Schema SQL Postgres/PostGIS
-```
+## Contexto municipal incorporado
 
-## Comandos
+Fuente: página pública de Tránsito Municipal de la Municipalidad de SFVC.
 
-Instalar:
-
-```bash
-pnpm install
-```
-
-Tests core:
-
-```bash
-pnpm test
-```
-
-Build completo:
-
-```bash
-pnpm build
-```
-
-Levantar apps:
-
-```bash
-pnpm dev:backoffice      # http://localhost:5173
-pnpm dev:conductor       # http://localhost:5174
-pnpm dev:permisionario   # http://localhost:5175
-pnpm dev:api             # API demo
-```
+- Dirección de Tránsito Municipal.
+- Base operativa: Los Regionales esq. Santa Fe.
+- Mesa General de Entradas: Maipú 611.
+- Estacionamiento Ordenado: Sarmiento 1050.
+- Atención: lunes a viernes 07/08 a 13 hs.
+- Teléfono: 03834-437-417.
+- Email: transitomunicipal@catamarcaciudad.gob.ar.
+- Futuras extensiones: libre estacionamiento para discapacidad, espacios reservados, taxi/remis y constancias.
 
 ## Verificación realizada
 
-- `pnpm test`: OK, 31 tests pasados.
-- `pnpm build`: OK, compilan API + Backoffice + Conductor + Permisionario.
+- `pnpm install --lockfile-only`: OK.
+- `pnpm build:demo`: OK.
+- Playwright mobile layout audit: OK, sin overflow horizontal y sin errores de consola.
+- Búsqueda: sin `Municipalidad de Salta`, `microcentro de Salta`, `municipalidad-salta`, `react-leaflet` ni `leaflet/dist`.
 
-## Qué está listo para mostrar
+## Próximo QA recomendado
 
-### Backoffice municipal
-- Hero institucional EstacionAR · Municipalidad de Salta.
-- Mapa/grilla urbana de sectores.
-- KPIs de recaudación total, digital, efectivo y sesiones activas.
-- Tarifas configurables visibles.
-- Permisionarios con estado.
-- Auditoría fiscal resumida.
-
-### App Conductor
-- Flujo QR → sector → patente → tiempo → precio digital → pago.
-- Comprobante municipal.
-- Mensaje claro de billetera de tiempo por patente.
-
-### App Permisionario
-- Credencial QR.
-- Recaudación del día.
-- Separación digital/efectivo.
-- Registro de efectivo auditado.
-- Últimos movimientos.
-
-## Próximos pasos recomendados
-
-1. QA visual en navegador real y ajustes de responsive.
-2. Agregar navegación interna más profunda en cada app.
-3. ✅ HECHO — las 3 apps consumen la API real (Conductor paga de verdad, Permisionario carga
-   efectivo, Backoffice refleja todo en vivo con "Actualizar"). Verificado end-to-end.
-4. Deploy preview para compartir link.
-5. Preparar guion comercial de 7 minutos.
-6. Si avanza venta/licitación: migrar API demo a NestJS completo + Supabase real + Mercado Pago sandbox.
-
-## Guion comercial recomendado
-
-1. Abrir backoffice y mostrar recaudación municipal en tiempo real.
-2. Abrir app conductor y pagar patente `AB123CD`.
-3. Explicar que la sesión queda asociada a la patente, no a la cuadra.
-4. Mostrar app permisionario cargando efectivo auditado.
-5. Volver al backoffice: digital/efectivo separados y trazabilidad.
-6. Mostrar tarifas configurables sin tocar código.
-7. Cerrar con antifraude: QR firmado, permisionario suspendido rechazado, auditoría inmutable.
+1. Reiniciar `pnpm dev:demo` para evitar cache vieja de Vite.
+2. Revisar mobile en `http://localhost:5180`.
+3. Probar roles: conductor, permisionario y municipio.
+4. Al desplegar, probar en incógnito.

@@ -43,11 +43,20 @@ export function SeccionInicio({ datos }: { datos: DatosBackoffice }) {
         </div>
       </section>
 
-      <section>
+      <section className="grid gap-4 lg:grid-cols-[.9fr_1.1fr]">
+        <Tarjeta titulo="Dirección de Tránsito Municipal" accion={<Badge tono="cyan">SFVC</Badge>}>
+          <div className="space-y-2 text-sm text-texto-tenue">
+            <p><b className="text-texto">Base operativa:</b> Los Regionales esq. Santa Fe.</p>
+            <p><b className="text-texto">Mesa General de Entradas:</b> Maipú 611.</p>
+            <p><b className="text-texto">Estacionamiento Ordenado:</b> referencia operativa Sarmiento 1050.</p>
+            <p><b className="text-texto">Atención:</b> lunes a viernes, 07/08 a 13 hs · 03834-437-417.</p>
+            <p><b className="text-texto">Contacto:</b> transitomunicipal@catamarcaciudad.gob.ar.</p>
+          </div>
+        </Tarjeta>
         <Tarjeta titulo="Tesis comercial" accion={<Badge tono="cyan">Para el Municipio</Badge>}>
           <div className="grid gap-3 text-sm text-texto-tenue md:grid-cols-3">
             <p><b className="text-texto">El permisionario cobra al instante.</b> Su {SPLIT.permisionarioPct}% se acredita directo a su cuenta en cada pago digital — sin liquidar a cientos de personas ni pasar por rentas generales.</p>
-            <p><b className="text-texto">El Municipio no maneja fondos.</b> Resigna su 20% para dar beneficio al ciudadano y sostener la plataforma; gana modernización, trazabilidad y control online.</p>
+            <p><b className="text-texto">Tránsito Municipal fiscaliza.</b> Puede controlar pagos, credenciales, patentes, sectores y espacios reservados sin manejar fondos.</p>
             <p><b className="text-texto">El ciudadano paga menos.</b> {SPLIT.descuentoCiudadanoPct}% de descuento por usar la app vs. el efectivo con talonario, con comprobante digital.</p>
           </div>
         </Tarjeta>

@@ -23,16 +23,16 @@ export function MapaSectores({ sectores, alto = 380 }: { sectores: Dashboard["po
   const py = (lat: number) => pad + ((maxLat - lat) / spanLat) * (H - pad * 2);
 
   return (
-    <div className="relative overflow-hidden rounded-[2rem] border border-cyan/20 bg-[#061323]">
-      <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full" role="img" aria-label="Mapa de sectores del microcentro de Salta">
+    <div className="relative overflow-hidden rounded-[2rem] border border-ambar/25 bg-[#241015]">
+      <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full" role="img" aria-label="Mapa de sectores del microcentro de San Fernando del Valle de Catamarca">
         {/* grilla */}
         <defs>
           <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M40 0H0V40" fill="none" stroke="rgba(15,182,206,.12)" strokeWidth="1" />
+            <path d="M40 0H0V40" fill="none" stroke="rgba(224,168,46,.13)" strokeWidth="1" />
           </pattern>
           <radialGradient id="glow" cx="50%" cy="40%" r="60%">
-            <stop offset="0%" stopColor="rgba(15,182,206,.18)" />
-            <stop offset="100%" stopColor="rgba(15,182,206,0)" />
+            <stop offset="0%" stopColor="rgba(193,39,45,.18)" />
+            <stop offset="100%" stopColor="rgba(193,39,45,0)" />
           </radialGradient>
         </defs>
         <rect width={W} height={H} fill="url(#grid)" />
@@ -41,7 +41,7 @@ export function MapaSectores({ sectores, alto = 380 }: { sectores: Dashboard["po
         {sectores.map((s) => {
           const ring = s.ring.map(([lng, lat]) => `${px(lng).toFixed(1)},${py(lat).toFixed(1)}`).join(" ");
           const intensidad = 0.15 + (s.total / maxTotal) * 0.55;
-          const color = s.shift === "nocturno" ? "245,166,35" : "15,182,206";
+          const color = s.shift === "nocturno" ? "224,168,46" : "193,39,45";
           return (
             <polygon
               key={`ring-${s.sectorId}`}
@@ -57,7 +57,7 @@ export function MapaSectores({ sectores, alto = 380 }: { sectores: Dashboard["po
           const cx = px(s.centroid[0]);
           const cy = py(s.centroid[1]);
           const r = 5 + (s.total / maxTotal) * 9;
-          const color = s.shift === "nocturno" ? "#F5A623" : "#0FB6CE";
+          const color = s.shift === "nocturno" ? "#E0A82E" : "#C1272D";
           return (
             <g key={`pt-${s.sectorId}`}>
               <circle cx={cx} cy={cy} r={r} fill={color} opacity="0.9" />

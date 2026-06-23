@@ -32,7 +32,7 @@ export function SeccionFiscalizacion() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <p className="text-sm text-texto-tenue">
-        Control rápido por patente: estado del estacionamiento, vigencia, permisionario, comprobante y medio de pago.
+        Control rápido de Tránsito Municipal por patente: estado del estacionamiento, vigencia, permisionario, comprobante, medio de pago y alertas de excedente. También sirve como base para futuros controles de espacios reservados y libre estacionamiento.
       </p>
 
       <form onSubmit={(e) => { e.preventDefault(); buscar(); }} className="flex flex-wrap items-end gap-3">
@@ -42,7 +42,7 @@ export function SeccionFiscalizacion() {
         <Boton type="submit" grande cargando={buscando} disabled={!plate.trim()}>Controlar</Boton>
       </form>
       <div className="flex flex-wrap gap-2">
-        <span className="text-xs text-texto-tenue">Ejemplos:</span>
+        <span className="text-xs text-texto-tenue">Ejemplos demo microcentro SFVC:</span>
         {EJEMPLOS.map((p) => (
           <button key={p} onClick={() => buscar(p)} className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-mono hover:border-cyan/50">{p}</button>
         ))}

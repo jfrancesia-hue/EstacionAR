@@ -24,10 +24,10 @@ const MEDIOS: Array<{ id: MedioPago; label: string }> = [
   { id: "efectivo", label: "Efectivo" },
 ];
 
-function SaltaMark() {
+function CatamarcaMark() {
   return (
     <div className="flex min-w-0 items-center rounded-2xl bg-white px-3 py-2 shadow-sm">
-      <img src="/municipalidad-salta.jpeg" alt="Municipalidad de Salta" className="h-9 max-w-[130px] object-contain" />
+      <img src="/catamarca-brand.svg" alt="Municipalidad de San Fernando del Valle de Catamarca" className="h-9 max-w-[130px] object-contain" />
     </div>
   );
 }
@@ -193,7 +193,7 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
       )}
 
       <section className="min-w-0">
-        <Badge tono="cyan">Pagá por patente · Municipalidad de Salta</Badge>
+        <Badge tono="cyan">Pagá por patente · Municipalidad de San Fernando del Valle de Catamarca</Badge>
         <h1 className="mt-5 max-w-2xl text-4xl font-extrabold leading-[0.98] tracking-tight sm:text-5xl lg:text-6xl">
           Pagá tu estacionamiento en segundos.
         </h1>
@@ -215,9 +215,9 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
       <section className="relative mx-auto w-full max-w-[430px] rounded-[2.2rem] border border-white/10 bg-gradient-to-br from-profundo to-nocturno p-3 shadow-2xl sm:p-4">
         <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-cyan/20 blur-3xl" />
         <div className="absolute -bottom-8 left-8 h-28 w-52 rounded-full bg-ambar/20 blur-3xl" />
-        <div className="relative overflow-hidden rounded-[1.7rem] bg-white p-4 text-[#0A1A2F] sm:p-5">
+        <div className="relative overflow-hidden rounded-[1.7rem] bg-white p-4 text-[#2B0F15] sm:p-5">
           <div className="flex min-w-0 items-center justify-between gap-3">
-            <SaltaMark />
+            <CatamarcaMark />
             <span className={`shrink-0 rounded-full px-3 py-1 text-[11px] font-black uppercase tracking-wide ${perm ? "bg-emerald-500/10 text-emerald-700" : "bg-slate-100 text-slate-400"}`}>
               {perm ? "Permisionario OK" : "Escaneá QR"}
             </span>
@@ -233,12 +233,12 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
                 <p className="text-xs text-emerald-700/70">Acreditado al permisionario · {resultado.pago.id}</p>
               </div>
               <div className="mt-4 space-y-3 rounded-2xl bg-slate-50 p-4 text-sm text-slate-900">
-                <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Patente</span><b className="rounded-lg bg-[#0067B1] px-2 py-1 tracking-widest text-white">{resultado.pago.plate}</b></div>
+                <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Patente</span><b className="rounded-lg bg-[#C1272D] px-2 py-1 tracking-widest text-white">{resultado.pago.plate}</b></div>
                 <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Vigencia</span><b className="text-right">{formatHora(resultado.sesion.startValid)} → {formatHora(resultado.sesion.endValid)}</b></div>
                 <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Tiempo total</span><b>{formatMinutos(resultado.sesion.paidMinutes)}</b></div>
                 <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Medio de pago</span><b>{etiquetaMedio(resultado.pago.method)}</b></div>
                 <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Se acredita al permisionario</span><b className="text-emerald-600">{formatARS(acreditadoPermisionario(resultado.pago.amount))}</b></div>
-                <div className="flex items-end justify-between gap-4 border-t border-slate-200 pt-3 text-lg"><span className="text-slate-500">Pagaste</span><b className="text-2xl text-[#0067B1]">{formatARS(resultado.pago.amount)}</b></div>
+                <div className="flex items-end justify-between gap-4 border-t border-slate-200 pt-3 text-lg"><span className="text-slate-500">Pagaste</span><b className="text-2xl text-[#C1272D]">{formatARS(resultado.pago.amount)}</b></div>
                 <div className="flex items-center justify-between gap-4 pt-1 text-xs text-slate-400"><span>Código de verificación</span><b className="font-mono">{codigoVerif(resultado.pago.id)}</b></div>
               </div>
               <div className="mt-4 grid grid-cols-2 gap-2">
@@ -274,7 +274,7 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
               <div className="mt-4 space-y-2 rounded-2xl bg-slate-50 p-4 text-sm text-slate-900">
                 <div className="flex items-center justify-between"><span className="text-slate-500">Patente</span><b>{ordenPendiente.plate}</b></div>
                 <div className="flex items-center justify-between"><span className="text-slate-500">Tiempo</span><b>{formatMinutos(ordenPendiente.minutes)}</b></div>
-                <div className="flex items-end justify-between border-t border-slate-200 pt-2 text-lg"><span className="text-slate-500">A pagar en efectivo</span><b className="text-[#0067B1]">{formatARS(ordenPendiente.amount)}</b></div>
+                <div className="flex items-end justify-between border-t border-slate-200 pt-2 text-lg"><span className="text-slate-500">A pagar en efectivo</span><b className="text-[#C1272D]">{formatARS(ordenPendiente.amount)}</b></div>
               </div>
               <Boton grande className="mt-4 w-full" onClick={verificarOrden} cargando={verificando}>Ya lo confirmó</Boton>
               <button onClick={() => { setOrdenPendiente(null); sessionStorage.removeItem("estacionar:orden"); }} className="mt-2 w-full text-xs font-semibold text-slate-500 hover:underline">Cancelar</button>
@@ -283,7 +283,7 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
             // Paso 1: escanear el QR del permisionario
             <div className="my-4 text-center">
               <div className="mx-auto grid h-24 w-24 place-items-center rounded-3xl bg-[#F5F7FA]">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" className="text-[#0067B1]"><path d="M4 4h6v6H4V4Zm0 10h6v6H4v-6ZM14 4h6v6h-6V4Zm2 12h4v4h-4v-4Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" className="text-[#C1272D]"><path d="M4 4h6v6H4V4Zm0 10h6v6H4v-6ZM14 4h6v6h-6V4Zm2 12h4v4h-4v-4Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
               </div>
               <h3 className="mt-4 text-lg font-black text-slate-800">Escaneá el QR del permisionario</h3>
               <p className="mt-1 text-sm text-slate-500">Lo encontrás en su credencial. Así el cobro queda asociado a su sector.</p>
@@ -325,7 +325,7 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
                   </div>
                   <div className="flex items-end justify-between gap-4 border-t border-slate-200 pt-3 text-lg">
                     <span className="text-slate-500">Total</span>
-                    <b className="text-2xl text-[#0067B1]">{cotizando ? "…" : formatARS(monto)}</b>
+                    <b className="text-2xl text-[#C1272D]">{cotizando ? "…" : formatARS(monto)}</b>
                   </div>
                 </div>
                 <div className="mt-4">
@@ -340,7 +340,7 @@ export function SeccionPagar({ qrId }: { qrId?: string }) {
                           medio === m.id
                             ? m.id === "efectivo"
                               ? "border-amber-500 bg-amber-50 text-amber-700"
-                              : "border-[#0067B1] bg-[#0067B1]/10 text-[#0067B1]"
+                              : "border-[#C1272D] bg-[#C1272D]/10 text-[#C1272D]"
                             : "border-slate-200 text-slate-400 hover:border-slate-300"
                         }`}
                       >

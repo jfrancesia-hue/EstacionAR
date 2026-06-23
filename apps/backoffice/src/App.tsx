@@ -19,8 +19,8 @@ function CityMap({ sectores }: { sectores: Dashboard["porSector"] }) {
   const top = sectores.slice(0, 6);
   const maxTotal = Math.max(1, ...top.map((s) => s.total));
   return (
-    <div className="relative min-h-[360px] overflow-hidden rounded-[2rem] border border-cyan/20 bg-[#061323] p-6 shadow-2xl">
-      <div className="absolute inset-0 opacity-50 [background-image:linear-gradient(rgba(15,182,206,.16)_1px,transparent_1px),linear-gradient(90deg,rgba(15,182,206,.16)_1px,transparent_1px)] [background-size:42px_42px]" />
+    <div className="relative min-h-[360px] overflow-hidden rounded-[2rem] border border-ambar/25 bg-[#241015] p-6 shadow-2xl">
+      <div className="absolute inset-0 opacity-50 [background-image:linear-gradient(rgba(193,39,45,.16)_1px,transparent_1px),linear-gradient(90deg,rgba(193,39,45,.16)_1px,transparent_1px)] [background-size:42px_42px]" />
       <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-cyan/20 blur-3xl" />
       <div className="absolute bottom-0 left-10 h-28 w-[80%] rounded-t-full bg-ambar/10 blur-3xl" />
       <div className="relative grid grid-cols-3 gap-4">
@@ -29,7 +29,7 @@ function CityMap({ sectores }: { sectores: Dashboard["porSector"] }) {
           return (
             <div key={sector.sectorId} className="group rounded-2xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur transition hover:-translate-y-1 hover:border-cyan/50">
               <div className="mb-3 flex items-center justify-between">
-                <span className="h-3 w-3 rounded-full bg-cyan shadow-[0_0_18px_#0FB6CE]" />
+                <span className="h-3 w-3 rounded-full bg-cyan shadow-[0_0_18px_#C1272D]" />
                 <Badge tono={sector.shift === "nocturno" ? "alerta" : "cyan"}>{sector.shift}</Badge>
               </div>
               <p className="text-sm font-bold text-white">{sector.name}</p>
@@ -118,7 +118,7 @@ export default function App() {
           <Logo />
           <div className="flex items-center gap-3">
             <div className="hidden items-center rounded-2xl bg-white px-3 py-2 shadow-sm sm:flex">
-              <img src="/municipalidad-salta.jpeg" alt="Municipalidad de Salta" className="h-9 w-auto object-contain" />
+              <img src="/catamarca-brand.svg" alt="Municipalidad de San Fernando del Valle de Catamarca" className="h-9 w-auto object-contain" />
             </div>
             <Boton variante="ambar" onClick={cargar} cargando={actualizando}>Actualizar</Boton>
           </div>
@@ -129,10 +129,10 @@ export default function App() {
           <div>
             <div className="flex flex-wrap items-center gap-3">
               <Badge tono="cyan">EstacionAR · Control municipal en tiempo real</Badge>
-              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-texto-tenue">Municipalidad de Salta</span>
+              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-texto-tenue">Municipalidad de San Fernando del Valle de Catamarca</span>
             </div>
             <h1 className="mt-5 text-5xl font-extrabold leading-tight tracking-tight md:text-7xl">
-              Estacionamiento medido con <span className="text-cyan">recaudación trazable</span> para Salta.
+              Estacionamiento medido con <span className="text-cyan">recaudación trazable</span> para Catamarca.
             </h1>
             <p className="mt-6 max-w-2xl text-lg text-texto-tenue">
               El Municipio fiscaliza cada pago online, el permisionario cobra directo y el conductor obtiene beneficio por usar la app.

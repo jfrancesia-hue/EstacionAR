@@ -1,28 +1,28 @@
-/** Preset Tailwind compartido — identidad visual EstacionAR (CLAUDE.md §6). */
+/** Preset Tailwind compartido — identidad visual EstacionAR Catamarca. */
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   theme: {
     extend: {
       colors: {
-        nocturno: "#0A1A2F",
-        profundo: "#102A47",
-        superficie: "#0E2138",
-        borde: "#1C3A5E",
+        nocturno: "#2B0F15",
+        profundo: "#3A161E",
+        superficie: "#241015",
+        borde: "#6F2A28",
         cyan: {
-          DEFAULT: "#0FB6CE",
-          50: "#E6FAFD",
-          400: "#33C7DA",
-          500: "#0FB6CE",
-          600: "#0C92A5",
+          DEFAULT: "#C1272D",
+          50: "#FFF1F2",
+          400: "#E45C58",
+          500: "#C1272D",
+          600: "#9F1D25",
         },
         ambar: {
-          DEFAULT: "#F5A623",
-          400: "#F7B84E",
-          500: "#F5A623",
-          600: "#D88A0C",
+          DEFAULT: "#E0A82E",
+          400: "#E9BF57",
+          500: "#E0A82E",
+          600: "#B98216",
         },
-        texto: "#E8F1F8",
-        "texto-tenue": "#9CB3C9",
+        texto: "#FFF4EA",
+        "texto-tenue": "#D8B8A3",
       },
       fontFamily: {
         sans: ["'Plus Jakarta Sans'", "'Inter'", "system-ui", "sans-serif"],
@@ -32,12 +32,12 @@ module.exports = {
         "2xl": "1.25rem",
       },
       boxShadow: {
-        glow: "0 0 0 1px rgba(15,182,206,0.25), 0 8px 30px -8px rgba(15,182,206,0.35)",
-        card: "0 10px 40px -12px rgba(0,0,0,0.55)",
+        glow: "0 0 0 1px rgba(193,39,45,0.25), 0 8px 30px -8px rgba(193,39,45,0.38)",
+        card: "0 10px 40px -12px rgba(22,4,8,0.70)",
       },
       backgroundImage: {
         "grid-vial":
-          "radial-gradient(circle at 1px 1px, rgba(28,58,94,0.55) 1px, transparent 0)",
+          "radial-gradient(circle at 1px 1px, rgba(224,168,46,0.28) 1px, transparent 0)",
       },
     },
   },

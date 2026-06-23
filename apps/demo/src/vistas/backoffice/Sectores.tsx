@@ -7,7 +7,7 @@ export function SeccionSectores({ datos }: { datos: DatosBackoffice }) {
   return (
     <div className="grid gap-6 lg:grid-cols-[1.2fr_.8fr]">
       <div>
-        <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-texto-tenue">Microcentro de Salta</h2>
+        <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-texto-tenue">Microcentro de San Fernando del Valle de Catamarca</h2>
         <MapaSectores sectores={porSector} alto={460} />
       </div>
       <div>
@@ -29,8 +29,7 @@ export function SeccionSectores({ datos }: { datos: DatosBackoffice }) {
           ))}
         </div>
         <p className="mt-4 rounded-xl border border-ambar/20 bg-ambar/10 p-3 text-xs text-ambar-400">
-          La geometría de cada sector es PostGIS (Polygon 4326). En producción se dibuja sobre mapa real
-          y habilita consultas espaciales de recaudación y ocupación.
+          La geometría de cada sector queda preparada para producción con PostGIS. En esta demo se muestra como mapa SVG propio para evitar dependencias de mapa y mantener compatibilidad con React 18.
         </p>
       </div>
     </div>

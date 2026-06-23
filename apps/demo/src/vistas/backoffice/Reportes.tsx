@@ -22,9 +22,9 @@ function GraficoBarras({ serie }: { serie: DatosBackoffice["dashboard"]["serieDi
         const esHoy = i === serie.length - 1;
         return (
           <g key={d.date}>
-            <rect x={x} y={yCash} width={bw} height={hCash} rx="2" fill="#F5A623" opacity={esHoy ? 1 : 0.75} />
-            <rect x={x} y={yDig} width={bw} height={hDig} rx="2" fill="#0FB6CE" opacity={esHoy ? 1 : 0.75} />
-            {esHoy && <text x={x + bw / 2} y={yDig - 5} textAnchor="middle" fill="#0FB6CE" fontSize="10" fontWeight="700">hoy</text>}
+            <rect x={x} y={yCash} width={bw} height={hCash} rx="2" fill="#E0A82E" opacity={esHoy ? 1 : 0.75} />
+            <rect x={x} y={yDig} width={bw} height={hDig} rx="2" fill="#C1272D" opacity={esHoy ? 1 : 0.75} />
+            {esHoy && <text x={x + bw / 2} y={yDig - 5} textAnchor="middle" fill="#C1272D" fontSize="10" fontWeight="700">hoy</text>}
             <text x={x + bw / 2} y={H - 9} textAnchor="middle" fill="rgba(255,255,255,.4)" fontSize="9">{d.date.slice(8, 10)}</text>
           </g>
         );

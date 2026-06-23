@@ -18,10 +18,10 @@ import type { CalcularTarifaResult, ConsultaSesion, VehicleType } from "@estacio
 
 const OPCIONES_MINUTOS = [30, 60, 90, 120, 180];
 
-function SaltaMark() {
+function CatamarcaMark() {
   return (
     <div className="flex min-w-0 items-center rounded-2xl bg-white px-3 py-2 shadow-sm">
-      <img src="/municipalidad-salta.jpeg" alt="Municipalidad de Salta" className="h-9 max-w-[130px] object-contain" />
+      <img src="/catamarca-brand.svg" alt="Municipalidad de San Fernando del Valle de Catamarca" className="h-9 max-w-[130px] object-contain" />
     </div>
   );
 }
@@ -32,9 +32,9 @@ function QrDemo() {
       {Array.from({ length: 49 }).map((_, i) => {
         const finder = (i < 14 && i % 7 < 2) || (i % 7 > 4 && i < 14) || (i > 34 && i % 7 < 2);
         const active = finder || i % 5 === 0 || i % 8 === 0 || [17, 22, 30, 37, 41].includes(i);
-        return <span key={i} className={active ? "rounded-[3px] bg-[#0067B1]" : "rounded-[3px] bg-[#0A1A2F]/10"} />;
+        return <span key={i} className={active ? "rounded-[3px] bg-[#C1272D]" : "rounded-[3px] bg-[#2B0F15]/10"} />;
       })}
-      <div className="absolute inset-1/2 grid h-12 w-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-xl border border-[#0067B1]/20 bg-white text-xs font-black text-[#0067B1] shadow">AR</div>
+      <div className="absolute inset-1/2 grid h-12 w-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-xl border border-[#C1272D]/20 bg-white text-xs font-black text-[#C1272D] shadow">AR</div>
     </div>
   );
 }
@@ -108,12 +108,12 @@ export default function App() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-nocturno text-texto">
-      <MarcaDemo texto="APP CONDUCTOR DEMO — Municipalidad de Salta" />
+      <MarcaDemo texto="APP CONDUCTOR DEMO — Municipalidad de San Fernando del Valle de Catamarca" />
       <main className="mx-auto grid min-h-[calc(100vh-28px)] max-w-6xl gap-8 px-4 py-6 sm:px-6 lg:grid-cols-[.92fr_1.08fr] lg:items-center lg:py-10">
         <section className="min-w-0">
           <div className="flex flex-wrap items-center gap-3">
             <Logo />
-            <Badge tono="cyan">Municipalidad de Salta</Badge>
+            <Badge tono="cyan">Municipalidad de San Fernando del Valle de Catamarca</Badge>
             <a href="http://localhost:5173" className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-texto-tenue hover:text-texto">Volver al backoffice</a>
           </div>
           <h1 className="mt-5 max-w-2xl text-4xl font-extrabold leading-[0.98] tracking-tight sm:text-5xl lg:text-6xl">
@@ -144,9 +144,9 @@ export default function App() {
         <section className="relative mx-auto w-full max-w-[430px] rounded-[2.2rem] border border-white/10 bg-gradient-to-br from-profundo to-nocturno p-3 shadow-2xl sm:p-4">
           <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-cyan/20 blur-3xl" />
           <div className="absolute -bottom-8 left-8 h-28 w-52 rounded-full bg-ambar/20 blur-3xl" />
-          <div className="relative overflow-hidden rounded-[1.7rem] bg-white p-4 text-[#0A1A2F] sm:p-5">
+          <div className="relative overflow-hidden rounded-[1.7rem] bg-white p-4 text-[#2B0F15] sm:p-5">
             <div className="flex min-w-0 items-center justify-between gap-3">
-              <SaltaMark />
+              <CatamarcaMark />
               <span className="shrink-0 rounded-full bg-emerald-500/10 px-3 py-1 text-[11px] font-black uppercase tracking-wide text-emerald-700">QR válido</span>
             </div>
 
@@ -163,10 +163,10 @@ export default function App() {
                   <p className="text-xs text-emerald-700/70">Comprobante municipal · {resultado.pago.id}</p>
                 </div>
                 <div className="mt-4 space-y-3 rounded-2xl bg-slate-50 p-4 text-sm text-slate-900">
-                  <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Patente</span><b className="rounded-lg bg-[#0067B1] px-2 py-1 tracking-widest text-white">{resultado.pago.plate}</b></div>
+                  <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Patente</span><b className="rounded-lg bg-[#C1272D] px-2 py-1 tracking-widest text-white">{resultado.pago.plate}</b></div>
                   <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Vigencia</span><b className="text-right">{formatHora(resultado.sesion.startValid)} → {formatHora(resultado.sesion.endValid)}</b></div>
                   <div className="flex items-center justify-between gap-4"><span className="text-slate-500">Tiempo total</span><b>{formatMinutos(resultado.sesion.paidMinutes)}</b></div>
-                  <div className="flex items-end justify-between gap-4 border-t border-slate-200 pt-3 text-lg"><span className="text-slate-500">Pagaste</span><b className="text-2xl text-[#0067B1]">{formatARS(resultado.pago.amount)}</b></div>
+                  <div className="flex items-end justify-between gap-4 border-t border-slate-200 pt-3 text-lg"><span className="text-slate-500">Pagaste</span><b className="text-2xl text-[#C1272D]">{formatARS(resultado.pago.amount)}</b></div>
                 </div>
                 <Boton className="mt-4 w-full" variante="secundario" onClick={() => { setResultado(null); setSaldo(null); }}>
                   Nuevo pago
@@ -198,13 +198,13 @@ export default function App() {
                     </div>
                     <div className="flex items-end justify-between gap-4 border-t border-slate-200 pt-3 text-lg">
                       <span className="text-slate-500">Total</span>
-                      <b className="text-2xl text-[#0067B1]">{cotizando ? "…" : formatARS(monto)}</b>
+                      <b className="text-2xl text-[#C1272D]">{cotizando ? "…" : formatARS(monto)}</b>
                     </div>
                   </div>
                   <Boton className="mt-5 w-full whitespace-nowrap" grande onClick={pagar} cargando={pagando} disabled={!plate || apiCaida}>
                     Pagá y activá
                   </Boton>
-                  <button onClick={consultarSaldo} className="mt-3 w-full text-center text-xs font-semibold text-[#0067B1] hover:underline" disabled={apiCaida}>
+                  <button onClick={consultarSaldo} className="mt-3 w-full text-center text-xs font-semibold text-[#C1272D] hover:underline" disabled={apiCaida}>
                     Consultar saldo de la patente
                   </button>
                 </Tarjeta>

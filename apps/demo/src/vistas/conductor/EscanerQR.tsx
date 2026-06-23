@@ -46,7 +46,7 @@ export function EscanerQR({ onDetectar, onCerrar }: { onDetectar: (texto: string
         </div>
         <div className="relative mt-3 aspect-square overflow-hidden rounded-2xl bg-black">
           <video ref={videoRef} className="h-full w-full object-cover" muted playsInline />
-          <div className="pointer-events-none absolute inset-8 rounded-2xl border-2 border-cyan/70 shadow-[0_0_40px_rgba(15,182,206,.4)]" />
+          <div className="pointer-events-none absolute inset-8 rounded-2xl border-2 border-cyan/70 shadow-[0_0_40px_rgba(193,39,45,.4)]" />
         </div>
         {error ? (
           <p className="mt-3 rounded-xl bg-red-500/15 px-3 py-2 text-sm text-red-300">{error}</p>

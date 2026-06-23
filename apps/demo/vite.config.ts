@@ -8,18 +8,18 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["icon.svg", "municipalidad-salta.jpeg"],
+      includeAssets: ["icon.svg", "catamarca-preview.jpeg", "catamarca-brand.svg"],
       manifest: {
-        name: "EstacionAR · Municipalidad de Salta",
+        name: "EstacionAR · Municipalidad de SFVC",
         short_name: "EstacionAR",
-        description: "Estacionamiento medido para la Municipalidad de Salta: pago por patente, efectivo auditado y control fiscal municipal.",
+        description: "Estacionamiento medido para la Municipalidad de San Fernando del Valle de Catamarca: pago por patente, efectivo auditado y fiscalización de Tránsito Municipal.",
         lang: "es-AR",
         start_url: "/",
         scope: "/",
         display: "standalone",
         orientation: "portrait",
-        background_color: "#0A1A2F",
-        theme_color: "#0A1A2F",
+        background_color: "#2B0F15",
+        theme_color: "#2B0F15",
         icons: [
           { src: "/icon.svg", sizes: "any", type: "image/svg+xml", purpose: "any" },
           { src: "/icon.svg", sizes: "512x512", type: "image/svg+xml", purpose: "maskable" },

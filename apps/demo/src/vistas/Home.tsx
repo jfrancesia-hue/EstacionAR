@@ -13,19 +13,19 @@ export function VistaHome({ onElegirRol }: { onElegirRol: (rol: Rol) => void }) 
       <section className="grid gap-10 lg:grid-cols-[1.05fr_.95fr] lg:items-center">
         <div>
           <div className="flex flex-wrap items-center gap-3">
-            <Badge tono="cyan">Estacionamiento medido · Municipalidad de Salta</Badge>
+            <Badge tono="cyan">Dirección de Tránsito Municipal · SFVC</Badge>
           </div>
           <h1 className="mt-5 text-5xl font-extrabold leading-[0.98] tracking-tight md:text-7xl">
-            Estacionar en Salta, <span className="text-cyan">simple y trazable</span>.
+            Estacionar en San Fernando del Valle, <span className="text-cyan">simple y trazable</span>.
           </h1>
           <p className="mt-6 max-w-xl text-lg text-texto-tenue">
-            Una plataforma para el ciudadano, el permisionario y el Municipio. Pago digital por patente con 10% de beneficio,
-            acreditación inmediata del pago digital al permisionario y control municipal en tiempo real. Elegí cómo querés ingresar.
+            Demo municipal para ordenar el estacionamiento medido en el microcentro de SFVC. Pagás por patente con beneficio digital, el permisionario ve la operación al momento y Tránsito Municipal fiscaliza sectores, comprobantes y credenciales en tiempo real.
           </p>
           <div className="mt-8 flex flex-wrap gap-6 text-sm text-texto-tenue">
             <span>✓ Pago por patente (billetera de tiempo)</span>
             <span>✓ 10% de beneficio por usar la app</span>
-            <span>✓ Tarifas configurables</span>
+            <span>✓ Dirección: Los Regionales esq. Santa Fe</span>
+            <span>✓ Atención municipal: lunes a viernes, 07/08 a 13 hs</span>
           </div>
         </div>
 
@@ -59,8 +59,8 @@ export function VistaHome({ onElegirRol }: { onElegirRol: (rol: Rol) => void }) 
         <Tarjeta titulo="Para el permisionario">
           <p className="text-sm text-texto-tenue">Ves cada pago acreditado en el momento y cargás efectivo de forma inmutable y sin duplicados.</p>
         </Tarjeta>
-        <Tarjeta titulo="Para el Municipio">
-          <p className="text-sm text-texto-tenue">No administra transferencias masivas ni rentas generales: fiscaliza operaciones online, sectores y comprobantes.</p>
+        <Tarjeta titulo="Para Tránsito Municipal">
+          <p className="text-sm text-texto-tenue">Fiscaliza operaciones online, sectores, comprobantes, credenciales y posibles espacios reservados sin administrar transferencias masivas.</p>
         </Tarjeta>
       </section>
 

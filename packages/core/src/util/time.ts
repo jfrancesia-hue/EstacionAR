@@ -8,7 +8,7 @@ export function minutesBetween(fromIso: string, toIso: string): number {
   return (new Date(toIso).getTime() - new Date(fromIso).getTime()) / 60_000;
 }
 
-/** Devuelve la fecha en formato YYYY-MM-DD (zona local America/Argentina/Salta = UTC-3). */
+/** Devuelve la fecha en formato YYYY-MM-DD (zona local America/Argentina/Catamarca = UTC-3). */
 export function toDateKey(iso: string): string {
   const d = new Date(new Date(iso).getTime() - 3 * 60 * 60_000);
   return d.toISOString().slice(0, 10);

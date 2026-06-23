@@ -1,89 +1,26 @@
-# EstacionAR · Guion de demo comercial
+# Presentación demo · EstacionAR SFVC
 
-## Apertura
+## Tesis
 
-**EstacionAR** es una plataforma integral de estacionamiento medido para la **Municipalidad de Salta**.
+EstacionAR digitaliza el estacionamiento medido para San Fernando del Valle de Catamarca: el vecino paga por patente, el permisionario cobra con trazabilidad y Tránsito Municipal fiscaliza en tiempo real.
 
-La propuesta no reemplaza al permisionario: ordena el sistema, amplía la recaudación digital, mantiene el control fiscal municipal y deja trazabilidad completa de cada operación.
+## Demo en 7 minutos
 
-## Mensaje central
+1. Abrir backoffice municipal.
+2. Mostrar mapa SVG del microcentro: Plaza 25 de Mayo, Peatonal Rivadavia, Sarmiento, República, Esquiú y Av. Belgrano.
+3. Mostrar KPIs: transado hoy, acreditado a permisionarios, plataforma y Municipio.
+4. Entrar como conductor, escanear/seleccionar permisionario, cargar patente y pagar.
+5. Volver al backoffice y actualizar: operación reflejada.
+6. Entrar como permisionario: credencial QR, recaudación y movimientos.
+7. Cerrar con fiscalización por patente y control de credenciales.
 
-> “El Municipio ve y controla la recaudación en tiempo real. El conductor paga simple. El permisionario sigue trabajando con una herramienta clara. Todo queda auditado.”
+## Valor para SFVC
 
-## Recorrido recomendado — 7 minutos
+- Menos fricción para vecinos.
+- Más trazabilidad para Tránsito Municipal.
+- Permisionarios preservados dentro del sistema.
+- Posibilidad futura de integrar espacios reservados, libre estacionamiento por discapacidad y trámites de taxi/remis.
 
-### 1. Backoffice municipal
-Abrir: http://localhost:5173
+## Nota
 
-Mostrar:
-- Recaudación de hoy.
-- Separación digital / efectivo.
-- Sesiones activas.
-- Mapa/sectores.
-- Tarifas configurables.
-- Permisionarios activos/suspendidos.
-- Auditoría fiscal.
-
-Frase sugerida:
-> “La Municipalidad no espera reportes manuales: ve el flujo fiscal en vivo, antes de cualquier liquidación.”
-
-### 2. App Conductor
-Abrir: http://localhost:5174
-
-Mostrar:
-- QR válido del permisionario.
-- Patente `AB123CD`.
-- Vigencia 13:00 → 14:00.
-- Precio con descuento digital.
-- Comprobante municipal.
-
-Frase sugerida:
-> “La sesión se vincula a la patente, no a la cuadra. Si la persona se mueve dentro de la ventana, no vuelve a pagar.”
-
-### 3. App Permisionario
-Abrir: http://localhost:5175
-
-Mostrar:
-- Credencial QR.
-- Recaudación del día.
-- Digital vs efectivo.
-- Registro de efectivo auditado.
-- Movimientos.
-
-Frase sugerida:
-> “El permisionario no queda afuera: trabaja con QR propio, carga efectivo y todo queda trazado.”
-
-### 4. Cierre fiscal
-Volver a Backoffice.
-
-Remarcar:
-- Recaudación entra primero al Municipio.
-- Liquidación al permisionario se calcula sobre reglas configurables.
-- Auditoría inmutable.
-- QR firmado evita desvíos.
-- Tarifas se actualizan por datos, no por cambios de código.
-
-## Diferenciales para venta/licita
-
-- Control fiscal municipal en tiempo real.
-- Billetera de tiempo por patente.
-- No recobra si el conductor se mueve.
-- QR de permisionario con estado y antifraude.
-- Efectivo registrado de forma inmutable.
-- Conciliación y liquidación preparadas.
-- Diseño institucional co-brandeado con Municipalidad de Salta.
-- Arquitectura lista para Supabase, Mercado Pago/MODO/Naranja y app mobile/PWA.
-
-## Estado técnico de esta demo
-
-- Tests core: 31/31 OK.
-- Build completo: OK.
-- Apps locales:
-  - Backoffice: http://localhost:5173
-  - Conductor: http://localhost:5174
-  - Permisionario: http://localhost:5175
-  - API demo: http://localhost:4000/api/health
-
-## Próximo paso recomendado
-
-Preparar deploy preview público y una presentación PDF/landing para enviar como propuesta formal.
+Demo contextualizada con datos públicos de Tránsito Municipal. No declara integración oficial.

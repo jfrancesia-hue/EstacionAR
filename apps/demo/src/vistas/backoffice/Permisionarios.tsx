@@ -65,7 +65,7 @@ export function SeccionPermisionarios({ datos, onCambio }: { datos: DatosBackoff
                 </div>
               </div>
               <div className="shrink-0 rounded-xl bg-white p-2 shadow-inner">
-                <QRCodeSVG value={urlPagoQR(sel)} size={96} bgColor="#ffffff" fgColor="#0A1A2F" level="M" />
+                <QRCodeSVG value={urlPagoQR(sel)} size={96} bgColor="#ffffff" fgColor="#2B0F15" level="M" />
               </div>
             </div>
 

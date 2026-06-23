@@ -1,20 +1,20 @@
-// Paleta e identidad visual de EstacionAR (CLAUDE.md §6).
-// Compartida por todas las apps para mantener coherencia premium.
+// Paleta e identidad visual de EstacionAR Catamarca (Trama Poncho Operativa).
+// Compartida por todas las apps para mantener coherencia municipal y territorial.
 export const colors = {
-  // Azules institucionales
-  nocturno: "#0A1A2F", // azul noche (fondos profundos)
-  profundo: "#102A47", // azul profundo (superficies)
+  // Bordó/poncho institucional
+  nocturno: "#2B0F15", // vino profundo (fondos)
+  profundo: "#3A161E", // bordó superficie
   // Acentos
-  cyan: "#0FB6CE", // cyan electrico (accion primaria, datos en vivo)
-  ambar: "#F5A623", // ambar vial (alertas, efectivo, atencion)
+  cyan: "#C1272D", // rojo poncho (acción primaria; conserva key cyan por compatibilidad UI)
+  ambar: "#E0A82E", // ocre poncho (alertas, efectivo, corredores nocturnos)
   // Neutros derivados
-  superficie: "#0E2138",
-  borde: "#1C3A5E",
-  texto: "#E8F1F8",
-  textoTenue: "#9CB3C9",
+  superficie: "#241015",
+  borde: "#6F2A28",
+  texto: "#FFF4EA",
+  textoTenue: "#D8B8A3",
 };
 
 export const fonts = {
-  // Tipografia geometrica moderna y legible
+  // Tipografía geométrica moderna y legible
   sans: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif",
 };

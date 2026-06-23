@@ -2,7 +2,7 @@
   "name": "estacionar",
   "version": "0.1.0",
   "private": true,
-  "description": "EstacionAR — Plataforma de gestion de estacionamiento medido (Municipalidad de Salta)",
+  "description": "EstacionAR — Plataforma de gestion de estacionamiento medido (Municipalidad de San Fernando del Valle de Catamarca)",
   "packageManager": "pnpm@11.1.1",
   "engines": {
     "node": ">=20"

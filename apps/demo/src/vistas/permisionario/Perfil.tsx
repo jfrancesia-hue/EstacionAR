@@ -14,7 +14,7 @@ export function SeccionPerfil({ datos }: { datos: DatosPermisionario }) {
       <div>
         <h1 className="text-3xl font-extrabold tracking-tight">Mi credencial</h1>
         <p className="mt-2 text-sm text-texto-tenue">
-          Mostrásela al ciudadano: confirma que sos un permisionario <b className="text-texto">habilitado por el Municipio</b>.
+          Mostrásela al ciudadano: confirma que sos un permisionario <b className="text-texto">habilitado por Tránsito Municipal de SFVC</b>.
         </p>
       </div>
 
@@ -22,8 +22,8 @@ export function SeccionPerfil({ datos }: { datos: DatosPermisionario }) {
       <div className="overflow-hidden rounded-3xl border border-borde/70 bg-gradient-to-br from-superficie to-profundo/60 shadow-card">
         <div className="flex items-center justify-between border-b border-white/10 bg-nocturno/40 px-5 py-3">
           <div className="flex items-center gap-2">
-            <img src="/municipalidad-salta.jpeg" alt="Municipalidad de Salta" className="h-7 w-auto rounded bg-white p-0.5" />
-            <span className="text-xs font-bold uppercase tracking-wide text-texto-tenue">Credencial de permisionario</span>
+            <img src="/catamarca-brand.svg" alt="Municipalidad de San Fernando del Valle de Catamarca" className="h-7 w-auto rounded bg-white p-0.5" />
+            <span className="text-xs font-bold uppercase tracking-wide text-texto-tenue">Credencial de permisionario · Dirección de Tránsito</span>
           </div>
           <Badge tono={habilitado ? "ok" : "error"}>{habilitado ? "● Habilitado" : "No habilitado"}</Badge>
         </div>
@@ -45,7 +45,7 @@ export function SeccionPerfil({ datos }: { datos: DatosPermisionario }) {
 
           <div className="mx-auto text-center">
             <div className="inline-block rounded-2xl bg-white p-2.5 shadow-inner">
-              <QRCodeSVG value={urlPagoQR(p)} size={116} bgColor="#ffffff" fgColor="#0A1A2F" level="M" />
+              <QRCodeSVG value={urlPagoQR(p)} size={116} bgColor="#ffffff" fgColor="#2B0F15" level="M" />
             </div>
             <p className="mt-1 text-[11px] text-texto-tenue">Escaneá para pagar</p>
           </div>
@@ -59,7 +59,7 @@ export function SeccionPerfil({ datos }: { datos: DatosPermisionario }) {
           <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Teléfono</p><b>{p.contactPhone}</b></div>
           <div className="rounded-xl bg-white/5 p-3"><p className="text-texto-tenue">Validación</p><EstadoPill estado={p.status} /></div>
         </div>
-        <p className="mt-3 text-xs text-texto-tenue">Tu DNI y documentación quedan del lado del Municipio para validación; no se muestran en la credencial pública.</p>
+        <p className="mt-3 text-xs text-texto-tenue">Tu DNI y documentación quedan del lado del Municipio para validación. En producción, el circuito puede vincularse con Mesa de Entradas, Tránsito Municipal y Estacionamiento Ordenado.</p>
       </Tarjeta>
 
       <p className="rounded-xl border border-cyan/20 bg-cyan/10 p-4 text-sm text-cyan-300">

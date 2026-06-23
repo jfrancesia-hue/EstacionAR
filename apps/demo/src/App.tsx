@@ -24,7 +24,7 @@ function HeaderPublico({ volver }: { volver?: boolean }) {
           {volver && <Link to="/" className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-texto-tenue hover:text-texto">← Inicio</Link>}
           <Link to="/verificar" className="hidden rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-texto-tenue hover:text-texto sm:inline-block">Verificar comprobante</Link>
           <div className="hidden items-center rounded-2xl bg-white px-3 py-1.5 shadow-sm sm:flex">
-            <img src="/municipalidad-salta.jpeg" alt="Municipalidad de Salta" className="h-8 w-auto object-contain" />
+            <img src="/catamarca-brand.svg" alt="Municipalidad de San Fernando del Valle de Catamarca" className="h-8 w-auto object-contain" />
           </div>
         </div>
       </div>
@@ -167,7 +167,7 @@ export default function App() {
       </Routes>
 
       <footer className="mx-auto max-w-7xl px-6 py-8 text-center text-xs text-texto-tenue">
-        EstacionAR · Plataforma de estacionamiento medido para la Municipalidad de Salta · Demo Nativos Consultora
+        EstacionAR · Plataforma de estacionamiento medido para la Municipalidad de San Fernando del Valle de Catamarca · Demo Nativos Consultora
       </footer>
     </div>
   );

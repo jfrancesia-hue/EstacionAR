@@ -1,103 +1,55 @@
-# EstacionAR · Municipalidad de Salta
+# EstacionAR · Municipalidad de San Fernando del Valle de Catamarca
 
-Demo **interactiva** de plataforma de estacionamiento medido para la Municipalidad de Salta.
+Demo interactiva de plataforma de estacionamiento medido para la Municipalidad de San Fernando del Valle de Catamarca.
 
-## 🚀 Demo para mostrar (1 sola app, lista para Vercel)
+## Demo principal
 
-La forma recomendada de presentar el sistema es la **demo unificada** (`apps/demo`): una sola web
-con selector **Backoffice · Conductor · Permisionario**, estado compartido en el navegador y
-**sin backend ni base de datos**. Los pagos son **simulados** (en producción se integran Mercado
-Pago, MODO y Naranja X). Es 100% estática → se aloja en Vercel gratis.
+La app que se despliega es `apps/demo`: una PWA Vite + React 18 con selector de rol para conductor, permisionario y backoffice municipal.
 
 ```powershell
 pnpm install
-pnpm dev:demo      # arranca en http://localhost:5180
+pnpm dev:demo      # http://localhost:5180
+pnpm build:demo
 ```
 
-Probá el circuito: en **Conductor** pagás una patente → cambiás a **Backoffice** y la recaudación
-sube; en **Permisionario** cargás efectivo y aparece en sus movimientos. Botón **Reiniciar** para
-volver al estado inicial.
-
-### Deploy a Vercel
-El repo ya trae `vercel.json` configurado. En Vercel: *New Project* → importás el repo →
-deja el `vercel.json` (build `pnpm build:demo`, output `apps/demo/dist`) → Deploy. Listo, un link.
-
-> El resto del README describe el **modo desarrollo con 3 apps + API** (Express/store en memoria),
-> que es la base para la futura versión production-ready (NestJS + Supabase).
+Los pagos son simulados. En producción se integrarían Mercado Pago, MODO, Naranja X, Supabase Auth y base de datos real.
 
 ## Qué muestra
 
-- Backoffice municipal en vivo: recaudación, sectores, tarifas, permisionarios y auditoría,
-  con botón **Actualizar** que refleja al instante los pagos que entran desde las otras apps.
-- App Conductor con flujo real QR → patente → cotización → **pago digital** → comprobante
-  emitido por la API (vigencia y monto reales). Incluye consulta de saldo por patente.
-- App Permisionario con credencial QR real, recaudación del día en vivo y **carga de efectivo
-  auditada** (idempotente, sin duplicados).
-- API con todos los endpoints del circuito (tarifas, cotización, pagos, dashboard, fiscal).
-- Core testeado para reglas críticas: tarifas, billetera por patente, QR, conciliación y liquidación.
+- Conductor: QR del permisionario, patente, tiempo, pago digital/efectivo y comprobante.
+- Permisionario: credencial QR, recaudación, movimientos, efectivo auditado e incidencias.
+- Backoffice municipal: sectores del microcentro, tarifas, permisionarios, fiscalización por patente, reportes y auditoría.
+- Mapa SVG propio de sectores Catamarca; no usa librerías de mapa.
 
-> La demo interactiva requiere la API levantada (puerto 4000). Si no corre, cada app lo avisa.
+## Personalización SFVC
 
-## URLs locales
+Basada en la página pública de Tránsito Municipal de la Municipalidad de SFVC:
 
-Con los servidores levantados:
+- Área: Dirección de Tránsito Municipal.
+- Base operativa: Los Regionales esq. Santa Fe.
+- Mesa General de Entradas: Maipú 611.
+- Referencia de Estacionamiento Ordenado: Sarmiento 1050.
+- Atención: lunes a viernes 07/08 a 13 hs.
+- Contacto público: 03834-437-417 / transitomunicipal@catamarcaciudad.gob.ar.
+- Trámites vinculados para futuras fases: libre estacionamiento para discapacidad, espacios reservados, taxi/remis y constancias.
 
-- Backoffice: http://localhost:5173
-- Conductor: http://localhost:5174
-- Permisionario: http://localhost:5175
-- API health: http://localhost:4000/api/health
+La demo no declara integración oficial: usa estos datos como contexto territorial y funcional.
 
-## Arranque rápido en Windows
+## Diseño
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\DEMO_START.ps1
-```
+Dirección visual: poncho bordó/ocre, microcentro SFVC y controles municipales. Evitar estética SaaS azul/cyan genérica.
 
-Para chequear estado:
+Paleta principal:
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\DEMO_STATUS.ps1
-```
+- Vino profundo: `#2B0F15`.
+- Superficie bordó: `#3A161E`.
+- Rojo poncho: `#C1272D`.
+- Ocre: `#E0A82E`.
 
-Para detener:
+## Verificación
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\DEMO_STOP.ps1
-```
+Última verificación local:
 
-## Comandos manuales
-
-```bash
-pnpm install
-pnpm test
-pnpm build
-pnpm dev:api
-pnpm dev:backoffice
-pnpm dev:conductor
-pnpm dev:permisionario
-```
-
-## Estado verificado
-
-- `pnpm test`: 31 tests OK.
-- `pnpm build`: OK (core, ui, api y las 3 apps).
-- `pnpm typecheck`: OK.
-- Flujo end-to-end contra la API: pago digital del conductor → impacta en el dashboard;
-  efectivo del permisionario → impacta en su recaudación; billetera por patente extiende
-  sin recobrar; auditoría registra cada operación.
-
-## Guion de demo recomendado
-
-1. Abrir Backoffice y mostrar la recaudación municipal (datos en vivo desde la API).
-2. Abrir Conductor: ingresar patente, elegir tiempo y **pagar** (digital). Mostrar el comprobante real.
-3. Volver al Backoffice y tocar **Actualizar**: la recaudación y las operaciones suben con ese pago.
-4. En Conductor, "Consultar saldo" de la patente y explicar la billetera por tiempo:
-   si se mueve de sector dentro de la ventana, no vuelve a pagar.
-5. Abrir Permisionario: registrar un **pago en efectivo** y ver cómo aparece en sus movimientos
-   y en su recaudación del día (registro inmutable e idempotente).
-6. Cerrar con la ventaja comercial: control fiscal municipal, trazabilidad, tarifas configurables
-   y rol del permisionario preservado.
-
-## Nota
-
-Los datos son demo y están marcados como demo. La arquitectura está preparada para conectar Supabase real, pagos sandbox/producción y autenticación por roles.
+- `pnpm build:demo`: OK.
+- Runtime mobile Playwright: sin errores de consola y sin overflow horizontal.
+- Búsqueda de restos críticos: sin Salta ni imports de mapa Leaflet.

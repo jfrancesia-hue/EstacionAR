@@ -131,11 +131,11 @@ export default function App() {
           <div className="flex flex-wrap items-center gap-3">
             <Logo />
             <div className="rounded-2xl bg-white px-3 py-2 shadow-sm">
-              <img src="/municipalidad-salta.jpeg" alt="Municipalidad de Salta" className="h-8 w-auto object-contain" />
+              <img src="/catamarca-brand.svg" alt="Municipalidad de San Fernando del Valle de Catamarca" className="h-8 w-auto object-contain" />
             </div>
             <a href="http://localhost:5173" className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-texto-tenue hover:text-texto">Volver al backoffice</a>
           </div>
-          <div className="mt-3"><Badge tono="cyan">Credencial activa · Municipalidad de Salta</Badge></div>
+          <div className="mt-3"><Badge tono="cyan">Credencial activa · Municipalidad de San Fernando del Valle de Catamarca</Badge></div>
           <h1 className="mt-5 text-5xl font-extrabold leading-tight tracking-tight">Tu recaudación clara, tu QR protegido.</h1>
           <p className="mt-4 max-w-xl text-lg text-texto-tenue">La app del permisionario registra efectivo sin duplicados, muestra movimientos del día y mantiene al Municipio viendo la recaudación en tiempo real.</p>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
@@ -154,9 +154,9 @@ export default function App() {
               </div>
               <EstadoPill estado={perm.status} />
             </div>
-            <div className="my-5 rounded-3xl bg-white p-6 text-[#0A1A2F]">
-              <div className="mb-4 flex items-center justify-between"><b>QR Credencial</b><span className="text-xs font-bold text-[#0067B1]">{perm.sector?.name ?? perm.sectorId}</span></div>
-              <div className="grid place-items-center"><div className="grid h-36 w-36 grid-cols-6 gap-1 rounded-xl bg-white p-2 shadow-inner">{Array.from({ length: 36 }).map((_, i) => <span key={i} className={(i % 3 === 0 || i % 5 === 0 || i === 7) ? "bg-[#0067B1]" : "bg-[#0A1A2F]/10"} />)}</div></div>
+            <div className="my-5 rounded-3xl bg-white p-6 text-[#2B0F15]">
+              <div className="mb-4 flex items-center justify-between"><b>QR Credencial</b><span className="text-xs font-bold text-[#C1272D]">{perm.sector?.name ?? perm.sectorId}</span></div>
+              <div className="grid place-items-center"><div className="grid h-36 w-36 grid-cols-6 gap-1 rounded-xl bg-white p-2 shadow-inner">{Array.from({ length: 36 }).map((_, i) => <span key={i} className={(i % 3 === 0 || i % 5 === 0 || i === 7) ? "bg-[#C1272D]" : "bg-[#2B0F15]/10"} />)}</div></div>
               <p className="mt-3 break-all text-center font-mono text-[10px] text-slate-400">{qrCorto}</p>
             </div>
             <Tarjeta titulo="Registrar efectivo" className="mb-4">

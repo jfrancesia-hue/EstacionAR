@@ -10,11 +10,11 @@ export function Logo({ size = 28, withText = true }: { size?: number; withText?:
   return (
     <div className="flex items-center gap-2.5">
       <svg width={size} height={size} viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <rect width="40" height="40" rx="10" fill="#0FB6CE" />
-        <g transform="translate(8 7)" stroke="#0A1A2F" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+        <rect width="40" height="40" rx="10" fill="#C1272D" />
+        <g transform="translate(8 7)" stroke="#FFF4EA" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
-          <circle cx="7" cy="17" r="2" fill="#0FB6CE" />
-          <circle cx="17" cy="17" r="2" fill="#0FB6CE" />
+          <circle cx="7" cy="17" r="2" fill="#C1272D" />
+          <circle cx="17" cy="17" r="2" fill="#C1272D" />
         </g>
       </svg>
       {withText && (

@@ -21,7 +21,7 @@ function pago(over: Partial<Pago>): Pago {
     plate: "AB123CD",
     sectorId: "sec-1",
     idempotencyKey: null,
-    // 2026-06-05 hora local Salta (UTC-3): 10:00
+    // 2026-06-05 hora local Catamarca (UTC-3): 10:00
     createdAt: "2026-06-05T13:00:00.000Z",
     ...over,
   };

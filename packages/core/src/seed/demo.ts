@@ -31,8 +31,15 @@ function prng(seed: number) {
 export const CONFIG_DEMO: ConfigSistema = {
   feePct: 0, // sin retencion municipal ni fee del proveedor: el beneficio digital va al ciudadano
   toleranceMinutes: 5,
-  feriados: ["2026-06-20", "2026-07-09"], // Dia de la Bandera, Independencia
-  nocturnoCorridors: ["Paseo Balcarce", "Paseo Güemes"],
+  feriados: [
+    "2026-04-13", // Virgen del Valle (fecha local de referencia; editable por municipio)
+    "2026-06-20",
+    "2026-07-09",
+    "2026-07-17", "2026-07-18", "2026-07-19", "2026-07-20", "2026-07-21",
+    "2026-07-22", "2026-07-23", "2026-07-24", "2026-07-25", "2026-07-26", // Fiesta Nacional e Internacional del Poncho 2026
+    "2026-12-08", // Virgen del Valle / Inmaculada Concepción
+  ],
+  nocturnoCorridors: ["Peatonal Rivadavia", "Av. Belgrano"],
 };
 
 // Tarifas vigentes 2026 (valores iniciales del seed, editables — CLAUDE.md §3.2).
@@ -63,14 +70,15 @@ export const TARIFAS_DEMO: Tarifa[] = [
   },
 ];
 
-// Sectores del microcentro de Salta (coordenadas aproximadas, geometria demo).
+// Sectores del microcentro de San Fernando del Valle de Catamarca (coordenadas aproximadas, geometría demo).
+// Centro de referencia: Plaza 25 de Mayo, lat -28.4696 lng -65.7852.
 const C: Array<{ id: string; name: string; lng: number; lat: number; shift: Sector["shift"]; numbering: Sector["numbering"] }> = [
-  { id: "sec-balcarce", name: "Paseo Balcarce", lng: -65.4078, lat: -24.7836, shift: "nocturno", numbering: "ambos" },
-  { id: "sec-guemes", name: "Paseo Güemes", lng: -65.4035, lat: -24.7948, shift: "nocturno", numbering: "ambos" },
-  { id: "sec-alvarado", name: "Plaza Alvarado", lng: -65.4126, lat: -24.7901, shift: "diurno", numbering: "par" },
-  { id: "sec-9julio", name: "Plaza 9 de Julio", lng: -65.4109, lat: -24.7889, shift: "diurno", numbering: "ambos" },
-  { id: "sec-belgrano", name: "Av. Belgrano", lng: -65.4145, lat: -24.7912, shift: "diurno", numbering: "impar" },
-  { id: "sec-caseros", name: "Calle Caseros", lng: -65.4098, lat: -24.7895, shift: "diurno", numbering: "par" },
+  { id: "sec-plaza-25", name: "Plaza 25 de Mayo", lng: -65.7852, lat: -28.4696, shift: "diurno", numbering: "ambos" },
+  { id: "sec-peatonal-rivadavia", name: "Peatonal Rivadavia", lng: -65.7850, lat: -28.4689, shift: "nocturno", numbering: "ambos" },
+  { id: "sec-sarmiento", name: "Calle Sarmiento", lng: -65.7843, lat: -28.4694, shift: "diurno", numbering: "par" },
+  { id: "sec-republica", name: "Calle República", lng: -65.7862, lat: -28.4700, shift: "diurno", numbering: "impar" },
+  { id: "sec-esquiu", name: "Calle Esquiú", lng: -65.7848, lat: -28.4682, shift: "diurno", numbering: "ambos" },
+  { id: "sec-belgrano", name: "Av. Belgrano", lng: -65.7799, lat: -28.4667, shift: "nocturno", numbering: "ambos" },
 ];
 
 function rectRing(lng: number, lat: number, d = 0.0012): Sector["ring"] {
@@ -103,8 +111,8 @@ const NOMBRES_DEMO = [
 ];
 
 export const USERS_DEMO: User[] = [
-  { id: "usr-admin", email: "admin@municipalidadsalta.demo", fullName: "Admin Municipal (DEMO)", role: "admin_municipal", createdAt: "2026-01-02T12:00:00.000Z" },
-  { id: "usr-super", email: "supervisor@municipalidadsalta.demo", fullName: "Supervisor (DEMO)", role: "supervisor", createdAt: "2026-01-02T12:00:00.000Z" },
+  { id: "usr-admin", email: "admin@municipalidadcatamarca.demo", fullName: "Admin Municipal (DEMO)", role: "admin_municipal", createdAt: "2026-01-02T12:00:00.000Z" },
+  { id: "usr-super", email: "supervisor@municipalidadcatamarca.demo", fullName: "Supervisor (DEMO)", role: "supervisor", createdAt: "2026-01-02T12:00:00.000Z" },
 ];
 
 export interface SeedResult {

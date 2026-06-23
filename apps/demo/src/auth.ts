@@ -19,21 +19,21 @@ export interface CuentaDemo {
 // Credenciales de ejemplo (se muestran y se pre-cargan en el login). NO son reales.
 export const CUENTAS_DEMO: Record<Rol, CuentaDemo> = {
   conductor: {
-    email: "vecino@salta.gob.ar",
+    email: "vecino@catamarca.gob.ar",
     password: "demo1234",
     nombre: "Vecino Conductor",
     titulo: "Conductor",
     descripcion: "Pagá tu estacionamiento por patente, en segundos.",
   },
   permisionario: {
-    email: "permisionario@salta.gob.ar",
+    email: "permisionario@catamarca.gob.ar",
     password: "demo1234",
     nombre: "Carlos Ramírez",
     titulo: "Permisionario",
     descripcion: "Tu recaudación del día y carga de efectivo auditada.",
   },
   admin: {
-    email: "admin@municipalidadsalta.gob.ar",
+    email: "admin@municipalidadcatamarca.gob.ar",
     password: "demo1234",
     nombre: "Admin Municipal",
     titulo: "Municipalidad",
